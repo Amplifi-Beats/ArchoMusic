@@ -31,32 +31,21 @@ public class ExternalBrowserActivity extends  AppCompatActivity  {
 	private ImageView back;
 	private TextView webtitle;
 	private TextView weburl;
+
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_external_browser);
 		initialize(savedInstanceState);
 		com.google.firebase.FirebaseApp.initializeApp(this);
-		if (ContextCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_DENIED) {
-			ActivityCompat.requestPermissions(this, new String[] {Manifest.permission.READ_EXTERNAL_STORAGE}, 1000);
-		}
-		else {
-			initializeLogic();
-		}
-	}
-	@Override
-	public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
-		super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-		if (requestCode == 1000) {
-			initializeLogic();
-		}
+		initializeLogic();
 	}
 	
 	private void initialize(Bundle savedInstanceState) {
 		toolbar = (LinearLayout) findViewById(R.id.toolbar);
 		loadbar = (ProgressBar) findViewById(R.id.loadbar);
+		back = (ImageView) findViewById(R.id.back);
 		web = (WebView) findViewById(R.id.web);
-		web.getSettings().setJavaScriptEnabled(true);
 		web.getSettings().setSupportZoom(true);
 		webtitle = (TextView) findViewById(R.id.webtitle);
 		weburl = (TextView) findViewById(R.id.weburl);
@@ -75,10 +64,10 @@ public class ExternalBrowserActivity extends  AppCompatActivity  {
 				}
 				else {
 					if (url.equals("file:///android_asset/LICENSES.html")) {
-						weburl.setText("com.gianxd.musicdev/LICENSES");
+						weburl.setText("com.gianxd.audiodev/LICENSES");
 					}
 					if (url.equals("file:///android_asset/PRIVACY.html")) {
-						weburl.setText("com.gianxd.musicdev/PRIVACY");
+						weburl.setText("com.gianxd.audiodev/PRIVACY");
 					}
 				}
 				super.onPageFinished(webView, url);
@@ -86,10 +75,14 @@ public class ExternalBrowserActivity extends  AppCompatActivity  {
 		});
 		back.setOnClickListener(new View.OnClickListener() {
 			@Override
-			public void onClick(View _view) {
+			public void onClick(View view) {
 				android.graphics.drawable.RippleDrawable rippleButton = new android.graphics.drawable.RippleDrawable(new android.content.res.ColorStateList(new int[][]{new int[]{}}, new int[]{ Color.parseColor("#BDBDBD") }), null, null);
 				back.setBackground(rippleButton);
-				finish();
+				if (web.canGoBack()) {
+					web.goBack();
+				} else {
+					finish();
+				}
 			}
 		});
 	}
