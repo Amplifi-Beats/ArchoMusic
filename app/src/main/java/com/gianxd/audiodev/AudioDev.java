@@ -1,19 +1,15 @@
 package com.gianxd.audiodev;
 
-import android.app.AlarmManager;
 import android.app.Application;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Handler;
 
-import java.io.PrintWriter;
-import java.io.StringWriter;
-import java.io.Writer;
-
 import java.util.HashMap;
 
 import com.gianxd.audiodev.activity.LauncherActivity;
+import com.gianxd.audiodev.util.ApplicationUtil;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
@@ -39,7 +35,7 @@ public class AudioDev extends Application {
 				} else {
 					profileData = new Gson().fromJson(savedData.getString("savedProfileData", ""), new TypeToken<HashMap<String, Object>>(){}.getType());
 				}
-				profileData.put("profileErrorTrace", getStackTrace(ex));
+				profileData.put("profileErrorTrace", ApplicationUtil.getStackTrace(ex));
 				savedData.edit().putString("savedProfileData", new Gson().toJson(profileData)).apply();
 				Intent intent = new Intent(getApplicationContext(), LauncherActivity.class);
 				startActivity(intent);
@@ -49,19 +45,4 @@ public class AudioDev extends Application {
 		super.onCreate();
 	}
 
-	private String getStackTrace(Throwable th){
-		final Writer result = new StringWriter();
-
-		final PrintWriter printWriter = new PrintWriter(result);
-		Throwable cause = th;
-
-		while(cause != null){
-			cause.printStackTrace(printWriter);
-			cause = cause.getCause();
-		}
-		final String stacktraceAsString = result.toString();
-		printWriter.close();
-
-		return stacktraceAsString;
-	}
 }
