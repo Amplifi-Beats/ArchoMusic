@@ -16,7 +16,6 @@ import android.graphics.Typeface;
 import android.graphics.drawable.RippleDrawable;
 import android.media.AudioManager;
 import android.media.MediaMetadataRetriever;
-import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.IBinder;
@@ -41,7 +40,8 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import com.bumptech.glide.Glide;
 import com.gauravk.audiovisualizer.visualizer.BarVisualizer;
 import com.gianxd.audiodev.R;
-import com.gianxd.audiodev.activity.PlaybackService.MusicBinder;
+import com.gianxd.audiodev.service.PlaybackService;
+import com.gianxd.audiodev.service.PlaybackService.MusicBinder;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.android.material.tabs.TabLayout;
@@ -473,7 +473,7 @@ public class LocalStreamActivity extends  AppCompatActivity  {
 												android.graphics.drawable.RippleDrawable rippleButton = new android.graphics.drawable.RippleDrawable(new android.content.res.ColorStateList(new int[][]{new int[]{}}, new int[]{ Color.parseColor("#BDBDBD") }), new android.graphics.drawable.ColorDrawable(Color.parseColor("#FFFFFF")), null);
 								                view.setBackground(rippleButton);
 												Intent intent = new Intent();
-												intent.putExtra("url", "https://github.com/gianxddddd/archo-music");
+												intent.putExtra("url", "https://github.com/gianxddddd/ArchoMusic");
 								                intent.setClass(getApplicationContext(), ExternalBrowserActivity.class);
 								                startActivity(intent);
 										}
