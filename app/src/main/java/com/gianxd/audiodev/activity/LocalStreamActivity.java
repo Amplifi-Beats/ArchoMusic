@@ -1014,8 +1014,8 @@ public class LocalStreamActivity extends  AppCompatActivity  {
 	
 	public class SongListAdapter extends RecyclerView.Adapter<SongListAdapter.ViewHolder> {
 		ArrayList<HashMap<String, Object>> data;
-		public SongListAdapter(ArrayList<HashMap<String, Object>> _arr) {
-			data = _arr;
+		public SongListAdapter(ArrayList<HashMap<String, Object>> customData) {
+			data = customData;
 		}
 		
 		@Override
