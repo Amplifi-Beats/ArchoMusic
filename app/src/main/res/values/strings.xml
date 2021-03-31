@@ -1,5 +1,5 @@
 <resources>
-	<string name="app_name" translatable="false">Archo Music</string>
+    <string name="app_name" translatable="false">Archo Music</string>
     <string name="song_title_null">Untitled</string>
     <string name="song_artist_null">Unknown Artist</string>
     <string name="lyrics_editor_title">Lyrics Editor</string>
