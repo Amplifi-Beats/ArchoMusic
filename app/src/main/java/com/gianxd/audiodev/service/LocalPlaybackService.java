@@ -21,6 +21,7 @@ import com.bumptech.glide.Glide;
 import com.gianxd.audiodev.R;
 import com.gianxd.audiodev.activity.LocalStreamActivity;
 import com.gianxd.audiodev.util.ImageUtil;
+import com.gianxd.audiodev.util.ListUtil;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
@@ -199,7 +200,7 @@ public class LocalPlaybackService extends Service {
 	
 	public void initArrayList() {
 		savedData = getSharedPreferences("savedData", Context.MODE_PRIVATE);
-		musicData = new Gson().fromJson(savedData.getString("savedMusicData", ""), new TypeToken<ArrayList<HashMap<String, Object>>>(){}.getType());
+		musicData = ListUtil.getArrayListFromSharedJSON(savedData, "savedMusicData");
 	}
 	
 	public int getCurrentPosition(){
