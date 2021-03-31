@@ -14,9 +14,12 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.gianxd.audiodev.util.ApplicationUtil;
+import com.gianxd.audiodev.util.ListUtil;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.gianxd.audiodev.R;
@@ -95,10 +98,10 @@ public class LyricsEditorActivity extends  AppCompatActivity  {
 				try {
 					musicData.get((int)Double.parseDouble(getIntent().getStringExtra("songPosition"))).put("songLyrics", lyrics.getText().toString());
 					savedData.edit().putString("savedMusicData", new Gson().toJson(musicData)).apply();
-					com.gianxd.musicdev.MusicDevUtil.showMessage(getApplicationContext(), "Lyrics saved successfully.");
+					ApplicationUtil.toast(getApplicationContext(), "Lyrics saved successfully.", Toast.LENGTH_SHORT);
 					finish();
 				} catch (Exception e) {
-					com.gianxd.musicdev.MusicDevUtil.showMessage(getApplicationContext(), "Error saving lyrics.");
+					ApplicationUtil.toast(getApplicationContext(), "Error saving lyrics.", Toast.LENGTH_SHORT);
 				}
 			}
 		});
@@ -106,7 +109,7 @@ public class LyricsEditorActivity extends  AppCompatActivity  {
 	
 	private void initializeLogic() {
 		bruh.setTypeface(Typeface.createFromAsset(getAssets(), "fonts/roboto_medium.ttf"), Typeface.NORMAL);
-		musicData = new Gson().fromJson(savedData.getString("savedMusicData", ""), new TypeToken<ArrayList<HashMap<String, Object>>>(){}.getType());
+		musicData = ListUtil.getArrayListFromSharedJSON(savedData, "savedMusicData");
 		if (Build.VERSION.SDK_INT >= 23) {
 			toolbar.setSystemUiVisibility(View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR);
 			getWindow().setStatusBarColor(Color.parseColor("#FFFFFF"));
