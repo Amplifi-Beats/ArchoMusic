@@ -8,14 +8,11 @@ import android.content.Intent;
 import android.content.ServiceConnection;
 import android.content.SharedPreferences;
 import android.content.res.ColorStateList;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.graphics.PorterDuff;
 import android.graphics.Typeface;
 import android.graphics.drawable.RippleDrawable;
 import android.media.AudioManager;
-import android.media.MediaMetadataRetriever;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.IBinder;
@@ -40,8 +37,8 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import com.bumptech.glide.Glide;
 import com.gauravk.audiovisualizer.visualizer.BarVisualizer;
 import com.gianxd.audiodev.R;
-import com.gianxd.audiodev.service.PlaybackService;
-import com.gianxd.audiodev.service.PlaybackService.MusicBinder;
+import com.gianxd.audiodev.service.LocalPlaybackService;
+import com.gianxd.audiodev.service.LocalPlaybackService.MusicBinder;
 import com.gianxd.audiodev.util.ImageUtil;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.android.material.snackbar.Snackbar;
@@ -61,7 +58,7 @@ public class LocalStreamActivity extends  AppCompatActivity  {
 	private ArrayList<HashMap<String, Object>> musicData = new ArrayList<>();
 
 	private ServiceConnection musicConnection;
-	private PlaybackService playbackSrv;
+	private LocalPlaybackService playbackSrv;
 	private Intent playIntent;
 	private boolean musicBound = false;
 
@@ -821,12 +818,12 @@ public class LocalStreamActivity extends  AppCompatActivity  {
 			}
 		};
 		if (playIntent == null) {
-			    playIntent = new Intent(this, PlaybackService.class);
+			    playIntent = new Intent(this, LocalPlaybackService.class);
 			    bindService(playIntent, musicConnection, Context.BIND_AUTO_CREATE);
 			    startService(playIntent);
 		} else {
 			    if (playbackSrv != null) {
-						playIntent = new Intent(this, PlaybackService.class);
+						playIntent = new Intent(this, LocalPlaybackService.class);
 						unbindService(musicConnection);
 						stopService(playIntent);
 						// restart service
@@ -853,7 +850,7 @@ public class LocalStreamActivity extends  AppCompatActivity  {
 			}
 			else {
 				if (!playbackSrv.isPlaying()) {
-					playIntent = new Intent(this, PlaybackService.class);
+					playIntent = new Intent(this, LocalPlaybackService.class);
 					stopService(playIntent);
 					finishAffinity();
 				}
@@ -924,7 +921,7 @@ public class LocalStreamActivity extends  AppCompatActivity  {
 		super.onDestroy();
 		if (playbackSrv.mp != null) {
 			if (!playbackSrv.mp.isPlaying()) {
-				playIntent = new Intent(this, PlaybackService.class);
+				playIntent = new Intent(this, LocalPlaybackService.class);
 				stopService(playIntent);
 			}
 		}

@@ -96,7 +96,7 @@
             android:name="org.apache.http.legacy"
             android:required="false"/>
         <service
-            android:name=".service.PlaybackService"
+            android:name=".service.LocalPlaybackService"
             android:exported="true"
             android:enabled="true"
             android:stopWithTask="false">

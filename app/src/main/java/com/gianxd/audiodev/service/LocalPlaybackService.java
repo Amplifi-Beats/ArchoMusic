@@ -41,7 +41,7 @@ import static com.gianxd.audiodev.activity.LocalStreamActivity.seekbarDuration;
 import static com.gianxd.audiodev.activity.LocalStreamActivity.songArtist;
 import static com.gianxd.audiodev.activity.LocalStreamActivity.songTitle;
 
-public class PlaybackService extends Service {
+public class LocalPlaybackService extends Service {
 
 	public MediaPlayer mp;
 	private final IBinder musicBind = new MusicBinder();
@@ -59,8 +59,8 @@ public class PlaybackService extends Service {
 	}
 	
 	public class MusicBinder extends Binder {
-		public PlaybackService getService() {
-			return PlaybackService.this;
+		public LocalPlaybackService getService() {
+			return LocalPlaybackService.this;
 		}
 	}
 	
