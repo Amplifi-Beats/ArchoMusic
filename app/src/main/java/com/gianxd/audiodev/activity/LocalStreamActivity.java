@@ -42,6 +42,7 @@ import com.gauravk.audiovisualizer.visualizer.BarVisualizer;
 import com.gianxd.audiodev.R;
 import com.gianxd.audiodev.service.PlaybackService;
 import com.gianxd.audiodev.service.PlaybackService.MusicBinder;
+import com.gianxd.audiodev.util.ImageUtil;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.android.material.tabs.TabLayout;
@@ -1036,56 +1037,21 @@ public class LocalStreamActivity extends  AppCompatActivity  {
 			ImageView albumArt = (ImageView) view.findViewById(R.id.albumArt);
 			TextView songTitle = (TextView) view.findViewById(R.id.songTitle);
 			TextView songArtist = (TextView) view.findViewById(R.id.songArtist);
-			
 			RecyclerView.LayoutParams recyclerLayoutParams = new RecyclerView.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
 			view.setLayoutParams(recyclerLayoutParams);
 			if (!data.get((int)position).containsKey("isEmpty")) {
+				Glide.with(getApplicationContext()).asBitmap().load(ImageUtil.getAlbumArt(data.get(position).get("songData").toString(), getResources())).into(albumArt);
 				songTitle.setText(data.get((int)position).get("songTitle").toString());
 				songArtist.setText(data.get((int)position).get("songArtist").toString());
 				main.setVisibility(View.VISIBLE);
 				emptyMsg.setVisibility(View.GONE);
-				try {
-					MediaMetadataRetriever artRetriever = new MediaMetadataRetriever();
-					String decodedData = "";
-					if (!data.get((int)position).get("songData").toString().startsWith("/")) {
-							try {
-									decodedData = new String(android.util.Base64.decode(musicData.get((int)position).get("songData").toString(), android.util.Base64.DEFAULT), "UTF-8");
-									artRetriever.setDataSource(decodedData);
-							} catch (Exception e) {
-									artRetriever.setDataSource(data.get((int)position).get("songData").toString());
-							}
-					} else {
-						    artRetriever.setDataSource(data.get((int)position).get("songData").toString());
-					}
-					byte[] album_art = artRetriever.getEmbeddedPicture(); 
-					if( album_art != null ){ 
-						Bitmap bitmapArt = BitmapFactory.decodeByteArray(album_art, 0, album_art.length); 
-						Glide.with(getApplicationContext()).asBitmap().load(bitmapArt).into(albumArt);
-					} else { 
-						Glide.with(getApplicationContext()).asBitmap().load(R.drawable.ic_media_album_art).into(albumArt);
-					}
-				} catch (Exception e) {
-					// applying image art ok die
-					Glide.with(getApplicationContext()).asBitmap().load(R.drawable.ic_media_album_art).into(albumArt);
-				}
-				
 				main.setOnClickListener(new View.OnClickListener() {
 					@Override
 					public void onClick(View _view) {
 						android.graphics.drawable.RippleDrawable rippleButton = new android.graphics.drawable.RippleDrawable(new android.content.res.ColorStateList(new int[][]{new int[]{}}, new int[]{ Color.parseColor("#BDBDBD") }), new android.graphics.drawable.ColorDrawable(Color.parseColor("#FFFFFF")), null);
 						main.setBackground(rippleButton);
 						if (!(position == Double.parseDouble(savedData.getString("savedSongPosition", "")))) {
-							String decodedData = "";
-							if (!data.get((int)position).get("songData").toString().startsWith("/")) {
-									try {
-											decodedData = new String(android.util.Base64.decode(musicData.get((int)position).get("songData").toString(), android.util.Base64.DEFAULT), "UTF-8");
-									} catch (Exception e) {
-											decodedData = data.get((int)position).get("songData").toString();
-									}
-							} else {
-								    decodedData = data.get((int)position).get("songData").toString();
-							}
-							if (new java.io.File(decodedData).exists()) {
+							if (new java.io.File(data.get(position).get("songData").toString()).exists()) {
 								try {
 									playbackSrv.createLocalStream(position);
 									playPause.performClick();
@@ -1093,8 +1059,7 @@ public class LocalStreamActivity extends  AppCompatActivity  {
 									com.gianxd.musicdev.MusicDevUtil.showMessage(getApplicationContext(), "Failed to play selected song. Skipping");
 									skipForward.performClick();
 								}
-							}
-							else {
+							} else {
 								com.gianxd.musicdev.MusicDevUtil.showMessage(getApplicationContext(), "Selected song does not exist.");
 							}
 						}
@@ -1105,7 +1070,7 @@ public class LocalStreamActivity extends  AppCompatActivity  {
 				});
 				more.setOnClickListener(new View.OnClickListener() {
 					@Override
-					public void onClick(View _view) {
+					public void onClick(View view) {
 						android.graphics.drawable.RippleDrawable rippleButton = new android.graphics.drawable.RippleDrawable(new android.content.res.ColorStateList(new int[][]{new int[]{}}, new int[]{ Color.parseColor("#BDBDBD") }), null, null);
 						more.setBackground(rippleButton);
 						com.gianxd.musicdev.MusicDevUtil.showMessage(getApplicationContext(), "Song options under construction.");
