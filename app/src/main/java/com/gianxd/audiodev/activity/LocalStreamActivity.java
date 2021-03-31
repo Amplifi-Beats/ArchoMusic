@@ -1031,6 +1031,7 @@ public class LocalStreamActivity extends  AppCompatActivity  {
 		@Override
 		public void onBindViewHolder(ViewHolder holder, int position) {
 			View view = holder.itemView;
+			String decodedData = "";
 			LinearLayout main = (LinearLayout) view.findViewById(R.id.main);
 			TextView emptyMsg = (TextView) view.findViewById(R.id.emptyMsg);
 			ImageView more = (ImageView) view.findViewById(R.id.more);
@@ -1039,19 +1040,30 @@ public class LocalStreamActivity extends  AppCompatActivity  {
 			TextView songArtist = (TextView) view.findViewById(R.id.songArtist);
 			RecyclerView.LayoutParams recyclerLayoutParams = new RecyclerView.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
 			view.setLayoutParams(recyclerLayoutParams);
+			if (!data.get(position).get("songData").toString().startsWith("/")) {
+				try {
+					decodedData = new String(android.util.Base64.decode(data.get(position).get("songData").toString(), android.util.Base64.DEFAULT), "UTF-8");
+				} catch (Exception e) {
+					decodedData = data.get(position).get("songData").toString();
+				}
+			} else {
+				// I'm lazy to add a string variable so I set decodedData instead :sus:
+				decodedData = data.get(position).get("songData").toString();
+			}
 			if (!data.get((int)position).containsKey("isEmpty")) {
 				Glide.with(getApplicationContext()).asBitmap().load(ImageUtil.getAlbumArt(data.get(position).get("songData").toString(), getResources())).into(albumArt);
 				songTitle.setText(data.get((int)position).get("songTitle").toString());
 				songArtist.setText(data.get((int)position).get("songArtist").toString());
 				main.setVisibility(View.VISIBLE);
 				emptyMsg.setVisibility(View.GONE);
+				String finalDecodedData = decodedData;
 				main.setOnClickListener(new View.OnClickListener() {
 					@Override
-					public void onClick(View _view) {
+					public void onClick(View view) {
 						android.graphics.drawable.RippleDrawable rippleButton = new android.graphics.drawable.RippleDrawable(new android.content.res.ColorStateList(new int[][]{new int[]{}}, new int[]{ Color.parseColor("#BDBDBD") }), new android.graphics.drawable.ColorDrawable(Color.parseColor("#FFFFFF")), null);
 						main.setBackground(rippleButton);
 						if (!(position == Double.parseDouble(savedData.getString("savedSongPosition", "")))) {
-							if (new java.io.File(data.get(position).get("songData").toString()).exists()) {
+							if (new java.io.File(finalDecodedData).exists()) {
 								try {
 									playbackSrv.createLocalStream(position);
 									playPause.performClick();
