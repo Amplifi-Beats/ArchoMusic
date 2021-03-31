@@ -8,11 +8,7 @@ import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.graphics.drawable.BitmapDrawable;
 import android.media.AudioManager;
-import android.media.MediaMetadataRetriever;
 import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Binder;
@@ -24,6 +20,7 @@ import androidx.core.app.NotificationCompat;
 import com.bumptech.glide.Glide;
 import com.gianxd.audiodev.R;
 import com.gianxd.audiodev.activity.LocalStreamActivity;
+import com.gianxd.audiodev.util.ImageUtil;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
@@ -31,9 +28,20 @@ import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-public class PlaybackService extends Service {
+import static com.gianxd.audiodev.activity.LocalStreamActivity.albumArt;
+import static com.gianxd.audiodev.activity.LocalStreamActivity.currentDuration;
+import static com.gianxd.audiodev.activity.LocalStreamActivity.maxDuration;
+import static com.gianxd.audiodev.activity.LocalStreamActivity.miniplayerAlbumArt;
+import static com.gianxd.audiodev.activity.LocalStreamActivity.miniplayerPlayPause;
+import static com.gianxd.audiodev.activity.LocalStreamActivity.miniplayerSeekbar;
+import static com.gianxd.audiodev.activity.LocalStreamActivity.miniplayerSongArtist;
+import static com.gianxd.audiodev.activity.LocalStreamActivity.miniplayerSongTitle;
+import static com.gianxd.audiodev.activity.LocalStreamActivity.playPause;
+import static com.gianxd.audiodev.activity.LocalStreamActivity.seekbarDuration;
+import static com.gianxd.audiodev.activity.LocalStreamActivity.songArtist;
+import static com.gianxd.audiodev.activity.LocalStreamActivity.songTitle;
 
-	/* I was lazy to fix these stupid errors so I moved the class here. If you want to fix it, please download the Github repo and then make a directory and put this class there */
+public class PlaybackService extends Service {
 
 	public MediaPlayer mp;
 	private final IBinder musicBind = new MusicBinder();
@@ -71,7 +79,7 @@ public class PlaybackService extends Service {
 		if (mp != null) {
 			audioManager.abandonAudioFocus(audioChangeListener);
 			if (isPlaying()) {
-				LocalStreamActivity.playPause.performClick();
+				playPause.performClick();
 			}
 			mp.reset();
 			mp.release();
@@ -88,10 +96,11 @@ public class PlaybackService extends Service {
 	}
 	
 	public void createLocalStream(int position){
+		String decodedData = "";
        if (mp != null) {
 		   audioManager.abandonAudioFocus(audioChangeListener);
 	       if (isPlaying()) {
-			   LocalStreamActivity.playPause.performClick();
+			   playPause.performClick();
 	       }
 	       mp.reset();
 	       mp.release();
@@ -99,32 +108,31 @@ public class PlaybackService extends Service {
 	   if (audioManager == null) {
 		   audioManager = ((AudioManager)getApplicationContext().getSystemService(Context.AUDIO_SERVICE));
 	   }
-	   String decodedData = "";
        savedData.edit().putString("savedSongPosition", String.valueOf(position)).apply();
 	    if (!musicData.get(position).get("songData").toString().startsWith("/")) {
 			try {
 				decodedData = new String(android.util.Base64.decode(musicData.get(position).get("songData").toString(), android.util.Base64.DEFAULT), "UTF-8");
 			} catch (Exception e) {
-			    /* do nothing if it crashes. :cheems: */
+			    // DO NOTHING
 			}
-			mp = MediaPlayer.create(getApplicationContext(), Uri.fromFile(new java.io.File(decodedData)));
 		} else {
-		    mp = MediaPlayer.create(getApplicationContext(), Uri.fromFile(new java.io.File(musicData.get(position).get("songData").toString())));
+	    	decodedData = musicData.get(position).get("songData").toString();
 		}
+		mp = MediaPlayer.create(getApplicationContext(), Uri.fromFile(new java.io.File(decodedData)));
 		mp.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
 			@Override
 			public void onCompletion(MediaPlayer mp) {
-				LocalStreamActivity.playPause.setImageResource(R.drawable.ic_media_play);
-		        LocalStreamActivity.miniplayerPlayPause.setImageResource(R.drawable.ic_media_play);
+				playPause.setImageResource(R.drawable.ic_media_play);
+		        miniplayerPlayPause.setImageResource(R.drawable.ic_media_play);
 				try {
 					if (position + 1 < musicData.size()) {
 						createLocalStream(position + 1);
-						LocalStreamActivity.playPause.performClick();
+						playPause.performClick();
 					}
 				} catch (Exception e) {
 				    if (position + 1 < musicData.size()) {
 						createLocalStream(position + 1);
-						LocalStreamActivity.playPause.performClick();
+						playPause.performClick();
 					}
 			    }
 			}
@@ -135,89 +143,57 @@ public class PlaybackService extends Service {
 				switch (focusChange) {
 				case AudioManager.AUDIOFOCUS_LOSS:
 					if (isPlaying()) {
-						LocalStreamActivity.playPause.performClick();
+						playPause.performClick();
 					}
 					break;
 				}
 			}
 		};
 		audioManager.requestAudioFocus(audioChangeListener, AudioManager.STREAM_MUSIC, AudioManager.AUDIOFOCUS_GAIN);
-       try {
-	       MediaMetadataRetriever artRetriever = new MediaMetadataRetriever(); 
-	       if (!musicData.get(position).get("songData").toString().startsWith("/")) {
-			   artRetriever.setDataSource(decodedData);
-		   } else {
-		       artRetriever.setDataSource(musicData.get(position).get("songData").toString());
-		   }
-	       byte[] album_art = artRetriever.getEmbeddedPicture(); 
-	       if( album_art != null ){
-		       Bitmap bitmapArt = BitmapFactory.decodeByteArray(album_art, 0, album_art.length); 
-		       Glide.with(getApplicationContext()).asBitmap().load(bitmapArt).into(LocalStreamActivity.albumArt);
-		       Glide.with(getApplicationContext()).asBitmap().load(bitmapArt).into(LocalStreamActivity.miniplayerAlbumArt);
-	       } else { 
-		       Glide.with(getApplicationContext()).asBitmap().load(R.drawable.ic_media_album_art).into(LocalStreamActivity.albumArt);
-		       Glide.with(getApplicationContext()).asBitmap().load(R.drawable.ic_media_album_art).into(LocalStreamActivity.miniplayerAlbumArt);
-	       }
-       } catch (Exception e) {
-		   Glide.with(getApplicationContext()).asBitmap().load(R.drawable.ic_media_album_art).into(LocalStreamActivity.albumArt);
-		   Glide.with(getApplicationContext()).asBitmap().load(R.drawable.ic_media_album_art).into(LocalStreamActivity.miniplayerAlbumArt);
-       }
-       LocalStreamActivity.songTitle.setText(musicData.get(position).get("songTitle").toString());
-       LocalStreamActivity.songArtist.setText(musicData.get(position).get("songArtist").toString());
-       LocalStreamActivity.miniplayerSongTitle.setText(musicData.get(position).get("songTitle").toString());
-       LocalStreamActivity.miniplayerSongArtist.setText(musicData.get(position).get("songArtist").toString());
-       LocalStreamActivity.miniplayerSeekbar.setMax(getMaxDuration());
-       LocalStreamActivity.miniplayerSeekbar.setProgress(getCurrentPosition());
-       LocalStreamActivity.maxDuration.setText(String.valueOf((long)((getMaxDuration() / 1000) / 60)).concat(":".concat(new DecimalFormat("00").format((getMaxDuration() / 1000) % 60))));
-       LocalStreamActivity.currentDuration.setText(String.valueOf((long)((getCurrentPosition() / 1000) / 60)).concat(":".concat(new DecimalFormat("00").format((getCurrentPosition() / 1000) % 60))));
-       LocalStreamActivity.seekbarDuration.setMax(getMaxDuration());
-       LocalStreamActivity.seekbarDuration.setProgress(getCurrentPosition());
-	   Intent notIntent = new Intent(this, LocalStreamActivity.class);
-	   notIntent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
-	   PendingIntent pendInt = PendingIntent.getActivity(this, 0,
-	   notIntent, PendingIntent.FLAG_UPDATE_CURRENT);
-	   if (Build.VERSION.SDK_INT < 28 ) {
-		   Notification notification = new Notification.Builder(getApplicationContext())
-				.setContentTitle(musicData.get(position).get("songTitle").toString())
-				.setContentText("by ".concat(musicData.get(position).get("songArtist").toString()))
-			    .setSmallIcon(R.mipmap.ic_launcher)
-				.setContentIntent(pendInt)
-				.build();
-		   startForeground(NOTIFY_ID, notification);
-	   } else {
-	       NotificationCompat.Builder notificationBuilder = new NotificationCompat.Builder(getApplicationContext(), "libaudiodev");
-		   notificationChannel = new NotificationChannel("libaudiodev", "AudioSession", NotificationManager.IMPORTANCE_LOW);
-		   notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
-           assert notificationManager != null;
-		   assert notificationChannel != null;
-           notificationManager.createNotificationChannel(notificationChannel);
-		   notificationBuilder.setNumber(0);
-	       if (!musicData.get(position).get("songData").toString().startsWith("/")) {
-			   Notification notification = notificationBuilder.setOngoing(true)
-		       .setContentIntent(pendInt)
-               .setPriority(NotificationManager.IMPORTANCE_LOW)
-		       .setNumber(0)
-               .setCategory(Notification.CATEGORY_SERVICE)
-			   .setSmallIcon(R.mipmap.ic_launcher)
-			   .setLargeIcon(getAlbumArt(decodedData))
-			   .setContentText("by ".concat(musicData.get(position).get("songArtist").toString()))
-               .setContentTitle(musicData.get(position).get("songTitle").toString())
-			   .build();
-			   startForeground(NOTIFY_ID, notification);
-		   } else {
-		       Notification notification = notificationBuilder.setOngoing(true)
-		       .setContentIntent(pendInt)
-               .setPriority(NotificationManager.IMPORTANCE_LOW)
-		       .setNumber(0)
-               .setCategory(Notification.CATEGORY_SERVICE)
-			   .setSmallIcon(R.mipmap.ic_launcher)
-			   .setLargeIcon(getAlbumArt(musicData.get(position).get("songData").toString()))
-			   .setContentText("by ".concat(musicData.get(position).get("songArtist").toString()))
-               .setContentTitle(musicData.get(position).get("songTitle").toString())
-			   .build();
-			   startForeground(NOTIFY_ID, notification);
-	       }
-	   }
+		Glide.with(getApplicationContext()).asBitmap().load(ImageUtil.getAlbumArt(musicData.get(position).get("songData").toString(), getResources())).into(albumArt);
+		Glide.with(getApplicationContext()).asBitmap().load(ImageUtil.getAlbumArt(musicData.get(position).get("songData").toString(), getResources())).into(miniplayerAlbumArt);
+        songTitle.setText(musicData.get(position).get("songTitle").toString());
+        songArtist.setText(musicData.get(position).get("songArtist").toString());
+        miniplayerSongTitle.setText(musicData.get(position).get("songTitle").toString());
+        miniplayerSongArtist.setText(musicData.get(position).get("songArtist").toString());
+        miniplayerSeekbar.setMax(getMaxDuration());
+        miniplayerSeekbar.setProgress(getCurrentPosition());
+        maxDuration.setText(String.valueOf((long)((getMaxDuration() / 1000) / 60)).concat(":".concat(new DecimalFormat("00").format((getMaxDuration() / 1000) % 60))));
+        currentDuration.setText(String.valueOf((long)((getCurrentPosition() / 1000) / 60)).concat(":".concat(new DecimalFormat("00").format((getCurrentPosition() / 1000) % 60))));
+        seekbarDuration.setMax(getMaxDuration());
+        seekbarDuration.setProgress(getCurrentPosition());
+	    Intent notIntent = new Intent(this, LocalStreamActivity.class);
+	    notIntent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
+	    PendingIntent pendInt = PendingIntent.getActivity(this, 0,
+	    notIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+	    if (Build.VERSION.SDK_INT < 28 ) {
+		    Notification notification = new Notification.Builder(getApplicationContext())
+				 .setContentTitle(musicData.get(position).get("songTitle").toString())
+				 .setContentText("by ".concat(musicData.get(position).get("songArtist").toString()))
+			     .setSmallIcon(R.mipmap.ic_launcher)
+				 .setContentIntent(pendInt)
+				. build();
+		    startForeground(NOTIFY_ID, notification);
+	    } else {
+	        NotificationCompat.Builder notificationBuilder = new NotificationCompat.Builder(getApplicationContext(), "libaudiodev");
+		    notificationChannel = new NotificationChannel("libaudiodev", "AudioSession", NotificationManager.IMPORTANCE_LOW);
+		    notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+            assert notificationManager != null;
+		    assert notificationChannel != null;
+            notificationManager.createNotificationChannel(notificationChannel);
+		    notificationBuilder.setNumber(0);
+		    Notification notification = notificationBuilder.setOngoing(true)
+				    .setContentIntent(pendInt)
+				    .setPriority(NotificationManager.IMPORTANCE_LOW)
+				    .setNumber(0)
+				    .setCategory(Notification.CATEGORY_SERVICE)
+				    .setSmallIcon(R.mipmap.ic_launcher)
+				    .setLargeIcon(ImageUtil.getAlbumArt(decodedData, getResources()))
+				    .setContentText("by ".concat(musicData.get(position).get("songArtist").toString()))
+				    .setContentTitle(musicData.get(position).get("songTitle").toString())
+				    .build();
+		    startForeground(NOTIFY_ID, notification);
+	    }
 		
 	}
 	
@@ -232,19 +208,6 @@ public class PlaybackService extends Service {
 	
 	public int getMaxDuration(){
 		return mp.getDuration();
-	}
-	
-	public Bitmap getAlbumArt(String path) {
-		Bitmap bitmapArt;
-		MediaMetadataRetriever artRetriever = new MediaMetadataRetriever(); 
-        artRetriever.setDataSource(path); 
-        byte[] album_art = artRetriever.getEmbeddedPicture(); 
-        if( album_art != null ){
-            bitmapArt = BitmapFactory.decodeByteArray(album_art, 0, album_art.length);
-        } else {
-			bitmapArt = ((BitmapDrawable)getResources().getDrawable(R.drawable.ic_media_album_art)).getBitmap();
-	    }
-		return bitmapArt;
 	}
 	
 	public boolean isPlaying(){
