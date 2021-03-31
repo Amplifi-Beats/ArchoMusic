@@ -1,5 +1,8 @@
 package com.gianxd.audiodev.util;
 
+import android.content.Context;
+import android.widget.Toast;
+
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.io.Writer;
@@ -20,6 +23,9 @@ public class ApplicationUtil {
         printWriter.close();
 
         return stacktraceAsString;
+    }
+    public static void toast(Context context, String toastMsg, int toastLength) {
+        Toast.makeText(context, toastMsg, toastLength).show();
     }
 
 }
