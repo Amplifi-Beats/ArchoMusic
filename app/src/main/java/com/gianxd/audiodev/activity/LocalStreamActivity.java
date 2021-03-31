@@ -27,6 +27,7 @@ import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.SeekBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
@@ -39,7 +40,9 @@ import com.gauravk.audiovisualizer.visualizer.BarVisualizer;
 import com.gianxd.audiodev.R;
 import com.gianxd.audiodev.service.LocalPlaybackService;
 import com.gianxd.audiodev.service.LocalPlaybackService.MusicBinder;
+import com.gianxd.audiodev.util.ApplicationUtil;
 import com.gianxd.audiodev.util.ImageUtil;
+import com.gianxd.audiodev.util.ListUtil;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.android.material.tabs.TabLayout;
@@ -245,7 +248,7 @@ public class LocalStreamActivity extends  AppCompatActivity  {
 				LinearLayout visualizer = dialogLayout.findViewById(R.id.visualizer);
 				title.setTypeface(Typeface.createFromAsset(getAssets(),"fonts/roboto_medium.ttf"), Typeface.NORMAL);
 				if (savedData.contains("savedProfileData")) {
-						HashMap<String, Object> profileData = new Gson().fromJson(savedData.getString("savedProfileData", ""), new TypeToken<HashMap<String, Object>>(){}.getType());
+						HashMap<String, Object> profileData = ListUtil.getHashMapFromSharedJSON(savedData, "savedProfileData");
 						if (profileData.containsKey("profileName")) {
 								profile_name.setText(profileData.get("profileName").toString());
 						    }
@@ -275,7 +278,7 @@ public class LocalStreamActivity extends  AppCompatActivity  {
 						        profile_icon.setOnClickListener(new View.OnClickListener() {
 								        @Override
 								        public void onClick(View view) {
-										        com.gianxd.musicdev.MusicDevUtil.showMessage(getApplicationContext(), "Profile picture under construction.");
+										        ApplicationUtil.toast(getApplicationContext(), "Profile picture under construction.", Toast.LENGTH_SHORT);
 									        }
 							        });
 						        create.setOnClickListener(new View.OnClickListener() {
@@ -290,7 +293,7 @@ public class LocalStreamActivity extends  AppCompatActivity  {
 													            String profileName = profile_name.getText().toString();
 													            tempProfileData.put("profileName", profileName);
 													            savedData.edit().putString("savedProfileData", new Gson().toJson(tempProfileData)).apply();
-														        com.gianxd.musicdev.MusicDevUtil.showMessage(getApplicationContext(), "Renamed profile sucessfully.");
+														        ApplicationUtil.toast(getApplicationContext(), "Renamed profile sucessfully.", Toast.LENGTH_SHORT);
 														        tabNavigation.getTabAt(0).select();
 													            renameProfile.dismiss();
 														        menuDialog.dismiss();
@@ -299,7 +302,7 @@ public class LocalStreamActivity extends  AppCompatActivity  {
 											           profile_name.setError("Profile name should not be blank.");
 											        }
 									        }
-							        });
+						        });
 						        Double TopLeft = 20.0;
 						        Double TopRight = 20.0;
 						        Double BottomRight = 0.0;
@@ -326,7 +329,7 @@ public class LocalStreamActivity extends  AppCompatActivity  {
 						public void onClick(View view) {
 								android.graphics.drawable.RippleDrawable rippleButton = new android.graphics.drawable.RippleDrawable(new android.content.res.ColorStateList(new int[][]{new int[]{}}, new int[]{ Color.parseColor("#BDBDBD") }), new android.graphics.drawable.ColorDrawable(Color.parseColor("#FFFFFF")), null);
 						        view.setBackground(rippleButton);
-								com.gianxd.musicdev.MusicDevUtil.showMessage(getApplicationContext(), "Feature under construction.");
+								ApplicationUtil.toast(getApplicationContext(), "Feature under construction.", Toast.LENGTH_SHORT);
 						}
 				});
 				lyrics.setOnClickListener(new View.OnClickListener() {
@@ -380,7 +383,7 @@ public class LocalStreamActivity extends  AppCompatActivity  {
 						public void onClick(View view) {
 								android.graphics.drawable.RippleDrawable rippleButton = new android.graphics.drawable.RippleDrawable(new android.content.res.ColorStateList(new int[][]{new int[]{}}, new int[]{ Color.parseColor("#BDBDBD") }), new android.graphics.drawable.ColorDrawable(Color.parseColor("#FFFFFF")), null);
 						        view.setBackground(rippleButton);
-								com.gianxd.musicdev.MusicDevUtil.showMessage(getApplicationContext(), "Feature under construction.");
+								ApplicationUtil.toast(getApplicationContext(), "Feature under construction.", Toast.LENGTH_SHORT);
 						}
 				});
 				visualizer.setOnClickListener(new View.OnClickListener() {
@@ -409,7 +412,7 @@ public class LocalStreamActivity extends  AppCompatActivity  {
 												visualizer.setAudioSessionId(playbackSrv.mp.getAudioSessionId());
 										}
 										if (!playbackSrv.isPlaying()) {
-												com.gianxd.musicdev.MusicDevUtil.showMessage(getApplicationContext(), "Visualizer not visible, please resume/play the song.");
+												ApplicationUtil.toast(getApplicationContext(), "Visualizer not visible, please resume/play the song.", Toast.LENGTH_LONG);
 										}
 								}
 								Double TopLeft = 20.0;
@@ -538,7 +541,7 @@ public class LocalStreamActivity extends  AppCompatActivity  {
 			public void onRefresh() {
 				if (savedData.contains("savedMusicData")) {
 					musicData.clear();
-					musicData = new Gson().fromJson(savedData.getString("savedMusicData", ""), new TypeToken<ArrayList<HashMap<String, Object>>>(){}.getType());
+					musicData = ListUtil.getArrayListFromSharedJSON(savedData, "savedMusicData");
 					if (musicData.isEmpty()) {
 						{
 							HashMap<String, Object> _item = new HashMap<>();
@@ -549,12 +552,12 @@ public class LocalStreamActivity extends  AppCompatActivity  {
 					}
 					songList.setAdapter(new SongListAdapter(musicData));
 					if (savedData.contains("savedSongPosition")) {
-						songList.smoothScrollToPosition((int)Double.parseDouble(savedData.getString("savedSongPosition", "")));
+						songList.scrollToPosition((int)Double.parseDouble(savedData.getString("savedSongPosition", "")));
 					}
 					listRefresh.setRefreshing(false);
 				}
 				else {
-					com.gianxd.musicdev.MusicDevUtil.showMessage(getApplicationContext(), "Library data failed to load. ");
+					ApplicationUtil.toast(getApplicationContext(), "Library data failed to load.", Toast.LENGTH_LONG);
 					{
 						HashMap<String, Object> _item = new HashMap<>();
 						_item.put("isEmpty", "yes");
@@ -698,7 +701,7 @@ public class LocalStreamActivity extends  AppCompatActivity  {
 		_startupUI();
 		if (savedData.contains("savedMusicData")) {
 			musicData.clear();
-			musicData = new Gson().fromJson(savedData.getString("savedMusicData", ""), new TypeToken<ArrayList<HashMap<String, Object>>>(){}.getType());
+			musicData = ListUtil.getArrayListFromSharedJSON(savedData, "savedMusicData");
 			if (musicData.isEmpty()) {
 				{
 					HashMap<String, Object> _item = new HashMap<>();
@@ -710,7 +713,7 @@ public class LocalStreamActivity extends  AppCompatActivity  {
 			songList.setAdapter(new SongListAdapter(musicData));
 		}
 		else {
-			com.gianxd.musicdev.MusicDevUtil.showMessage(getApplicationContext(), "Library data failed to load. ");
+			ApplicationUtil.toast(getApplicationContext(), "Library data failed to load.", Toast.LENGTH_LONG);
 			{
 				HashMap<String, Object> _item = new HashMap<>();
 				_item.put("isEmpty", "yes");
@@ -738,7 +741,7 @@ public class LocalStreamActivity extends  AppCompatActivity  {
 										public void onClick(View view) {
 										        android.graphics.drawable.RippleDrawable rippleButton = new android.graphics.drawable.RippleDrawable(new android.content.res.ColorStateList(new int[][]{new int[]{}}, new int[]{ Color.parseColor("#BDBDBD") }), new android.graphics.drawable.ColorDrawable(Color.parseColor("#03A9F4")), null);
 							                    view.setBackground(rippleButton);
-												HashMap<String, Object> profileData = new Gson().fromJson(savedData.getString("savedProfileData", ""), new TypeToken<HashMap<String, Object>>(){}.getType());
+												HashMap<String, Object> profileData = ListUtil.getHashMapFromSharedJSON(savedData, "savedProfileData");
 												profileData.remove("profileErrorTrace");
 												savedData.edit().putString("savedProfileData", new Gson().toJson(profileData)).apply();
 												errorDialog.dismiss();
@@ -806,7 +809,6 @@ public class LocalStreamActivity extends  AppCompatActivity  {
 						savedData.edit().putString("savedSongPosition", "0").apply();
 						if (Double.parseDouble(savedData.getString("savedSongPosition", "")) < musicData.size()) {
 							playbackSrv.createLocalStream((int)Double.parseDouble(savedData.getString("savedSongPosition", "")));
-
 						}
 					}
 				}
@@ -864,7 +866,7 @@ public class LocalStreamActivity extends  AppCompatActivity  {
 		super.onResume();
 		if (savedData.contains("savedMusicData")) {
 			musicData.clear();
-			musicData = new Gson().fromJson(savedData.getString("savedMusicData", ""), new TypeToken<ArrayList<HashMap<String, Object>>>(){}.getType());
+			musicData = ListUtil.getArrayListFromSharedJSON(savedData, "savedMusicData");
 			if (musicData.isEmpty()) {
 				{
 					HashMap<String, Object> _item = new HashMap<>();
@@ -875,11 +877,11 @@ public class LocalStreamActivity extends  AppCompatActivity  {
 			}
 			songList.setAdapter(new SongListAdapter(musicData));
 			if (savedData.contains("savedSongPosition")) {
-				songList.smoothScrollToPosition((int)Double.parseDouble(savedData.getString("savedSongPosition", "")));
+				songList.scrollToPosition((int)Double.parseDouble(savedData.getString("savedSongPosition", "")));
 			}
 		}
 		else {
-			com.gianxd.musicdev.MusicDevUtil.showMessage(getApplicationContext(), "Library data failed to load. ");
+			ApplicationUtil.toast(getApplicationContext(), "Library data failed to load.", Toast.LENGTH_LONG);
 			{
 				HashMap<String, Object> _item = new HashMap<>();
 				_item.put("isEmpty", "yes");
@@ -938,28 +940,6 @@ public class LocalStreamActivity extends  AppCompatActivity  {
 		miniplayerSkipNext.setColorFilter(ContextCompat.getColor(getApplicationContext(), R.color.colorPrimary)); 
 		tabNavigation.addTab(tabNavigation.newTab().setIcon(R.drawable.ic_tabnav_library));
 		tabNavigation.addTab(tabNavigation.newTab().setIcon(R.drawable.ic_tabnav_nowplaying));
-		player.setOnTouchListener(new View.OnTouchListener() {
-				@Override
-				public boolean onTouch(View p1, MotionEvent p2){
-						double f = 0;
-						double t = 0;
-						switch(p2.getAction()) {
-							case MotionEvent.ACTION_DOWN:
-								f = p2.getX();
-								break;
-							case MotionEvent.ACTION_UP:
-								t = p2.getX();
-								if (((f - t) < -250)) {
-									tabNavigation.getTabAt(0).select();
-								}
-								if (((t - f) < -250)) {
-									// do nothing
-								}
-								break;
-						}
-						return true;
-						}
-				});
 		listRefresh.setColorSchemeColors(Color.parseColor("#03A9F4"), Color.parseColor("#03A9F4"), Color.parseColor("#03A9F4"));
 		songList.setLayoutManager(new LinearLayoutManager(this));
 		if (savedData.contains("savedNavigationID")) {
@@ -1064,15 +1044,15 @@ public class LocalStreamActivity extends  AppCompatActivity  {
 									playbackSrv.createLocalStream(position);
 									playPause.performClick();
 								} catch (Exception e) {
-									com.gianxd.musicdev.MusicDevUtil.showMessage(getApplicationContext(), "Failed to play selected song. Skipping");
+									ApplicationUtil.toast(getApplicationContext(), "Failed to play selected song. Skipping", Toast.LENGTH_SHORT);
 									skipForward.performClick();
 								}
 							} else {
-								com.gianxd.musicdev.MusicDevUtil.showMessage(getApplicationContext(), "Selected song does not exist.");
+								ApplicationUtil.toast(getApplicationContext(), "Selected song does not exist.", Toast.LENGTH_SHORT);
 							}
 						}
 						else {
-							com.gianxd.musicdev.MusicDevUtil.showMessage(getApplicationContext(), "Selected song is currently playing.");
+							ApplicationUtil.toast(getApplicationContext(), "Selected song is currently playing.", Toast.LENGTH_SHORT);
 						}
 					}
 				});
@@ -1081,7 +1061,7 @@ public class LocalStreamActivity extends  AppCompatActivity  {
 					public void onClick(View view) {
 						android.graphics.drawable.RippleDrawable rippleButton = new android.graphics.drawable.RippleDrawable(new android.content.res.ColorStateList(new int[][]{new int[]{}}, new int[]{ Color.parseColor("#BDBDBD") }), null, null);
 						more.setBackground(rippleButton);
-						com.gianxd.musicdev.MusicDevUtil.showMessage(getApplicationContext(), "Song options under construction.");
+						ApplicationUtil.toast(getApplicationContext(), "Song options under construction.", Toast.LENGTH_SHORT);
 					}
 				});
 			}
