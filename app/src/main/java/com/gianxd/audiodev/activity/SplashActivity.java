@@ -18,12 +18,14 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 
 import com.gianxd.audiodev.R;
+import com.gianxd.audiodev.util.ApplicationUtil;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.gson.Gson;
 
@@ -183,7 +185,7 @@ public class SplashActivity extends AppCompatActivity {
 							profile_icon.setOnClickListener(new View.OnClickListener() {
 									@Override
 									public void onClick(View view) {
-											com.gianxd.musicdev.MusicDevUtil.showMessage(getApplicationContext(), "Profile picture under construction.");
+											ApplicationUtil.toast(getApplicationContext(), "Profile picture under construction.", Toast.LENGTH_SHORT);
 									}
 							});
 							create.setOnClickListener(new View.OnClickListener() {
