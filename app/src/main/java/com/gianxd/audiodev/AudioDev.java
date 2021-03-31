@@ -33,7 +33,12 @@ public class AudioDev extends Application {
 		Thread.setDefaultUncaughtExceptionHandler(new Thread.UncaughtExceptionHandler() {
 			@Override
 			public void uncaughtException(Thread thread, Throwable ex) {
-				HashMap<String, Object> profileData = new Gson().fromJson(savedData.getString("savedProfileData", ""), new TypeToken<HashMap<String, Object>>(){}.getType());
+				HashMap<String, Object> profileData;
+				if (!savedData.contains("savedProfileData")) {
+					profileData = new HashMap<>();
+				} else {
+					profileData = new Gson().fromJson(savedData.getString("savedProfileData", ""), new TypeToken<HashMap<String, Object>>(){}.getType());
+				}
 				profileData.put("profileErrorTrace", getStackTrace(ex));
 				savedData.edit().putString("savedProfileData", new Gson().toJson(profileData)).apply();
 				Intent intent = new Intent(getApplicationContext(), LauncherActivity.class);
