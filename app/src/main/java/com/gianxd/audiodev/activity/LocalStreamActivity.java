@@ -269,10 +269,9 @@ public class LocalStreamActivity extends  AppCompatActivity  {
 								if (savedData.contains("savedProfileData")) {
 								        HashMap<String, Object> profileData = new Gson().fromJson(savedData.getString("savedProfileData", ""), new TypeToken<HashMap<String, Object>>(){}.getType());
 								        if (profileData.containsKey("profileName")) {
-										        profile_name.setText(profileData.get("profileName").toString());
-								            } else {
 											    title.setText("Rename profile");
-										        create.setText("Finish");
+											    create.setText("Finish");
+										        profile_name.setText(profileData.get("profileName").toString());
 										}
 							        }
 						        title.setTypeface(Typeface.createFromAsset(getAssets(),"fonts/roboto_medium.ttf"), Typeface.NORMAL);
@@ -1054,9 +1053,9 @@ public class LocalStreamActivity extends  AppCompatActivity  {
 				Glide.with(getApplicationContext()).asBitmap().load(ImageUtil.getAlbumArt(data.get(position).get("songData").toString(), getResources())).into(albumArt);
 				songTitle.setText(data.get((int)position).get("songTitle").toString());
 				songArtist.setText(data.get((int)position).get("songArtist").toString());
+				String finalDecodedData = decodedData;
 				main.setVisibility(View.VISIBLE);
 				emptyMsg.setVisibility(View.GONE);
-				String finalDecodedData = decodedData;
 				main.setOnClickListener(new View.OnClickListener() {
 					@Override
 					public void onClick(View view) {
