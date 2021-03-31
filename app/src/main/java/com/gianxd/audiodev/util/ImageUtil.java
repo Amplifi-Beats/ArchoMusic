@@ -24,7 +24,7 @@ public class ImageUtil {
         }
         Bitmap bitmapArt;
         MediaMetadataRetriever artRetriever = new MediaMetadataRetriever();
-        artRetriever.setDataSource(path);
+        artRetriever.setDataSource(decodedData);
         byte[] album_art = artRetriever.getEmbeddedPicture();
         if( album_art != null ){
             bitmapArt = BitmapFactory.decodeByteArray(album_art, 0, album_art.length);
