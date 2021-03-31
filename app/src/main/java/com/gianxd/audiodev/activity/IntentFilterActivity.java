@@ -16,6 +16,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.SeekBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.cardview.widget.CardView;
@@ -23,6 +24,8 @@ import androidx.core.content.ContextCompat;
 
 import com.bumptech.glide.Glide;
 import com.gianxd.audiodev.R;
+import com.gianxd.audiodev.util.ApplicationUtil;
+import com.gianxd.audiodev.util.ImageUtil;
 
 import java.text.DecimalFormat;
 import java.util.Timer;
@@ -30,7 +33,7 @@ import java.util.TimerTask;
 
 public class IntentFilterActivity extends  AppCompatActivity  { 
 	
-	private Timer _timer = new Timer();
+	private Timer timer = new Timer();
 	
 	private LinearLayout main;
 	private TextView logoName;
@@ -46,9 +49,10 @@ public class IntentFilterActivity extends  AppCompatActivity  {
 	private TextView maxDuration;
 	
 	private MediaPlayer mp;
-private AudioManager audioManager;
-private AudioManager.OnAudioFocusChangeListener audioChangeListener;
-	private TimerTask timer;
+    private AudioManager audioManager;
+    private AudioManager.OnAudioFocusChangeListener audioChangeListener;
+	private TimerTask timerTask;
+
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -78,7 +82,7 @@ private AudioManager.OnAudioFocusChangeListener audioChangeListener;
 				if (mp != null) {
 					if (!mp.isPlaying()) {
 						miniplayerPlayPause.setImageResource(R.drawable.ic_media_pause);
-						timer = new TimerTask() {
+						timerTask = new TimerTask() {
 							@Override
 							public void run() {
 								runOnUiThread(new Runnable() {
@@ -90,7 +94,7 @@ private AudioManager.OnAudioFocusChangeListener audioChangeListener;
 								});
 							}
 						};
-						_timer.scheduleAtFixedRate(timer, (int)(0), (int)(1000));
+						timer.scheduleAtFixedRate(timerTask, (int)(0), (int)(1000));
 						mp.start();
 					}
 					else {
@@ -123,14 +127,14 @@ private AudioManager.OnAudioFocusChangeListener audioChangeListener;
 	}
 	
 	private void initializeLogic() {
-		_startupUI();
+		startupUI();
 		setVolumeControlStream(AudioManager.STREAM_MUSIC);
 		try {
 			Intent intent = getIntent();
 			Uri data = intent.getData();
-			_startupMP(data);
+			startupMP(data);
 		} catch (Exception e){
-			com.gianxd.musicdev.MusicDevUtil.showMessage(getApplicationContext(), "Failed to play selected audio file.");
+			ApplicationUtil.toast(getApplicationContext(), "Failed to play selected audio file.", Toast.LENGTH_LONG);
 			finish();
 		}
 	}
@@ -139,7 +143,6 @@ private AudioManager.OnAudioFocusChangeListener audioChangeListener;
 	protected void onActivityResult(int _requestCode, int _resultCode, Intent _data) {
 		super.onActivityResult(_requestCode, _resultCode, _data);
 		switch (_requestCode) {
-
 			default:
 			break;
 		}
@@ -158,13 +161,13 @@ private AudioManager.OnAudioFocusChangeListener audioChangeListener;
 			mp.release();
 		}
 	}
-	public void _startupUI () {
+	public void startupUI () {
 		logoName.setTypeface(Typeface.createFromAsset(getAssets(),"fonts/leixo.ttf"), Typeface.BOLD);
 		miniplayerPlayPause.setColorFilter(ContextCompat.getColor(getApplicationContext(), R.color.colorPrimary));
 	}
 	
 	
-public void _startupMP (Uri data) {
+	public void startupMP (Uri data) {
 		if (mp != null) {
 			audioManager.abandonAudioFocus(audioChangeListener);
 			if (mp.isPlaying()) {
@@ -196,21 +199,7 @@ public void _startupMP (Uri data) {
 				}
 		};
 		audioManager.requestAudioFocus(audioChangeListener, AudioManager.STREAM_MUSIC, AudioManager.AUDIOFOCUS_GAIN);
-		try {
-				MediaMetadataRetriever artRetriever = new MediaMetadataRetriever();
-				artRetriever.setDataSource(data.toString());
-				byte[] album_art = artRetriever.getEmbeddedPicture(); 
-				if( album_art != null ){
-						Bitmap bitmapArt = BitmapFactory.decodeByteArray(album_art, 0, album_art.length); 
-						Glide.with(getApplicationContext())
-.asBitmap().load(bitmapArt).into(miniplayerAlbumArt);
-				} else {
-						Glide.with(getApplicationContext()).asBitmap().load(R.drawable.ic_media_album_art).into(miniplayerAlbumArt);
-				}
-		} catch (Exception e) {
-				// apply default image art if song has no album art
-			    Glide.with(getApplicationContext()).asBitmap().load(R.drawable.ic_media_album_art).into(miniplayerAlbumArt);
-		}
+		Glide.with(getApplicationContext()).asBitmap().load(ImageUtil.getAlbumArt(data.toString(), getResources())).into(miniplayerAlbumArt);
 		miniplayerSongTitle.setText(data.getLastPathSegment());
 		maxDuration.setText(String.valueOf((long)((mp.getDuration() / 1000) / 60)).concat(":".concat(new DecimalFormat("00").format((mp.getDuration() / 1000) % 60))));
 		currentDuration.setText(String.valueOf((long)((mp.getCurrentPosition() / 1000) / 60)).concat(":".concat(new DecimalFormat("00").format((mp.getCurrentPosition() / 1000) % 60))));
