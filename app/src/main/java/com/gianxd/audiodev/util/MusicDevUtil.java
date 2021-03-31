@@ -71,9 +71,7 @@ public class MusicDevUtil {
 		imm.toggleSoftInput(InputMethodManager.SHOW_FORCED, 0);
 	}
 	
-		public static void showMessage(Context _context, String _s) {
-				Toast.makeText(_context, _s, Toast.LENGTH_SHORT).show();
-		}
+
 
 		public static int getLocationX(View _view) {
 				int _location[] = new int[2];
