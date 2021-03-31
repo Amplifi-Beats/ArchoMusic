@@ -1,4 +1,4 @@
-package com.gianxd.audiodev.activity;
+package com.gianxd.audiodev.service;
 
 import android.app.Notification;
 import android.app.NotificationChannel;
@@ -23,6 +23,7 @@ import androidx.core.app.NotificationCompat;
 
 import com.bumptech.glide.Glide;
 import com.gianxd.audiodev.R;
+import com.gianxd.audiodev.activity.LocalStreamActivity;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
@@ -50,7 +51,7 @@ public class PlaybackService extends Service {
 	}
 	
 	public class MusicBinder extends Binder {
-		PlaybackService getService() { 
+		public PlaybackService getService() {
 			return PlaybackService.this;
 		}
 	}
@@ -158,7 +159,6 @@ public class PlaybackService extends Service {
 		       Glide.with(getApplicationContext()).asBitmap().load(R.drawable.ic_media_album_art).into(LocalStreamActivity.miniplayerAlbumArt);
 	       }
        } catch (Exception e) {
-	       /* apply default image art if song has no album art */
 		   Glide.with(getApplicationContext()).asBitmap().load(R.drawable.ic_media_album_art).into(LocalStreamActivity.albumArt);
 		   Glide.with(getApplicationContext()).asBitmap().load(R.drawable.ic_media_album_art).into(LocalStreamActivity.miniplayerAlbumArt);
        }
