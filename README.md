@@ -23,7 +23,9 @@ Currently, the old Archo Music Github repository was deleted. 5.18 update might 
 We insist of creating amazing & beautiful applications.
 
 [Discord](https://discord.gg/x5t9n9fWCV)
+
 [Sketchub (APK only)](https://project.sketchub.in/?id=403)
+
 [GitHub](https://github.com/gianxddddd/ArchoMusic)
 
 amogus
