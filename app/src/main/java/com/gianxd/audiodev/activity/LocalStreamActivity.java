@@ -57,7 +57,7 @@ import java.util.TimerTask;
 
 public class LocalStreamActivity extends  AppCompatActivity  {
 	
-	private Timer _timer = new Timer();
+	private Timer timer = new Timer();
 	private ArrayList<HashMap<String, Object>> musicData = new ArrayList<>();
 
 	private ServiceConnection musicConnection;
@@ -91,7 +91,7 @@ public class LocalStreamActivity extends  AppCompatActivity  {
     public static TextView miniplayerSongArtist;
 	
 	private SharedPreferences savedData;
-	private TimerTask timer;
+	private TimerTask timerTask;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -102,7 +102,7 @@ public class LocalStreamActivity extends  AppCompatActivity  {
 		initializeLogic();
 	}
 	
-	private void initialize(Bundle _savedInstanceState) {
+	private void initialize(Bundle savedInstanceState) {
 		top = (LinearLayout) findViewById(R.id.up);
 		miniplayerSeekbar = (ProgressBar) findViewById(R.id.miniplayerSeekbar);
 		miniplayer = (LinearLayout) findViewById(R.id.miniplayer);
@@ -138,18 +138,25 @@ public class LocalStreamActivity extends  AppCompatActivity  {
 		tabNavigation.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
 			@Override
 			public void onTabSelected(TabLayout.Tab tab) {
+				HashMap<String, Object> profileData;
+				ObjectAnimator fadeAnim = new ObjectAnimator();
+				if (savedData.contains("savedProfileData")) {
+					profileData = ListUtil.getHashMapFromSharedJSON(savedData, "savedProfileData");
+				} else {
+					profileData = new HashMap<>();
+				}
 				if (Build.VERSION.SDK_INT >= 23) {
 					tab.getIcon().setColorFilter(ContextCompat.getColor(getApplicationContext(), R.color.colorPrimary), PorterDuff.Mode.SRC_IN);
 				}
 				else {
 					tab.getIcon().setColorFilter(getResources().getColor(R.color.colorPrimary), PorterDuff.Mode.SRC_IN);
 				}
-				ObjectAnimator fadeAnim = new ObjectAnimator();
 				if (tab.getPosition() == 0) {
 					if (fadeAnim.isRunning()) {
 						fadeAnim.cancel();
 					}
-					savedData.edit().putString("savedNavigationID", "0").apply();
+					profileData.put("savedNavigationIndex", "0");
+					savedData.edit().putString("savedProfileData", ListUtil.setHashMapToSharedJSON(profileData)).apply();
 					player.setVisibility(View.VISIBLE);
 					listRefresh.setVisibility(View.GONE);
 					miniplayer.setVisibility(View.GONE);
@@ -158,7 +165,7 @@ public class LocalStreamActivity extends  AppCompatActivity  {
 					fadeAnim.setPropertyName("alpha");
 					fadeAnim.setFloatValues((float)(1.0d), (float)(0.0d));
 					fadeAnim.start();
-					timer = new TimerTask() {
+					timerTask = new TimerTask() {
 						@Override
 						public void run() {
 							runOnUiThread(new Runnable() {
@@ -176,14 +183,14 @@ public class LocalStreamActivity extends  AppCompatActivity  {
 							});
 						}
 					};
-					_timer.schedule(timer, (int)(250));
-				}
-				else {
+					timer.schedule(timerTask, (int)(250));
+				} else {
 					if (tab.getPosition() == 1) {
 						if (fadeAnim.isRunning()) {
 							fadeAnim.cancel();
 						}
-						savedData.edit().putString("savedNavigationID", "1").apply();
+						profileData.put("savedNavigationIndex", "0");
+						savedData.edit().putString("savedProfileData", ListUtil.setHashMapToSharedJSON(profileData)).apply();
 						player.setVisibility(View.GONE);
 						listRefresh.setVisibility(View.VISIBLE);
 						miniplayer.setVisibility(View.VISIBLE);
@@ -192,7 +199,7 @@ public class LocalStreamActivity extends  AppCompatActivity  {
 						fadeAnim.setPropertyName("alpha");
 						fadeAnim.setFloatValues((float)(1.0d), (float)(0.0d));
 						fadeAnim.start();
-						timer = new TimerTask() {
+						timerTask = new TimerTask() {
 							@Override
 							public void run() {
 								runOnUiThread(new Runnable() {
@@ -210,7 +217,7 @@ public class LocalStreamActivity extends  AppCompatActivity  {
 								});
 							}
 						};
-						_timer.schedule(timer, (int)(250));
+						timer.schedule(timerTask, (int)(250));
 					}
 				}
 			}
@@ -345,8 +352,8 @@ public class LocalStreamActivity extends  AppCompatActivity  {
 						        TextView title = dialogLayout.findViewById(R.id.title);
 						        TextView lyrics = dialogLayout.findViewById(R.id.lyrics);
 						        title.setTypeface(Typeface.createFromAsset(getAssets(),"fonts/roboto_medium.ttf"), Typeface.NORMAL);
-								if (musicData.get((int)Double.parseDouble(savedData.getString("savedSongPosition", "0"))).containsKey("songLyrics")) {
-										if (musicData.get((int)Double.parseDouble(savedData.getString("savedSongPosition", "0"))).get("songLyrics").toString().length() == 0) {
+								if (musicData.get(Integer.parseInt(savedData.getString("savedSongPosition", "0"))).containsKey("songLyrics")) {
+										if (musicData.get(Integer.parseInt(savedData.getString("savedSongPosition", "0"))).get("songLyrics").toString().length() == 0) {
 												// lyrics is added but empty cheems.
 										} else {
 											    lyrics.setText(musicData.get((int)Double.parseDouble(savedData.getString("savedSongPosition", "0"))).get("songLyrics").toString());
@@ -587,7 +594,7 @@ public class LocalStreamActivity extends  AppCompatActivity  {
 					playbackSrv.seek(seekbarDuration.getProgress());
 					miniplayerSeekbar.setProgress((int)seekbarDuration.getProgress());
 					currentDuration.setText(String.valueOf((long)((seekbarDuration.getProgress() / 1000) / 60)).concat(":".concat(new DecimalFormat("00").format((seekbarDuration.getProgress() / 1000) % 60))));
-					savedData.edit().putString("savedSongCurrentPosition", String.valueOf((long)(seekbarDuration.getProgress()))).apply();
+					savedData.edit().putString("savedSongCurrentPosition", String.valueOf((int)(seekbarDuration.getProgress()))).apply();
 				}
 			}
 		});
@@ -597,16 +604,16 @@ public class LocalStreamActivity extends  AppCompatActivity  {
 			public void onClick(View _view) {
 				if (playbackSrv != null) {
 					try {
-						savedData.edit().putString("savedSongPosition", String.valueOf((long)(Double.parseDouble(savedData.getString("savedSongPosition", "")) - 1))).apply();
-						if (Double.parseDouble(savedData.getString("savedSongPosition", "")) < musicData.size()) {
-							playbackSrv.createLocalStream((int)Double.parseDouble(savedData.getString("savedSongPosition", "")));
+						savedData.edit().putString("savedSongPosition", String.valueOf((int)(Integer.parseInt(savedData.getString("savedSongPosition", "")) - 1))).apply();
+						if (Integer.parseInt(savedData.getString("savedSongPosition", "")) < musicData.size()) {
+							playbackSrv.createLocalStream((int)Integer.parseInt(savedData.getString("savedSongPosition", "")));
 
 							playPause.performClick();
 						}
 					} catch (Exception e) {
 						savedData.edit().putString("savedSongPosition", String.valueOf((long)(Double.parseDouble(savedData.getString("savedSongPosition", "")) - 1))).apply();
-						if (Double.parseDouble(savedData.getString("savedSongPosition", "")) < musicData.size()) {
-							playbackSrv.createLocalStream((int)Double.parseDouble(savedData.getString("savedSongPosition", "")));
+						if (Integer.parseInt(savedData.getString("savedSongPosition", "")) < musicData.size()) {
+							playbackSrv.createLocalStream((int)Integer.parseInt(savedData.getString("savedSongPosition", "")));
 							playPause.performClick();
 						}
 					}
@@ -622,7 +629,7 @@ public class LocalStreamActivity extends  AppCompatActivity  {
 						playbackSrv.play();
 						playPause.setImageResource(R.drawable.ic_media_pause);
 						miniplayerPlayPause.setImageResource(R.drawable.ic_media_pause);
-						timer = new TimerTask() {
+						timerTask = new TimerTask() {
 							@Override
 							public void run() {
 								runOnUiThread(new Runnable() {
@@ -631,8 +638,8 @@ public class LocalStreamActivity extends  AppCompatActivity  {
 										try {
 											seekbarDuration.setProgress((int)playbackSrv.getCurrentPosition());
 											miniplayerSeekbar.setProgress((int)playbackSrv.getCurrentPosition());
-											currentDuration.setText(String.valueOf((long)((playbackSrv.getCurrentPosition() / 1000) / 60)).concat(":".concat(new DecimalFormat("00").format((playbackSrv.getCurrentPosition() / 1000) % 60))));
-											savedData.edit().putString("savedSongCurrentPosition", String.valueOf((long)(playbackSrv.getCurrentPosition()))).apply();
+											currentDuration.setText(String.valueOf((int)((playbackSrv.getCurrentPosition() / 1000) / 60)).concat(":".concat(new DecimalFormat("00").format((playbackSrv.getCurrentPosition() / 1000) % 60))));
+											savedData.edit().putString("savedSongCurrentPosition", String.valueOf((int)(playbackSrv.getCurrentPosition()))).apply();
 										} catch (Exception e) {
 											// do nothing 
 										}
@@ -640,7 +647,7 @@ public class LocalStreamActivity extends  AppCompatActivity  {
 								});
 							}
 						};
-						_timer.scheduleAtFixedRate(timer, (int)(0), (int)(1000));
+						timer.scheduleAtFixedRate(timerTask, (int)(0), (int)(1000));
 					}
 					else {
 						playbackSrv.pause();
@@ -659,15 +666,15 @@ public class LocalStreamActivity extends  AppCompatActivity  {
 			public void onClick(View _view) {
 				if (playbackSrv.mp != null) {
 					try {
-						savedData.edit().putString("savedSongPosition", String.valueOf((long)(Double.parseDouble(savedData.getString("savedSongPosition", "")) + 1))).apply();
-						if (Double.parseDouble(savedData.getString("savedSongPosition", "")) < musicData.size()) {
-							playbackSrv.createLocalStream((int)Double.parseDouble(savedData.getString("savedSongPosition", "")));
+						savedData.edit().putString("savedSongPosition", String.valueOf((int)(Integer.parseInt(savedData.getString("savedSongPosition", "")) + 1))).apply();
+						if (Integer.parseInt(savedData.getString("savedSongPosition", "")) < musicData.size()) {
+							playbackSrv.createLocalStream((int)Integer.parseInt(savedData.getString("savedSongPosition", "")));
 							playPause.performClick();
 						}
 					} catch (Exception e) {
-						savedData.edit().putString("savedSongPosition", String.valueOf((long)(Double.parseDouble(savedData.getString("savedSongPosition", "")) + 1))).apply();
-						if (Double.parseDouble(savedData.getString("savedSongPosition", "")) < musicData.size()) {
-							playbackSrv.createLocalStream((int)Double.parseDouble(savedData.getString("savedSongPosition", "")));
+						savedData.edit().putString("savedSongPosition", String.valueOf((int)(Integer.parseInt(savedData.getString("savedSongPosition", "")) + 1))).apply();
+						if (Integer.parseInt(savedData.getString("savedSongPosition", "")) < musicData.size()) {
+							playbackSrv.createLocalStream((int)Integer.parseInt(savedData.getString("savedSongPosition", "")));
 							playPause.performClick();
 						}
 					}
@@ -864,6 +871,7 @@ public class LocalStreamActivity extends  AppCompatActivity  {
 	@Override
 	public void onResume() {
 		super.onResume();
+		HashMap<String, Object> profileData;
 		if (savedData.contains("savedMusicData")) {
 			musicData.clear();
 			musicData = ListUtil.getArrayListFromSharedJSON(savedData, "savedMusicData");
@@ -879,8 +887,7 @@ public class LocalStreamActivity extends  AppCompatActivity  {
 			if (savedData.contains("savedSongPosition")) {
 				songList.scrollToPosition((int)Double.parseDouble(savedData.getString("savedSongPosition", "")));
 			}
-		}
-		else {
+		} else {
 			ApplicationUtil.toast(getApplicationContext(), "Library data failed to load.", Toast.LENGTH_LONG);
 			{
 				HashMap<String, Object> _item = new HashMap<>();
@@ -890,8 +897,13 @@ public class LocalStreamActivity extends  AppCompatActivity  {
 			
 			songList.setAdapter(new SongListAdapter(musicData));
 		}
-		if (savedData.contains("savedNavigationID")) {
-			if (savedData.getString("savedNavigationID", "").equals("0")) {
+		if (savedData.contains("savedProfileData")) {
+			profileData = ListUtil.getHashMapFromSharedJSON(savedData, "savedProfileData");
+		} else {
+			profileData = new HashMap<>();
+		}
+		if (profileData.containsKey("savedNavigationIndex")) {
+			if (profileData.get("savedNavigationIndex").toString().equals("0")) {
 				tabNavigation.getTabAt(0).select();
 				listRefresh.setVisibility(View.VISIBLE);
 				miniplayer.setVisibility(View.VISIBLE);
@@ -899,7 +911,7 @@ public class LocalStreamActivity extends  AppCompatActivity  {
 				miniplayerSeekbar.setVisibility(View.VISIBLE);
 			}
 			else {
-				if (savedData.getString("savedNavigationID", "").equals("1")) {
+				if (profileData.get("savedNavigationIndex").toString().equals("1")) {
 					tabNavigation.getTabAt(1).select();
 					listRefresh.setVisibility(View.GONE);
 					player.setVisibility(View.VISIBLE);
@@ -909,7 +921,8 @@ public class LocalStreamActivity extends  AppCompatActivity  {
 			}
 		}
 		else {
-			savedData.edit().putString("savedNavigationID", "0").apply();
+			profileData.put("savedNavigationIndex", "0");
+			savedData.edit().putString("savedNavigationIndex", ListUtil.setHashMapToSharedJSON(profileData)).apply();
 			tabNavigation.getTabAt(0).select();
 			listRefresh.setVisibility(View.VISIBLE);
 			player.setVisibility(View.GONE);
