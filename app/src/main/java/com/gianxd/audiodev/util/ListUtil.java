@@ -45,4 +45,12 @@ public class ListUtil {
         return new Gson().fromJson(sharedPreferences.getString(key, ""), new TypeToken<HashMap<String, Object>>(){}.getType());
     }
 
+    public static String setArrayListToSharedJSON(ArrayList<HashMap<String, Object>> arrayList) {
+        return new Gson().toJson(arrayList);
+    }
+
+    public static String setHashMapToSharedJSON(HashMap<String, Object> hashMap) {
+        return new Gson().toJson(hashMap);
+    }
+
 }
