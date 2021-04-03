@@ -6,6 +6,7 @@
 Archo Music is an Android music player application written in Java, Created and developed by GianXD.
 
 **What is Archo Music?**
+
 Basically, an Open-sourced android application music player, allowing them to stream both local & live music.
 
 
@@ -21,15 +22,18 @@ Archolizer (Customized-engine)
 
 
 **Branches**
+
 Archo Music has no beta source-code due to lazyiness, but you might like to join our [Discord server](https://discord.gg/x5t9n9fWCV) for beta testing.
 
 master - Main branch, stable development of Archo Music
 
 
 **Download**
+
 Currently, the old Archo Music Github repository was deleted. 5.18 update might come soon. :(
 
 **License**
+
 Archo Music is licensed under BSD 3-Clause License
 ```
 BSD 3-Clause License
