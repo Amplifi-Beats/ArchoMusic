@@ -84,7 +84,7 @@ public class SplashActivity extends AppCompatActivity {
 					public void run() {
 						if (savedData.contains("savedProfileData")) {
 							if (savedData.contains("savedMusicData")) {
-								int randomizer = com.gianxd.musicdev.MusicDevUtil.getRandom((int)(0), (int)(1));
+								int randomizer = com.gianxd.audiodev.util.MusicDevUtil.getRandom((int)(0), (int)(1));
 								if (randomizer == 0) {
 									intent.setClass(getApplicationContext(), LocalStreamActivity.class);
 									logo.setTransitionName("fade");
