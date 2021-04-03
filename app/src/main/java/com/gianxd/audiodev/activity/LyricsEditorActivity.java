@@ -96,7 +96,7 @@ public class LyricsEditorActivity extends  AppCompatActivity  {
 				android.graphics.drawable.RippleDrawable rippleButton = new android.graphics.drawable.RippleDrawable(new android.content.res.ColorStateList(new int[][]{new int[]{}}, new int[]{ Color.parseColor("#BDBDBD") }), null, null);
 				save.setBackground(rippleButton);
 				try {
-					musicData.get((int)Double.parseDouble(getIntent().getStringExtra("songPosition"))).put("songLyrics", lyrics.getText().toString());
+					musicData.get(Integer.parseInt(getIntent().getStringExtra("songPosition"))).put("songLyrics", lyrics.getText().toString());
 					savedData.edit().putString("savedMusicData", new Gson().toJson(musicData)).apply();
 					ApplicationUtil.toast(getApplicationContext(), "Lyrics saved successfully.", Toast.LENGTH_SHORT);
 					finish();
