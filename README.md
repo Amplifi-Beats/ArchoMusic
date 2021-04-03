@@ -11,6 +11,8 @@ Basically, an Open-sourced android application music player, allowing them to st
 
 ## Libraries used
 
+[ArchoStreamLib](https://github.com/gianxddddd/archostreamlib)
+
 Archolizer (Customized-engine)
 
 [Gson](https://github.com/google/gson)
@@ -30,7 +32,7 @@ Currently, the old Archo Music Github repository was deleted. 5.18 update might 
 
 ## About
 
-We insist of creating amazing & beautiful applications.
+Archo Music is pog!
 
 [Discord](https://discord.gg/x5t9n9fWCV)
 
