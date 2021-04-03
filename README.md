@@ -11,7 +11,7 @@ Basically, an Open-sourced android application music player, allowing them to st
 
 ## Libraries used
 
-[ArchoStreamLib](https://github.com/gianxddddd/archostreamlib)
+[ArchoStreamLib](https://github.com/gianxddddd/ArchoStreamLib)
 
 Archolizer (Customized-engine)
 
