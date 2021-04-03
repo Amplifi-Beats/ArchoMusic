@@ -37,8 +37,6 @@ public class AudioDev extends Application {
 				}
 				profileData.put("profileErrorTrace", ApplicationUtil.getStackTrace(ex));
 				savedData.edit().putString("savedProfileData", new Gson().toJson(profileData)).apply();
-				Intent intent = new Intent(getApplicationContext(), LauncherActivity.class);
-				startActivity(intent);
 				uncaughtExceptionHandler.uncaughtException(thread, ex);
 			}
 		});
