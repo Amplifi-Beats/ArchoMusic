@@ -1,4 +1,4 @@
-package com.gianxd.musicdev;
+package com.gianxd.audiodev.util;
 
 import android.content.*;
 import android.view.*;
@@ -15,26 +15,6 @@ import android.view.inputmethod.*;
 public class MusicDevUtil {
 
 
-
-		public static void CropImage(Activity a, String s, int i){
-				try {
-						Intent cropIntent = new Intent("com.android.camera.action.CROP");
-						File f = new File(s);
-						Uri contentUri = Uri.fromFile(f);
-						cropIntent.setDataAndType(contentUri, "image/*");
-						cropIntent.putExtra("crop", "true");
-						cropIntent.putExtra("aspectX", 1);
-						cropIntent.putExtra("aspectY", 1);
-						cropIntent.putExtra("outputX", 280);
-						cropIntent.putExtra("outputY", 280);
-						cropIntent.putExtra("return-data", false);
-						a.startActivityForResult(cropIntent, i);
-				} catch (ActivityNotFoundException anfe) {
-						String errorMessage = "Your device doesn't support the crop action!";
-						Toast toast = Toast.makeText(a, errorMessage, Toast.LENGTH_SHORT);
-						toast.show();
-				}
-		}
 
 		public static boolean isConnected(Context a) {
 				ConnectivityManager connectivityManager = (android.net.ConnectivityManager) 
