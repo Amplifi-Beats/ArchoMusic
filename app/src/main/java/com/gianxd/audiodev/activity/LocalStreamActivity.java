@@ -789,18 +789,23 @@ public class LocalStreamActivity extends  AppCompatActivity  {
 					} else {
 						if (profileData.containsKey("lastSongItemPosition")) {
 							if (!profileData.get("lastSongItemPosition").equals("0")) {
-								/* Exclude this code because it is not finished yet.
 								playbackSrv.createLocalStream(Integer.parseInt(profileData.get("lastSongItemPosition").toString()));
 								if (musicData.get(Integer.parseInt(profileData.get("lastSongItemPosition").toString())).containsKey("lastSongCurrentDuration")) {
-									playbackSrv.seek(Integer.parseInt(profileData.get("lastSongItemPosition").toString()));
-									miniplayerSeekbar.setMax(Integer.parseInt(profileData.get("lastSongItemPosition").toString()));
-									miniplayerSeekbar.setProgress(Integer.parseInt(profileData.get("lastSongItemPosition").toString()));
-									maxDuration.setText(String.valueOf((int)((Integer.parseInt(profileData.get("lastSongItemPosition").toString()) / 1000) / 60)).concat(":".concat(new DecimalFormat("00").format((Integer.parseInt(profileData.get("lastSongItemPosition").toString()) / 1000) % 60))));
-									currentDuration.setText(String.valueOf((int)((Integer.parseInt(profileData.get("lastSongItemPosition").toString()) / 1000) / 60)).concat(":".concat(new DecimalFormat("00").format((Integer.parseInt(profileData.get("lastSongItemPosition").toString()) / 1000) % 60))));
-									seekbarDuration.setMax(Integer.parseInt(profileData.get("lastSongItemPosition").toString()));
-									seekbarDuration.setProgress(Integer.parseInt(profileData.get("lastSongItemPosition").toString()));
+									Snackbar askContinueDuration = Snackbar.make(miniplayer, "Do you want to skip to the last played duration?", Snackbar.LENGTH_LONG)
+										.setAction("Yes", new View.OnClickListener() {
+											@Override
+											public void onClick(View view) {
+													playbackSrv.seek(Integer.parseInt(musicData.get(Integer.parseInt(profileData.get("lastSongItemPosition").toString())).get("lastSongCurrentDuration").toString()));
+													miniplayerSeekbar.setMax(Integer.parseInt(musicData.get(Integer.parseInt(profileData.get("lastSongItemPosition").toString())).get("lastSongCurrentDuration").toString()));
+													miniplayerSeekbar.setProgress(Integer.parseInt(musicData.get(Integer.parseInt(profileData.get("lastSongItemPosition").toString())).get("lastSongCurrentDuration").toString()));
+													maxDuration.setText(String.valueOf(((Integer.parseInt(musicData.get(Integer.parseInt(profileData.get("lastSongItemPosition").toString())).get("lastSongCurrentDuration").toString()) / 1000) / 60)).concat(":".concat(new DecimalFormat("00").format((Integer.parseInt(musicData.get(Integer.parseInt(profileData.get("lastSongItemPosition").toString())).get("lastSongCurrentDuration").toString()) / 1000) % 60))));
+													currentDuration.setText(String.valueOf(((Integer.parseInt(musicData.get(Integer.parseInt(profileData.get("lastSongItemPosition").toString())).get("lastSongCurrentDuration").toString()) / 1000) / 60)).concat(":".concat(new DecimalFormat("00").format((Integer.parseInt(musicData.get(Integer.parseInt(profileData.get("lastSongItemPosition").toString())).get("lastSongCurrentDuration").toString()) / 1000) % 60))));
+													seekbarDuration.setMax(Integer.parseInt(musicData.get(Integer.parseInt(profileData.get("lastSongItemPosition").toString())).get("lastSongCurrentDuration").toString()));
+													seekbarDuration.setProgress(Integer.parseInt(musicData.get(Integer.parseInt(profileData.get("lastSongItemPosition").toString())).get("lastSongCurrentDuration").toString()));
+											}
+										});
+									askContinueDuration.show();
 								}
-								*/
 							}
 						} else {
 							if (!musicData.isEmpty()) {
@@ -885,8 +890,8 @@ public class LocalStreamActivity extends  AppCompatActivity  {
 				
 			}
 			songList.setAdapter(new SongListAdapter(musicData));
-			if (savedData.contains("savedSongPosition")) {
-				songList.scrollToPosition((int)Double.parseDouble(savedData.getString("savedSongPosition", "")));
+			if (profileData.containsKey("lastSongItemPosition")) {
+				songList.scrollToPosition(Integer.parseInt(profileData.get("lastSongItemPosition").toString()));
 			}
 		} else {
 			ApplicationUtil.toast(getApplicationContext(), "Library data failed to load.", Toast.LENGTH_LONG);
@@ -895,7 +900,6 @@ public class LocalStreamActivity extends  AppCompatActivity  {
 				_item.put("isEmpty", "yes");
 				musicData.add(_item);
 			}
-			
 			songList.setAdapter(new SongListAdapter(musicData));
 		}
 		if (profileData.containsKey("savedNavigationIndex")) {
@@ -957,8 +961,7 @@ public class LocalStreamActivity extends  AppCompatActivity  {
 				miniplayer.setVisibility(View.VISIBLE);
 				player.setVisibility(View.GONE);
 				miniplayerSeekbar.setVisibility(View.VISIBLE);
-			}
-			else {
+			} else {
 				if (profileData.get("savedNavigationIndex").equals("1")) {
 					tabNavigation.getTabAt(1).select();
 					listRefresh.setVisibility(View.GONE);
