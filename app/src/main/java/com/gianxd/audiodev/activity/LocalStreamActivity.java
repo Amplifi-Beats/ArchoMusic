@@ -1046,10 +1046,12 @@ public class LocalStreamActivity extends  AppCompatActivity  {
 					public void onClick(View view) {
 						android.graphics.drawable.RippleDrawable rippleButton = new android.graphics.drawable.RippleDrawable(new android.content.res.ColorStateList(new int[][]{new int[]{}}, new int[]{ Color.parseColor("#BDBDBD") }), new android.graphics.drawable.ColorDrawable(Color.parseColor("#FFFFFF")), null);
 						main.setBackground(rippleButton);
-						if (!(position == Double.parseDouble(savedData.getString("savedSongPosition", "")))) {
+						if (!(position == Integer.parseInt(profileData.get("lastSongItemPosition").toString()))) {
 							if (new java.io.File(finalDecodedData).exists()) {
 								try {
 									playbackSrv.createLocalStream(position);
+									profileData.put("lastSongItemPosition", String.valueOf(position));
+									savedData.edit().putString("savedProfileData", ListUtil.setHashMapToSharedJSON(profileData)).apply();
 									playPause.performClick();
 								} catch (Exception e) {
 									ApplicationUtil.toast(getApplicationContext(), "Failed to play selected song. Skipping", Toast.LENGTH_SHORT);
@@ -1058,8 +1060,7 @@ public class LocalStreamActivity extends  AppCompatActivity  {
 							} else {
 								ApplicationUtil.toast(getApplicationContext(), "Selected song does not exist.", Toast.LENGTH_SHORT);
 							}
-						}
-						else {
+						} else {
 							ApplicationUtil.toast(getApplicationContext(), "Selected song is currently playing.", Toast.LENGTH_SHORT);
 						}
 					}
