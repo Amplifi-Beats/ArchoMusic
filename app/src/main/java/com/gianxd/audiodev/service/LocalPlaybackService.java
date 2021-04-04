@@ -122,15 +122,25 @@ public class LocalPlaybackService extends Service {
 		mp.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
 			@Override
 			public void onCompletion(MediaPlayer mp) {
+				HashMap<String, Object> profileData;
+				if (savedData.contains("savedProfileData")) {
+					profileData = ListUtil.getHashMapFromSharedJSON(savedData, "savedProfileData");
+				} else {
+					profileData = new HashMap<>();
+				}
 				playPause.setImageResource(R.drawable.ic_media_play);
 		        miniplayerPlayPause.setImageResource(R.drawable.ic_media_play);
 				try {
 					if (position + 1 < musicData.size()) {
+						profileData.put("lastSongItemPosition", String.valueOf(position + 1));
+						savedData.edit().putString("savedProfileData", ListUtil.setHashMapToSharedJSON(profileData)).apply();
 						createLocalStream(position + 1);
 						playPause.performClick();
 					}
 				} catch (Exception e) {
 				    if (position + 1 < musicData.size()) {
+						profileData.put("lastSongItemPosition", String.valueOf(position + 1));
+						savedData.edit().putString("savedProfileData", ListUtil.setHashMapToSharedJSON(profileData)).apply();
 						createLocalStream(position + 1);
 						playPause.performClick();
 					}

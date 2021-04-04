@@ -2,6 +2,7 @@ package com.gianxd.audiodev.activity;
 
 import android.Manifest;
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
@@ -26,6 +27,7 @@ import androidx.core.content.ContextCompat;
 
 import com.gianxd.audiodev.R;
 import com.gianxd.audiodev.util.ApplicationUtil;
+import com.gianxd.audiodev.util.ListUtil;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.gson.Gson;
 
@@ -33,6 +35,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Timer;
 import java.util.TimerTask;
+
+import static com.gianxd.audiodev.AudioDev.applicationContext;
 
 public class SplashActivity extends AppCompatActivity {
 	
@@ -61,7 +65,7 @@ public class SplashActivity extends AppCompatActivity {
 		mainLayout = (LinearLayout) findViewById(R.id.mainLayout);
 		logo = (TextView) findViewById(R.id.logo);
 		loadanim = (ProgressBar) findViewById(R.id.loadanim);
-		savedData = getSharedPreferences("savedData", Activity.MODE_PRIVATE);
+		savedData = applicationContext.getSharedPreferences("savedData", Context.MODE_PRIVATE);
 	}
 	
 	private void initializeLogic() {
@@ -96,8 +100,7 @@ public class SplashActivity extends AppCompatActivity {
 										if (ContextCompat.checkSelfPermission(getApplicationContext(), Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED && ContextCompat.checkSelfPermission(getApplicationContext(), Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED
 										&& ContextCompat.checkSelfPermission(getApplicationContext(), Manifest.permission.RECORD_AUDIO) == PackageManager.PERMISSION_GRANTED) {
 											scanMedia();
-										}
-										else {
+										} else {
 											BottomSheetDialog permRequest = new BottomSheetDialog(SplashActivity.this);
 											View dialogLayout = getLayoutInflater().inflate(R.layout.dialog_permissions, null);
 											permRequest.setContentView(dialogLayout);
@@ -194,7 +197,7 @@ public class SplashActivity extends AppCompatActivity {
 													HashMap<String, Object> tempProfileData = new HashMap<>();
 													String profileName = profile_name.getText().toString();
 													tempProfileData.put("profileName", profileName);
-													savedData.edit().putString("savedProfileData", new Gson().toJson(tempProfileData)).apply();
+													savedData.edit().putString("savedProfileData", ListUtil.setHashMapToSharedJSON(tempProfileData)).apply();
 													createProfile.dismiss();
 													intent.setClass(getApplicationContext(), SplashActivity.class);
 													startActivity(intent);
@@ -331,8 +334,7 @@ public class SplashActivity extends AppCompatActivity {
 				if (tempMusicData.size() > savedData.getString("savedMusicData", "").length()) {
 					savedData.edit().putString("savedMusicData", new Gson().toJson(tempMusicData)).apply();
 				}
-			}
-			else {
+			} else {
 				savedData.edit().putString("savedMusicData", new Gson().toJson(tempMusicData)).apply();
 			}
 			loadanim.setVisibility(View.GONE);

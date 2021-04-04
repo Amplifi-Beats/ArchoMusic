@@ -57,6 +57,8 @@ import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
 
+import static com.gianxd.audiodev.AudioDev.applicationContext;
+
 public class LocalStreamActivity extends  AppCompatActivity  {
 	
 	private Timer timer = new Timer();
@@ -130,7 +132,9 @@ public class LocalStreamActivity extends  AppCompatActivity  {
 		miniplayerAlbumArt = (ImageView) findViewById(R.id.miniplayerAlbumArt);
 		miniplayerSongTitle = (TextView) findViewById(R.id.miniplayerSongTitle);
 		miniplayerSongArtist = (TextView) findViewById(R.id.miniplayerSongArtist);
-		savedData = getSharedPreferences("savedData", Activity.MODE_PRIVATE);
+		savedData = applicationContext.getSharedPreferences("savedData", Context.MODE_PRIVATE);
+		tabNavigation.addTab(tabNavigation.newTab().setIcon(R.drawable.ic_tabnav_library));
+		tabNavigation.addTab(tabNavigation.newTab().setIcon(R.drawable.ic_tabnav_nowplaying));
 		miniplayer.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View _view) {
@@ -232,6 +236,31 @@ public class LocalStreamActivity extends  AppCompatActivity  {
 
 			}
 		});
+		if (profileData.containsKey("savedNavigationIndex")) {
+			if (profileData.get("savedNavigationIndex").equals("0")) {
+				tabNavigation.getTabAt(0).select();
+				listRefresh.setVisibility(View.VISIBLE);
+				miniplayer.setVisibility(View.VISIBLE);
+				player.setVisibility(View.GONE);
+				miniplayerSeekbar.setVisibility(View.VISIBLE);
+			} else {
+				if (profileData.get("savedNavigationIndex").equals("1")) {
+					tabNavigation.getTabAt(1).select();
+					listRefresh.setVisibility(View.GONE);
+					player.setVisibility(View.VISIBLE);
+					miniplayer.setVisibility(View.GONE);
+					miniplayerSeekbar.setVisibility(View.GONE);
+				}
+			}
+		} else {
+			profileData.put("savedNavigationIndex", "0");
+			savedData.edit().putString("savedProfileData", ListUtil.setHashMapToSharedJSON(profileData)).apply();
+			tabNavigation.getTabAt(0).select();
+			listRefresh.setVisibility(View.VISIBLE);
+			player.setVisibility(View.GONE);
+			miniplayer.setVisibility(View.VISIBLE);
+			miniplayerSeekbar.setVisibility(View.VISIBLE);
+		}
 		menu.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View _view) {
@@ -291,9 +320,8 @@ public class LocalStreamActivity extends  AppCompatActivity  {
 														if (profile_name.getText().toString().equals(profileData.get("profileName").toString())) {
 															    renameProfile.dismiss();
 														} else {
-														        HashMap<String, Object> tempProfileData = new HashMap<>();
 													            String profileName = profile_name.getText().toString();
-													            tempProfileData.put("profileName", profileName);
+													            profileData.put("profileName", profileName);
 													            savedData.edit().putString("savedProfileData", ListUtil.setHashMapToSharedJSON(profileData)).apply();
 														        ApplicationUtil.toast(getApplicationContext(), "Renamed profile sucessfully.", Toast.LENGTH_SHORT);
 														        tabNavigation.getTabAt(0).select();
@@ -724,55 +752,54 @@ public class LocalStreamActivity extends  AppCompatActivity  {
 			songList.setAdapter(new SongListAdapter(musicData));
 		}
 		if (savedData.contains("savedProfileData")) {
+			profileData.clear();
 			profileData = ListUtil.getHashMapFromSharedJSON(savedData, "savedProfileData");
-			if (profileData.containsKey("profileErrorTrace")) {
-				Snackbar.make(miniplayer, "An error occurred.", Snackbar.LENGTH_SHORT).setAction("Show", new View.OnClickListener(){
-					@Override
-					public void onClick(View view) {
-						BottomSheetDialog errorDialog = new BottomSheetDialog(LocalStreamActivity.this);
-						View dialogLayout = getLayoutInflater().inflate(R.layout.dialog_debug, null);
-						errorDialog.setContentView(dialogLayout);
-						LinearLayout main = dialogLayout.findViewById(R.id.main);
-						TextView title = dialogLayout.findViewById(R.id.title);
-						TextView log = dialogLayout.findViewById(R.id.log);
-						Button close = dialogLayout.findViewById(R.id.close);
-						title.setTypeface(Typeface.createFromAsset(getAssets(), "fonts/roboto_medium.ttf"), Typeface.NORMAL);
-						log.setText(profileData.get("profileErrorTrace").toString());
-						close.setOnClickListener(new View.OnClickListener() {
-							@Override
-							public void onClick(View view) {
-								android.graphics.drawable.RippleDrawable rippleButton = new android.graphics.drawable.RippleDrawable(new android.content.res.ColorStateList(new int[][]{new int[]{}}, new int[]{ Color.parseColor("#BDBDBD") }), new android.graphics.drawable.ColorDrawable(Color.parseColor("#03A9F4")), null);
-								view.setBackground(rippleButton);
-								HashMap<String, Object> profileData = ListUtil.getHashMapFromSharedJSON(savedData, "savedProfileData");
-								profileData.remove("profileErrorTrace");
-								savedData.edit().putString("savedProfileData", new Gson().toJson(profileData)).apply();
-								errorDialog.dismiss();
-							}
-						});
-						Double TopLeft = 20.0;
-						Double TopRight = 20.0;
-						Double BottomRight = 0.0;
-						Double BottomLeft = 0.0;
-						android.graphics.drawable.GradientDrawable roundedCorners = new android.graphics.drawable.GradientDrawable();
-						roundedCorners.setShape(android.graphics.drawable.GradientDrawable.RECTANGLE);
-						roundedCorners.setCornerRadii(new float[] {TopLeft.floatValue(),TopLeft.floatValue(), TopRight.floatValue(),TopRight.floatValue(), BottomRight.floatValue(),BottomRight.floatValue(), BottomLeft.floatValue(),BottomLeft.floatValue()});
-						roundedCorners.setColor(Color.parseColor("#FFFFFF"));
-						((ViewGroup)dialogLayout.getParent()).setBackground(roundedCorners);
-						android.graphics.drawable.GradientDrawable roundedCorners2 = new android.graphics.drawable.GradientDrawable();
-						roundedCorners2.setShape(android.graphics.drawable.GradientDrawable.RECTANGLE);
-						roundedCorners2.setCornerRadius(20);
-						roundedCorners2.setColor(Color.parseColor("#EEEEEE"));
-						log.setBackground(roundedCorners2);
-						android.graphics.drawable.GradientDrawable gradientButton = new android.graphics.drawable.GradientDrawable();
-						gradientButton.setColor(Color.parseColor("#03A9F4"));
-						gradientButton.setCornerRadius(20);
-						close.setBackground(gradientButton);
-						errorDialog.show();
-					}
-				}).show();
-			}
-		} else {
-			Log.e("Error", "Cannot load profile Data.");
+		}
+		if (profileData.containsKey("profileErrorTrace")) {
+			Snackbar.make(miniplayer, "An error occurred.", Snackbar.LENGTH_SHORT).setAction("Show", new View.OnClickListener(){
+				@Override
+				public void onClick(View view) {
+					BottomSheetDialog errorDialog = new BottomSheetDialog(LocalStreamActivity.this);
+					View dialogLayout = getLayoutInflater().inflate(R.layout.dialog_debug, null);
+					errorDialog.setContentView(dialogLayout);
+					LinearLayout main = dialogLayout.findViewById(R.id.main);
+					TextView title = dialogLayout.findViewById(R.id.title);
+					TextView log = dialogLayout.findViewById(R.id.log);
+					Button close = dialogLayout.findViewById(R.id.close);
+					title.setTypeface(Typeface.createFromAsset(getAssets(), "fonts/roboto_medium.ttf"), Typeface.NORMAL);
+					log.setText(profileData.get("profileErrorTrace").toString());
+					close.setOnClickListener(new View.OnClickListener() {
+						@Override
+						public void onClick(View view) {
+							android.graphics.drawable.RippleDrawable rippleButton = new android.graphics.drawable.RippleDrawable(new android.content.res.ColorStateList(new int[][]{new int[]{}}, new int[]{ Color.parseColor("#BDBDBD") }), new android.graphics.drawable.ColorDrawable(Color.parseColor("#03A9F4")), null);
+							view.setBackground(rippleButton);
+							HashMap<String, Object> profileData = ListUtil.getHashMapFromSharedJSON(savedData, "savedProfileData");
+							profileData.remove("profileErrorTrace");
+							savedData.edit().putString("savedProfileData", new Gson().toJson(profileData)).apply();
+							errorDialog.dismiss();
+						}
+					});
+					Double TopLeft = 20.0;
+					Double TopRight = 20.0;
+					Double BottomRight = 0.0;
+					Double BottomLeft = 0.0;
+					android.graphics.drawable.GradientDrawable roundedCorners = new android.graphics.drawable.GradientDrawable();
+					roundedCorners.setShape(android.graphics.drawable.GradientDrawable.RECTANGLE);
+					roundedCorners.setCornerRadii(new float[] {TopLeft.floatValue(),TopLeft.floatValue(), TopRight.floatValue(),TopRight.floatValue(), BottomRight.floatValue(),BottomRight.floatValue(), BottomLeft.floatValue(),BottomLeft.floatValue()});
+					roundedCorners.setColor(Color.parseColor("#FFFFFF"));
+					((ViewGroup)dialogLayout.getParent()).setBackground(roundedCorners);
+					android.graphics.drawable.GradientDrawable roundedCorners2 = new android.graphics.drawable.GradientDrawable();
+					roundedCorners2.setShape(android.graphics.drawable.GradientDrawable.RECTANGLE);
+					roundedCorners2.setCornerRadius(20);
+					roundedCorners2.setColor(Color.parseColor("#EEEEEE"));
+					log.setBackground(roundedCorners2);
+					android.graphics.drawable.GradientDrawable gradientButton = new android.graphics.drawable.GradientDrawable();
+					gradientButton.setColor(Color.parseColor("#03A9F4"));
+					gradientButton.setCornerRadius(20);
+					close.setBackground(gradientButton);
+					errorDialog.show();
+				}
+			}).show();
 		}
 		setVolumeControlStream(AudioManager.STREAM_MUSIC);
 		musicConnection = new ServiceConnection(){
@@ -782,6 +809,7 @@ public class LocalStreamActivity extends  AppCompatActivity  {
 				playbackSrv = binder.getService();
 				musicBound = true;
 				try {
+					ApplicationUtil.toast(getApplicationContext(), profileData.get("lastSongItemPosition").toString(), Toast.LENGTH_LONG);
 					if (playbackSrv.mp != null && playbackSrv.isPlaying()) {
 						playPause.setImageResource(R.drawable.ic_media_pause);
 						miniplayerPlayPause.setImageResource(R.drawable.ic_media_pause);
@@ -808,20 +836,21 @@ public class LocalStreamActivity extends  AppCompatActivity  {
 							}
 						} else {
 							if (!musicData.isEmpty()) {
-								profileData.put("lastSongItemPosition", "0");
-								savedData.edit().putString("savedProfileData", ListUtil.setHashMapToSharedJSON(profileData)).apply();
 								if (0 < musicData.size()) {
 									playbackSrv.createLocalStream(0);
+									profileData.put("lastSongItemPosition", "0");
+									savedData.edit().putString("savedProfileData", ListUtil.setHashMapToSharedJSON(profileData)).apply();
 								}
 							}
 						}
 					}
 				} catch (Exception e) {
+					ApplicationUtil.toast(getApplicationContext(), e.toString(), Toast.LENGTH_LONG);
 					if (!musicData.isEmpty()) {
-						profileData.put("lastSongItemPosition", "0");
-						savedData.edit().putString("savedProfileData", ListUtil.setHashMapToSharedJSON(profileData)).apply();
 						if (0 < musicData.size()) {
 							playbackSrv.createLocalStream(0);
+							profileData.put("lastSongItemPosition", "0");
+							savedData.edit().putString("savedProfileData", ListUtil.setHashMapToSharedJSON(profileData)).apply();
 						}
 					}
 				}
@@ -901,31 +930,9 @@ public class LocalStreamActivity extends  AppCompatActivity  {
 			}
 			songList.setAdapter(new SongListAdapter(musicData));
 		}
-		if (profileData.containsKey("savedNavigationIndex")) {
-			if (profileData.get("savedNavigationIndex").toString().equals("0")) {
-				tabNavigation.getTabAt(0).select();
-				listRefresh.setVisibility(View.VISIBLE);
-				miniplayer.setVisibility(View.VISIBLE);
-				player.setVisibility(View.GONE);
-				miniplayerSeekbar.setVisibility(View.VISIBLE);
-			}
-			else {
-				if (profileData.get("savedNavigationIndex").toString().equals("1")) {
-					tabNavigation.getTabAt(1).select();
-					listRefresh.setVisibility(View.GONE);
-					player.setVisibility(View.VISIBLE);
-					miniplayer.setVisibility(View.GONE);
-					miniplayerSeekbar.setVisibility(View.GONE);
-				}
-			}
-		} else {
-			profileData.put("savedNavigationIndex", "0");
-			savedData.edit().putString("savedNavigationIndex", ListUtil.setHashMapToSharedJSON(profileData)).apply();
-			tabNavigation.getTabAt(0).select();
-			listRefresh.setVisibility(View.VISIBLE);
-			player.setVisibility(View.GONE);
-			miniplayer.setVisibility(View.VISIBLE);
-			miniplayerSeekbar.setVisibility(View.VISIBLE);
+		if (profileData.get("savedNavigationIndex").equals("1")) {
+			miniplayer.setVisibility(View.GONE);
+			miniplayerSeekbar.setVisibility(View.GONE);
 		}
 	}
 	
@@ -948,36 +955,9 @@ public class LocalStreamActivity extends  AppCompatActivity  {
 		skipForward.setColorFilter(ContextCompat.getColor(getApplicationContext(), R.color.colorPrimary)); 
 		miniplayerSkipPrev.setColorFilter(ContextCompat.getColor(getApplicationContext(), R.color.colorPrimary)); 
 		miniplayerPlayPause.setColorFilter(ContextCompat.getColor(getApplicationContext(), R.color.colorPrimary)); 
-		miniplayerSkipNext.setColorFilter(ContextCompat.getColor(getApplicationContext(), R.color.colorPrimary)); 
-		tabNavigation.addTab(tabNavigation.newTab().setIcon(R.drawable.ic_tabnav_library));
-		tabNavigation.addTab(tabNavigation.newTab().setIcon(R.drawable.ic_tabnav_nowplaying));
+		miniplayerSkipNext.setColorFilter(ContextCompat.getColor(getApplicationContext(), R.color.colorPrimary));
 		listRefresh.setColorSchemeColors(Color.parseColor("#03A9F4"), Color.parseColor("#03A9F4"), Color.parseColor("#03A9F4"));
 		songList.setLayoutManager(new LinearLayoutManager(this));
-		if (profileData.containsKey("savedNavigationIndex")) {
-			if (profileData.get("savedNavigationIndex").equals("0")) {
-				tabNavigation.getTabAt(0).select();
-				listRefresh.setVisibility(View.VISIBLE);
-				miniplayer.setVisibility(View.VISIBLE);
-				player.setVisibility(View.GONE);
-				miniplayerSeekbar.setVisibility(View.VISIBLE);
-			} else {
-				if (profileData.get("savedNavigationIndex").equals("1")) {
-					tabNavigation.getTabAt(1).select();
-					listRefresh.setVisibility(View.GONE);
-					player.setVisibility(View.VISIBLE);
-					miniplayer.setVisibility(View.GONE);
-					miniplayerSeekbar.setVisibility(View.GONE);
-				}
-			}
-		} else {
-			profileData.put("savedNavigationIndex", "0");
-			savedData.edit().putString("savedProfileData", ListUtil.setHashMapToSharedJSON(profileData)).apply();
-			tabNavigation.getTabAt(0).select();
-			listRefresh.setVisibility(View.VISIBLE);
-			player.setVisibility(View.GONE);
-			miniplayer.setVisibility(View.VISIBLE);
-			miniplayerSeekbar.setVisibility(View.VISIBLE);
-		}
 		if (Build.VERSION.SDK_INT >= 23) {
 			top.setSystemUiVisibility(View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR);
 			getWindow().setStatusBarColor(Color.parseColor("#FFFFFF"));
