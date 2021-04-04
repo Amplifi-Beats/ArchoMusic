@@ -100,8 +100,8 @@ public class IntentFilterActivity extends  AppCompatActivity  {
 					else {
 						miniplayerPlayPause.setImageResource(R.drawable.ic_media_play);
 						mp.pause();
-						if (timer != null) {
-							timer.cancel();
+						if (timerTask != null) {
+							timerTask.cancel();
 						}
 					}
 				}

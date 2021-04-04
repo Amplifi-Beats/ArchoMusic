@@ -171,8 +171,7 @@ public class SplashActivity extends AppCompatActivity {
 									permRequest.show();
 								}
 							}
-						}
-						else {
+						} else {
 							BottomSheetDialog createProfile = new BottomSheetDialog(SplashActivity.this);
 							View dialogLayout = getLayoutInflater().inflate(R.layout.dialog_create_a_profile, null);
 							createProfile.setContentView(dialogLayout);

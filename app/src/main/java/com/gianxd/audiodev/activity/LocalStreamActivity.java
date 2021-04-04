@@ -643,13 +643,12 @@ public class LocalStreamActivity extends  AppCompatActivity  {
 							}
 						};
 						timer.scheduleAtFixedRate(timerTask, (int)(0), (int)(1000));
-					}
-					else {
+					} else {
 						playbackSrv.pause();
 						playPause.setImageResource(R.drawable.ic_media_play);
 						miniplayerPlayPause.setImageResource(R.drawable.ic_media_play);
-						if (timer != null) {
-							timer.cancel();
+						if (timerTask != null) {
+							timerTask.cancel();
 						}
 					}
 				}
