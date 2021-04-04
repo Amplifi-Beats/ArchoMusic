@@ -164,8 +164,7 @@ public class LocalPlaybackService extends Service {
         seekbarDuration.setProgress(getCurrentPosition());
 	    Intent notIntent = new Intent(this, LocalStreamActivity.class);
 	    notIntent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
-	    PendingIntent pendInt = PendingIntent.getActivity(this, 0,
-	    notIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+	    PendingIntent pendInt = PendingIntent.getActivity(this, 0, notIntent, PendingIntent.FLAG_UPDATE_CURRENT);
 	    if (Build.VERSION.SDK_INT < 28 ) {
 		    Notification notification = new Notification.Builder(getApplicationContext())
 				 .setContentTitle(musicData.get(position).get("songTitle").toString())
