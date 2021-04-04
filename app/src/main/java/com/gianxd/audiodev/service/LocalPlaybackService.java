@@ -109,7 +109,6 @@ public class LocalPlaybackService extends Service {
 	   if (audioManager == null) {
 		   audioManager = ((AudioManager)getApplicationContext().getSystemService(Context.AUDIO_SERVICE));
 	   }
-       savedData.edit().putString("savedSongPosition", String.valueOf(position)).apply();
 	    if (!musicData.get(position).get("songData").toString().startsWith("/")) {
 			try {
 				decodedData = new String(android.util.Base64.decode(musicData.get(position).get("songData").toString(), android.util.Base64.DEFAULT), "UTF-8");

@@ -252,10 +252,9 @@ public class LocalStreamActivity extends  AppCompatActivity  {
 				LinearLayout visualizer = dialogLayout.findViewById(R.id.visualizer);
 				title.setTypeface(Typeface.createFromAsset(getAssets(),"fonts/roboto_medium.ttf"), Typeface.NORMAL);
 				if (savedData.contains("savedProfileData")) {
-						HashMap<String, Object> profileData = ListUtil.getHashMapFromSharedJSON(savedData, "savedProfileData");
 						if (profileData.containsKey("profileName")) {
 								profile_name.setText(profileData.get("profileName").toString());
-						    }
+						}
 				}
 				profile.setOnClickListener(new View.OnClickListener() {
 						@Override
