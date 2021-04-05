@@ -133,13 +133,14 @@ public class LocalStreamActivity extends  AppCompatActivity  {
 		tabNavigation.addTab(tabNavigation.newTab().setIcon(R.drawable.ic_tabnav_nowplaying));
 		if (savedData.contains("savedMusicData")) {
 			musicData = ListUtil.getArrayListFromSharedJSON(savedData, "savedMusicData");
-			if (musicData.isEmpty()) {
-				{
-					HashMap<String, Object> _item = new HashMap<>();
-					_item.put("isEmpty", "yes");
-					musicData.add(_item);
+			if (musicData != null) {
+				if (musicData.isEmpty()) {
+					{
+						HashMap<String, Object> _item = new HashMap<>();
+						_item.put("isEmpty", "yes");
+						musicData.add(_item);
+					}
 				}
-
 			}
 			songList.setAdapter(new SongListAdapter(musicData));
 		} else {
@@ -805,7 +806,6 @@ public class LocalStreamActivity extends  AppCompatActivity  {
 				playbackSrv = binder.getService();
 				musicBound = true;
 				try {
-					ApplicationUtil.toast(getApplicationContext(), profileData.get("lastSongItemPosition").toString(), Toast.LENGTH_LONG);
 					if (playbackSrv.mp != null && playbackSrv.isPlaying()) {
 						playPause.setImageResource(R.drawable.ic_media_pause);
 						miniplayerPlayPause.setImageResource(R.drawable.ic_media_pause);
