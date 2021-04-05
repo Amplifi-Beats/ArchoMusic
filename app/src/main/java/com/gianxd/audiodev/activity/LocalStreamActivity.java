@@ -823,7 +823,7 @@ public class LocalStreamActivity extends  AppCompatActivity  {
 													miniplayerSeekbar.setProgress(Integer.parseInt(musicData.get(Integer.parseInt(profileData.get("lastSongItemPosition").toString())).get("lastSongCurrentDuration").toString()));
 													currentDuration.setText(String.valueOf(((Integer.parseInt(musicData.get(Integer.parseInt(profileData.get("lastSongItemPosition").toString())).get("lastSongCurrentDuration").toString()) / 1000) / 60)).concat(":".concat(new DecimalFormat("00").format((Integer.parseInt(musicData.get(Integer.parseInt(profileData.get("lastSongItemPosition").toString())).get("lastSongCurrentDuration").toString()) / 1000) % 60))));
 													seekbarDuration.setProgress(Integer.parseInt(musicData.get(Integer.parseInt(profileData.get("lastSongItemPosition").toString())).get("lastSongCurrentDuration").toString()));
-													playbackSrv.play();
+													playPause.performClick();
 											    }
 										    });
 									    askContinueDuration.show();
