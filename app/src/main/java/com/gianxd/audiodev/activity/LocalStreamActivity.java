@@ -1,7 +1,6 @@
 package com.gianxd.audiodev.activity;
 
 import android.animation.ObjectAnimator;
-import android.app.Activity;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
@@ -16,9 +15,7 @@ import android.media.AudioManager;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.IBinder;
-import android.util.Log;
 import android.view.LayoutInflater;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
@@ -53,7 +50,6 @@ import com.google.gson.reflect.TypeToken;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -62,8 +58,8 @@ import static com.gianxd.audiodev.AudioDev.applicationContext;
 public class LocalStreamActivity extends  AppCompatActivity  {
 	
 	private Timer timer = new Timer();
-	private ArrayList<HashMap<String, Object>> musicData = new ArrayList<>();
-	private HashMap<String, Object> profileData = new HashMap<>();
+	private ArrayList<HashMap<String, Object>> musicData;
+	private HashMap<String, Object> profileData;
 
 	private ServiceConnection musicConnection;
 	private LocalPlaybackService playbackSrv;
@@ -135,6 +131,31 @@ public class LocalStreamActivity extends  AppCompatActivity  {
 		savedData = applicationContext.getSharedPreferences("savedData", Context.MODE_PRIVATE);
 		tabNavigation.addTab(tabNavigation.newTab().setIcon(R.drawable.ic_tabnav_library));
 		tabNavigation.addTab(tabNavigation.newTab().setIcon(R.drawable.ic_tabnav_nowplaying));
+		if (savedData.contains("savedMusicData")) {
+			musicData.clear();
+			musicData = ListUtil.getArrayListFromSharedJSON(savedData, "savedMusicData");
+			if (musicData.isEmpty()) {
+				{
+					HashMap<String, Object> _item = new HashMap<>();
+					_item.put("isEmpty", "yes");
+					musicData.add(_item);
+				}
+
+			}
+			songList.setAdapter(new SongListAdapter(musicData));
+		} else {
+			ApplicationUtil.toast(getApplicationContext(), "Library data failed to load.", Toast.LENGTH_LONG);
+			{
+				HashMap<String, Object> _item = new HashMap<>();
+				_item.put("isEmpty", "yes");
+				musicData.add(_item);
+			}
+			songList.setAdapter(new SongListAdapter(musicData));
+		}
+		if (savedData.contains("savedProfileData")) {
+			profileData.clear();
+			profileData = ListUtil.getHashMapFromSharedJSON(savedData, "savedProfileData");
+		}
 		miniplayer.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View _view) {
@@ -157,7 +178,7 @@ public class LocalStreamActivity extends  AppCompatActivity  {
 						fadeAnim.cancel();
 					}
 					profileData.put("savedNavigationIndex", "0");
-					savedData.edit().putString("savedProfileData", ListUtil.setHashMapToSharedJSON(profileData)).apply();
+					savedData.edit().putString("savedProfileData", ListUtil.setHashMapToSharedJSON(profileData)).commit();
 					player.setVisibility(View.VISIBLE);
 					listRefresh.setVisibility(View.GONE);
 					miniplayer.setVisibility(View.GONE);
@@ -730,31 +751,6 @@ public class LocalStreamActivity extends  AppCompatActivity  {
 	
 	private void initializeLogic() {
 		startupUI();
-		if (savedData.contains("savedMusicData")) {
-			musicData.clear();
-			musicData = ListUtil.getArrayListFromSharedJSON(savedData, "savedMusicData");
-			if (musicData.isEmpty()) {
-				{
-					HashMap<String, Object> _item = new HashMap<>();
-					_item.put("isEmpty", "yes");
-					musicData.add(_item);
-				}
-				
-			}
-			songList.setAdapter(new SongListAdapter(musicData));
-		} else {
-			ApplicationUtil.toast(getApplicationContext(), "Library data failed to load.", Toast.LENGTH_LONG);
-			{
-				HashMap<String, Object> _item = new HashMap<>();
-				_item.put("isEmpty", "yes");
-				musicData.add(_item);
-			}
-			songList.setAdapter(new SongListAdapter(musicData));
-		}
-		if (savedData.contains("savedProfileData")) {
-			profileData.clear();
-			profileData = ListUtil.getHashMapFromSharedJSON(savedData, "savedProfileData");
-		}
 		if (profileData.containsKey("profileErrorTrace")) {
 			Snackbar.make(miniplayer, "An error occurred.", Snackbar.LENGTH_SHORT).setAction("Show", new View.OnClickListener(){
 				@Override
