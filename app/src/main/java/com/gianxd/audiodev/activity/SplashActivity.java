@@ -42,7 +42,7 @@ public class SplashActivity extends AppCompatActivity {
 	
 	private Timer timer = new Timer();
 	
-	private ArrayList<HashMap<String, Object>> tempMusicData = new ArrayList<>();
+	private ArrayList<HashMap<String, Object>> musicData;
 	
 	private LinearLayout mainLayout;
 	private TextView logo;
@@ -61,7 +61,6 @@ public class SplashActivity extends AppCompatActivity {
 	}
 	
 	private void initialize(Bundle savedInstanceState) {
-		
 		mainLayout = (LinearLayout) findViewById(R.id.mainLayout);
 		logo = (TextView) findViewById(R.id.logo);
 		loadanim = (ProgressBar) findViewById(R.id.loadanim);
@@ -270,7 +269,9 @@ public class SplashActivity extends AppCompatActivity {
 	private class MediaScanTask extends AsyncTask<Void, Void, Void> {
 		@Override
 		protected void onPreExecute() {
-			tempMusicData.clear();
+			if (musicData != null) {
+				musicData.clear();
+			}
 			loadanim.setVisibility(View.VISIBLE);
 		}
 		
@@ -313,7 +314,7 @@ public class SplashActivity extends AppCompatActivity {
 								songDetails.put("songData", encodedData);
 								songDetails.put("songArtist", artist);
 								songDetails.put("id", _id);
-								tempMusicData.add(songDetails);
+								musicData.add(songDetails);
 							}
 						} while (cursor.moveToNext());
 					}
@@ -331,11 +332,11 @@ public class SplashActivity extends AppCompatActivity {
 		@Override
 		protected void onPostExecute(Void param){
 			if (savedData.contains("savedMusicData")) {
-				if (tempMusicData.size() > savedData.getString("savedMusicData", "").length()) {
-					savedData.edit().putString("savedMusicData", new Gson().toJson(tempMusicData)).apply();
+				if (musicData.size() > savedData.getString("savedMusicData", "").length()) {
+					savedData.edit().putString("savedMusicData", ListUtil.setArrayListToSharedJSON(musicData)).apply();
 				}
 			} else {
-				savedData.edit().putString("savedMusicData", new Gson().toJson(tempMusicData)).apply();
+				savedData.edit().putString("savedMusicData",  ListUtil.setArrayListToSharedJSON(musicData)).apply();
 			}
 			loadanim.setVisibility(View.GONE);
 			timerTask = new TimerTask() {

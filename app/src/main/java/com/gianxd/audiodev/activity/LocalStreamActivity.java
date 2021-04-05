@@ -132,7 +132,6 @@ public class LocalStreamActivity extends  AppCompatActivity  {
 		tabNavigation.addTab(tabNavigation.newTab().setIcon(R.drawable.ic_tabnav_library));
 		tabNavigation.addTab(tabNavigation.newTab().setIcon(R.drawable.ic_tabnav_nowplaying));
 		if (savedData.contains("savedMusicData")) {
-			musicData.clear();
 			musicData = ListUtil.getArrayListFromSharedJSON(savedData, "savedMusicData");
 			if (musicData.isEmpty()) {
 				{
@@ -153,8 +152,9 @@ public class LocalStreamActivity extends  AppCompatActivity  {
 			songList.setAdapter(new SongListAdapter(musicData));
 		}
 		if (savedData.contains("savedProfileData")) {
-			profileData.clear();
 			profileData = ListUtil.getHashMapFromSharedJSON(savedData, "savedProfileData");
+		} else {
+			ApplicationUtil.toast(getApplicationContext(), "Profile settings failed to load.", Toast.LENGTH_LONG);
 		}
 		miniplayer.setOnClickListener(new View.OnClickListener() {
 			@Override
@@ -178,7 +178,7 @@ public class LocalStreamActivity extends  AppCompatActivity  {
 						fadeAnim.cancel();
 					}
 					profileData.put("savedNavigationIndex", "0");
-					savedData.edit().putString("savedProfileData", ListUtil.setHashMapToSharedJSON(profileData)).commit();
+					savedData.edit().putString("savedProfileData", ListUtil.setHashMapToSharedJSON(profileData)).apply();
 					player.setVisibility(View.VISIBLE);
 					listRefresh.setVisibility(View.GONE);
 					miniplayer.setVisibility(View.GONE);
@@ -926,9 +926,35 @@ public class LocalStreamActivity extends  AppCompatActivity  {
 			}
 			songList.setAdapter(new SongListAdapter(musicData));
 		}
-		if (profileData.get("savedNavigationIndex").equals("1")) {
-			miniplayer.setVisibility(View.GONE);
-			miniplayerSeekbar.setVisibility(View.GONE);
+		if (savedData.contains("savedProfileData")) {
+			profileData = ListUtil.getHashMapFromSharedJSON(savedData, "savedProfileData");
+		} else {
+			ApplicationUtil.toast(getApplicationContext(), "Profile settings failed to load.", Toast.LENGTH_LONG);
+		}
+		if (profileData.containsKey("savedNavigationIndex")) {
+			if (profileData.get("savedNavigationIndex").equals("0")) {
+				tabNavigation.getTabAt(0).select();
+				listRefresh.setVisibility(View.VISIBLE);
+				miniplayer.setVisibility(View.VISIBLE);
+				player.setVisibility(View.GONE);
+				miniplayerSeekbar.setVisibility(View.VISIBLE);
+			} else {
+				if (profileData.get("savedNavigationIndex").equals("1")) {
+					tabNavigation.getTabAt(1).select();
+					listRefresh.setVisibility(View.GONE);
+					player.setVisibility(View.VISIBLE);
+					miniplayer.setVisibility(View.GONE);
+					miniplayerSeekbar.setVisibility(View.GONE);
+				}
+			}
+		} else {
+			profileData.put("savedNavigationIndex", "0");
+			savedData.edit().putString("savedProfileData", ListUtil.setHashMapToSharedJSON(profileData)).apply();
+			tabNavigation.getTabAt(0).select();
+			listRefresh.setVisibility(View.VISIBLE);
+			player.setVisibility(View.GONE);
+			miniplayer.setVisibility(View.VISIBLE);
+			miniplayerSeekbar.setVisibility(View.VISIBLE);
 		}
 	}
 	
@@ -964,17 +990,7 @@ public class LocalStreamActivity extends  AppCompatActivity  {
 			getWindow().setNavigationBarColor(Color.parseColor("#000000"));
 		}
 	}
-	
-	
-	public void _javaReferences () {
-	}
-	
-	
-	public void _xmlReferences () {
-		
-	}
-	
-	
+
 	public class SongListAdapter extends RecyclerView.Adapter<SongListAdapter.ViewHolder> {
 		ArrayList<HashMap<String, Object>> data;
 		public SongListAdapter(ArrayList<HashMap<String, Object>> customData) {

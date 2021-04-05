@@ -30,7 +30,7 @@ import java.util.HashMap;
 
 public class LyricsEditorActivity extends  AppCompatActivity  { 
 
-	private ArrayList<HashMap<String, Object>> musicData = new ArrayList<>();
+	private ArrayList<HashMap<String, Object>> musicData;
 	
 	private LinearLayout toolbar;
 	private EditText lyrics;
@@ -55,7 +55,7 @@ public class LyricsEditorActivity extends  AppCompatActivity  {
 		bruh = (TextView) findViewById(R.id.bruh);
 		save = (ImageView) findViewById(R.id.save);
 		savedData = getSharedPreferences("savedData", Activity.MODE_PRIVATE);
-		
+		musicData = ListUtil.getArrayListFromSharedJSON(savedData, "savedMusicData");
 		lyrics.addTextChangedListener(new TextWatcher() {
 			@Override
 			public void onTextChanged(CharSequence _param1, int _param2, int _param3, int _param4) {
@@ -97,7 +97,7 @@ public class LyricsEditorActivity extends  AppCompatActivity  {
 				save.setBackground(rippleButton);
 				try {
 					musicData.get(Integer.parseInt(getIntent().getStringExtra("songPosition"))).put("songLyrics", lyrics.getText().toString());
-					savedData.edit().putString("savedMusicData", new Gson().toJson(musicData)).apply();
+					savedData.edit().putString("savedMusicData", ListUtil.setArrayListToSharedJSON(musicData)).apply();
 					ApplicationUtil.toast(getApplicationContext(), "Lyrics saved successfully.", Toast.LENGTH_SHORT);
 					finish();
 				} catch (Exception e) {
@@ -109,7 +109,6 @@ public class LyricsEditorActivity extends  AppCompatActivity  {
 	
 	private void initializeLogic() {
 		bruh.setTypeface(Typeface.createFromAsset(getAssets(), "fonts/roboto_medium.ttf"), Typeface.NORMAL);
-		musicData = ListUtil.getArrayListFromSharedJSON(savedData, "savedMusicData");
 		if (Build.VERSION.SDK_INT >= 23) {
 			toolbar.setSystemUiVisibility(View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR);
 			getWindow().setStatusBarColor(Color.parseColor("#FFFFFF"));
