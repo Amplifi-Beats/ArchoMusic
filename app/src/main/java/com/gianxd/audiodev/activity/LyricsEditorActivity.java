@@ -27,6 +27,8 @@ import com.gianxd.audiodev.R;
 import java.util.ArrayList;
 import java.util.HashMap;
 
+import static com.gianxd.audiodev.AudioDev.applicationContext;
+
 
 public class LyricsEditorActivity extends  AppCompatActivity  { 
 
@@ -54,7 +56,7 @@ public class LyricsEditorActivity extends  AppCompatActivity  {
 		back = (ImageView) findViewById(R.id.back);
 		bruh = (TextView) findViewById(R.id.bruh);
 		save = (ImageView) findViewById(R.id.save);
-		savedData = getSharedPreferences("savedData", Activity.MODE_PRIVATE);
+		savedData = applicationContext.getSharedPreferences("savedData", Activity.MODE_PRIVATE);
 		musicData = ListUtil.getArrayListFromSharedJSON(savedData, "savedMusicData");
 		lyrics.addTextChangedListener(new TextWatcher() {
 			@Override
