@@ -813,18 +813,20 @@ public class LocalStreamActivity extends  AppCompatActivity  {
 						if (profileData.containsKey("lastSongItemPosition")) {
 							if (!profileData.get("lastSongItemPosition").equals("0")) {
 								playbackSrv.createLocalStream(Integer.parseInt(profileData.get("lastSongItemPosition").toString()));
-								if (musicData.get(Integer.parseInt(profileData.get("lastSongItemPosition").toString())).containsKey("lastSongCurrentDuration")) {
-									Snackbar askContinueDuration = Snackbar.make(miniplayer, "Do you want to skip to the last played duration?", Snackbar.LENGTH_LONG)
-										.setAction("Yes", new View.OnClickListener() {
-											@Override
-											public void onClick(View view) {
+								if (!musicData.get(Integer.parseInt(profileData.get("lastSongItemPosition").toString())).get("lastSongCurrentDuration").equals(playbackSrv.getCurrentPosition())) {
+									if (musicData.get(Integer.parseInt(profileData.get("lastSongItemPosition").toString())).containsKey("lastSongCurrentDuration")) {
+										Snackbar askContinueDuration = Snackbar.make(miniplayer, "Do you want to skip to the last played duration?", Snackbar.LENGTH_LONG)
+										    .setAction("Yes", new View.OnClickListener() {
+										    	@Override
+												public void onClick(View view) {
 													playbackSrv.seek(Integer.parseInt(musicData.get(Integer.parseInt(profileData.get("lastSongItemPosition").toString())).get("lastSongCurrentDuration").toString()));
 													miniplayerSeekbar.setProgress(Integer.parseInt(musicData.get(Integer.parseInt(profileData.get("lastSongItemPosition").toString())).get("lastSongCurrentDuration").toString()));
 													currentDuration.setText(String.valueOf(((Integer.parseInt(musicData.get(Integer.parseInt(profileData.get("lastSongItemPosition").toString())).get("lastSongCurrentDuration").toString()) / 1000) / 60)).concat(":".concat(new DecimalFormat("00").format((Integer.parseInt(musicData.get(Integer.parseInt(profileData.get("lastSongItemPosition").toString())).get("lastSongCurrentDuration").toString()) / 1000) % 60))));
 													seekbarDuration.setProgress(Integer.parseInt(musicData.get(Integer.parseInt(profileData.get("lastSongItemPosition").toString())).get("lastSongCurrentDuration").toString()));
-											}
-										});
-									askContinueDuration.show();
+											    }
+										    });
+									    askContinueDuration.show();
+								    }
 								}
 							}
 						} else {
