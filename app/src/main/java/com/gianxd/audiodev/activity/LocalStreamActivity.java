@@ -683,7 +683,7 @@ public class LocalStreamActivity extends  AppCompatActivity  {
 											seekbarDuration.setProgress((int)playbackSrv.getCurrentPosition());
 											miniplayerSeekbar.setProgress((int)playbackSrv.getCurrentPosition());
 											currentDuration.setText(String.valueOf((int)((playbackSrv.getCurrentPosition() / 1000) / 60)).concat(":".concat(new DecimalFormat("00").format((playbackSrv.getCurrentPosition() / 1000) % 60))));
-											musicData.get(Integer.parseInt(profileData.get("lastSongItemPosition").toString())).put("lastSongCurrentDuration", playbackSrv.getCurrentPosition());
+											musicData.get(Integer.parseInt(profileData.get("lastSongItemPosition").toString())).put("lastSongCurrentDuration", String.valueOf(playbackSrv.getCurrentPosition()));
 											savedData.edit().putString("savedMusicData", ListUtil.setArrayListToSharedJSON(musicData)).apply();
 										} catch (Exception e) {
 											// do nothing 
@@ -819,11 +819,8 @@ public class LocalStreamActivity extends  AppCompatActivity  {
 											@Override
 											public void onClick(View view) {
 													playbackSrv.seek(Integer.parseInt(musicData.get(Integer.parseInt(profileData.get("lastSongItemPosition").toString())).get("lastSongCurrentDuration").toString()));
-													miniplayerSeekbar.setMax(Integer.parseInt(musicData.get(Integer.parseInt(profileData.get("lastSongItemPosition").toString())).get("lastSongCurrentDuration").toString()));
 													miniplayerSeekbar.setProgress(Integer.parseInt(musicData.get(Integer.parseInt(profileData.get("lastSongItemPosition").toString())).get("lastSongCurrentDuration").toString()));
-													maxDuration.setText(String.valueOf(((Integer.parseInt(musicData.get(Integer.parseInt(profileData.get("lastSongItemPosition").toString())).get("lastSongCurrentDuration").toString()) / 1000) / 60)).concat(":".concat(new DecimalFormat("00").format((Integer.parseInt(musicData.get(Integer.parseInt(profileData.get("lastSongItemPosition").toString())).get("lastSongCurrentDuration").toString()) / 1000) % 60))));
 													currentDuration.setText(String.valueOf(((Integer.parseInt(musicData.get(Integer.parseInt(profileData.get("lastSongItemPosition").toString())).get("lastSongCurrentDuration").toString()) / 1000) / 60)).concat(":".concat(new DecimalFormat("00").format((Integer.parseInt(musicData.get(Integer.parseInt(profileData.get("lastSongItemPosition").toString())).get("lastSongCurrentDuration").toString()) / 1000) % 60))));
-													seekbarDuration.setMax(Integer.parseInt(musicData.get(Integer.parseInt(profileData.get("lastSongItemPosition").toString())).get("lastSongCurrentDuration").toString()));
 													seekbarDuration.setProgress(Integer.parseInt(musicData.get(Integer.parseInt(profileData.get("lastSongItemPosition").toString())).get("lastSongCurrentDuration").toString()));
 											}
 										});
