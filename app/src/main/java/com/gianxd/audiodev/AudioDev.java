@@ -10,6 +10,7 @@ import java.util.HashMap;
 
 import com.gianxd.audiodev.activity.LauncherActivity;
 import com.gianxd.audiodev.util.ApplicationUtil;
+import com.gianxd.audiodev.util.ListUtil;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
@@ -33,10 +34,10 @@ public class AudioDev extends Application {
 				if (!savedData.contains("savedProfileData")) {
 					profileData = new HashMap<>();
 				} else {
-					profileData = new Gson().fromJson(savedData.getString("savedProfileData", ""), new TypeToken<HashMap<String, Object>>(){}.getType());
+					profileData = ListUtil.getHashMapFromSharedJSON(savedData, "savedProfileData");
 				}
 				profileData.put("profileErrorTrace", ApplicationUtil.getStackTrace(ex));
-				savedData.edit().putString("savedProfileData", new Gson().toJson(profileData)).apply();
+				savedData.edit().putString("savedProfileData", ListUtil.setHashMapToSharedJSON(profileData)).apply();
 				uncaughtExceptionHandler.uncaughtException(thread, ex);
 			}
 		});
