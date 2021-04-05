@@ -269,9 +269,7 @@ public class SplashActivity extends AppCompatActivity {
 	private class MediaScanTask extends AsyncTask<Void, Void, Void> {
 		@Override
 		protected void onPreExecute() {
-			if (musicData != null) {
-				musicData.clear();
-			}
+			musicData = new ArrayList<>();
 			loadanim.setVisibility(View.VISIBLE);
 		}
 		
@@ -331,12 +329,14 @@ public class SplashActivity extends AppCompatActivity {
 
 		@Override
 		protected void onPostExecute(Void param){
-			if (savedData.contains("savedMusicData")) {
-				if (musicData.size() > savedData.getString("savedMusicData", "").length()) {
-					savedData.edit().putString("savedMusicData", ListUtil.setArrayListToSharedJSON(musicData)).apply();
+			if (musicData != null) {
+				if (savedData.contains("savedMusicData")) {
+					if (musicData.size() > savedData.getString("savedMusicData", "").length()) {
+						savedData.edit().putString("savedMusicData", ListUtil.setArrayListToSharedJSON(musicData)).apply();
+					}
+				} else {
+					savedData.edit().putString("savedMusicData",  ListUtil.setArrayListToSharedJSON(musicData)).apply();
 				}
-			} else {
-				savedData.edit().putString("savedMusicData",  ListUtil.setArrayListToSharedJSON(musicData)).apply();
 			}
 			loadanim.setVisibility(View.GONE);
 			timerTask = new TimerTask() {
