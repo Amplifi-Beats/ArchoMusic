@@ -60,8 +60,7 @@ public class LyricsEditorActivity extends  AppCompatActivity  {
 		musicData = ListUtil.getArrayListFromSharedJSON(savedData, "savedMusicData");
 		lyrics.addTextChangedListener(new TextWatcher() {
 			@Override
-			public void onTextChanged(CharSequence _param1, int _param2, int _param3, int _param4) {
-				final String _charSeq = _param1.toString();
+			public void onTextChanged(CharSequence charSequence, int _param2, int _param3, int _param4) {
 				if (lyrics.getText().toString().length() < 1) {
 					save.setEnabled(false);
 					save.setAlpha((float)(0.5d));
@@ -73,7 +72,7 @@ public class LyricsEditorActivity extends  AppCompatActivity  {
 			}
 			
 			@Override
-			public void beforeTextChanged(CharSequence _param1, int _param2, int _param3, int _param4) {
+			public void beforeTextChanged(CharSequence charSequence, int _param2, int _param3, int _param4) {
 				
 			}
 			
@@ -120,11 +119,11 @@ public class LyricsEditorActivity extends  AppCompatActivity  {
 			getWindow().setStatusBarColor(Color.parseColor("#000000"));
 			getWindow().setNavigationBarColor(Color.parseColor("#000000"));
 		}
-		if (musicData.get((int)Double.parseDouble(savedData.getString("savedSongPosition", "0"))).containsKey("songLyrics")) {
-					if (musicData.get((int)Double.parseDouble(savedData.getString("savedSongPosition", "0"))).get("songLyrics").toString().length() == 0) {
+		if (musicData.get((int)Integer.parseInt(getIntent().getStringExtra("songPosition"))).containsKey("songLyrics")) {
+					if (musicData.get((int)Integer.parseInt(getIntent().getStringExtra("songPosition"))).get("songLyrics").toString().length() == 0) {
 							// lyrics is added but empty cheems.
 					} else {
-						    lyrics.setText(musicData.get((int)Double.parseDouble(savedData.getString("savedSongPosition", "0"))).get("songLyrics").toString());
+						    lyrics.setText(musicData.get((int)Integer.parseInt(getIntent().getStringExtra("songPosition"))).get("songLyrics").toString());
 				        }
 		} else {
 				// no lyrics found cheems.
