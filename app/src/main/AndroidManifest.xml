@@ -20,7 +20,7 @@
         android:requestLegacyExternalStorage="true"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:theme="@style/Theme.ArchoMusic">
-
+        <activity android:name=".activity.IntentChooserActivity"></activity>
         <activity
             android:name=".activity.LauncherActivity"
             android:configChanges="orientation|screenSize|keyboardHidden|smallestScreenSize|screenLayout"
