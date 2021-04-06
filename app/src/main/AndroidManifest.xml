@@ -20,10 +20,6 @@
         android:requestLegacyExternalStorage="true"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:theme="@style/Theme.ArchoMusic">
-        <service
-            android:name=".service.SessionService"
-            android:enabled="true"
-            android:exported="true"></service>
 
         <activity
             android:name=".activity.LauncherActivity"
@@ -114,7 +110,7 @@
             android:name=".service.LocalPlaybackService"
             android:enabled="true"
             android:exported="true"
-            android:stopWithTask="false"></service>
+            android:stopWithTask="false" />
     </application>
 
 </manifest>
