@@ -492,7 +492,7 @@ public class LocalStreamActivity extends  AppCompatActivity  {
 							    android.graphics.drawable.GradientDrawable roundedCorners = new android.graphics.drawable.GradientDrawable();
 							    roundedCorners.setShape(android.graphics.drawable.GradientDrawable.RECTANGLE);
 							    roundedCorners.setCornerRadii(new float[] {TopLeft.floatValue(),TopLeft.floatValue(), TopRight.floatValue(),TopRight.floatValue(), BottomRight.floatValue(),BottomRight.floatValue(), BottomLeft.floatValue(),BottomLeft.floatValue()});
-							    roundedCorners.setColor(Color.parseColor("#000000"));
+							    roundedCorners.setColor(Color.parseColor("#FFFFFF"));
 							    ((ViewGroup)dialogLayout.getParent()).setBackground(roundedCorners);
 							    settingsDialog.show();
 						}
