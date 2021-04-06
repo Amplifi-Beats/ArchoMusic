@@ -176,7 +176,7 @@ public class LocalPlaybackService extends Service {
 		    startForeground(NOTIFY_ID, notification);
 	    } else {
 	        NotificationCompat.Builder notificationBuilder = new NotificationCompat.Builder(getApplicationContext(), "libaudiodev");
-		    notificationChannel = new NotificationChannel("libaudiodev", "AudioSession", NotificationManager.IMPORTANCE_LOW);
+		    notificationChannel = new NotificationChannel("libaudiodev", "Music Player", NotificationManager.IMPORTANCE_LOW);
 		    notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
             assert notificationManager != null;
 		    assert notificationChannel != null;
