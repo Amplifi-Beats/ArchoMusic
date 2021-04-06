@@ -658,6 +658,9 @@ public class LocalStreamActivity extends  AppCompatActivity  {
 			public void onStopTrackingTouch(SeekBar seekBar) {
 				if (playbackSrv.mp != null) {
 					playbackSrv.seek(seekbarDuration.getProgress());
+					seekbarDuration.setProgress((int)seekbarDuration.getProgress());
+					miniplayerSeekbar.setProgress((int)seekbarDuration.getProgress());
+					currentDuration.setText(String.valueOf((int)((seekbarDuration.getProgress() / 1000) / 60)).concat(":".concat(new DecimalFormat("00").format((seekbarDuration.getProgress() / 1000) % 60))));
 					musicData.get(Integer.parseInt(profileData.get("lastSongItemPosition").toString())).put("lastSongCurrentDuration", String.valueOf((int)(seekbarDuration.getProgress())));
 					savedData.edit().putString("savedMusicData", ListUtil.setArrayListToSharedJSON(musicData)).apply();
 				}
