@@ -394,6 +394,7 @@ public class LocalStreamActivity extends  AppCompatActivity  {
 						        View dialogLayout = getLayoutInflater().inflate(R.layout.dialog_lyrics, null);
 						        lyricsDialog.setContentView(dialogLayout);
 						        LinearLayout main = dialogLayout.findViewById(R.id.main);
+						        ImageView back = dialogLayout.findViewById(R.id.back);
 								ImageView lyrics_edit = dialogLayout.findViewById(R.id.lyrics_edit);
 						        TextView title = dialogLayout.findViewById(R.id.title);
 						        TextView lyrics = dialogLayout.findViewById(R.id.lyrics);
@@ -402,11 +403,19 @@ public class LocalStreamActivity extends  AppCompatActivity  {
 										if (musicData.get(Integer.parseInt(profileData.get("lastSongItemPosition").toString())).get("songLyrics").toString().length() == 0) {
 												// Lyrics added with 0 letters
 										} else {
-											    lyrics.setText(musicData.get(Integer.parseInt(savedData.getString("savedSongPosition", "0"))).get("songLyrics").toString());
+											    lyrics.setText(musicData.get(Integer.parseInt(profileData.get("lastSongItemPosition").toString())).get("songLyrics").toString());
 										}
 								} else {
 									    // No Lyrics was found.
 								}
+								back.setOnClickListener(new View.OnClickListener() {
+									@Override
+									public void onClick(View view) {
+										android.graphics.drawable.RippleDrawable rippleButton = new android.graphics.drawable.RippleDrawable(new android.content.res.ColorStateList(new int[][]{new int[]{}}, new int[]{ Color.parseColor("#BDBDBD") }), null, null);
+										view.setBackground(rippleButton);
+										lyricsDialog.dismiss();
+									}
+								});
 								lyrics_edit.setOnClickListener(new View.OnClickListener() {
 										@Override
 										public void onClick(View view) {
