@@ -19,6 +19,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -442,7 +444,59 @@ public class LocalStreamActivity extends  AppCompatActivity  {
 						public void onClick(View view) {
 								android.graphics.drawable.RippleDrawable rippleButton = new android.graphics.drawable.RippleDrawable(new android.content.res.ColorStateList(new int[][]{new int[]{}}, new int[]{ Color.parseColor("#BDBDBD") }), new android.graphics.drawable.ColorDrawable(Color.parseColor("#FFFFFF")), null);
 						        view.setBackground(rippleButton);
-								ApplicationUtil.toast(getApplicationContext(), "Feature under construction.", Toast.LENGTH_SHORT);
+								BottomSheetDialog settingsDialog = new BottomSheetDialog(LocalStreamActivity.this);
+								View dialogLayout = getLayoutInflater().inflate(R.layout.dialog_settings, null);
+								settingsDialog.setContentView(dialogLayout);
+								LinearLayout main = dialogLayout.findViewById(R.id.main);
+								ImageView back = dialogLayout.findViewById(R.id.back);
+								TextView title = dialogLayout.findViewById(R.id.title);
+								TextView general_title = dialogLayout.findViewById(R.id.general_title);
+							    CheckBox dark_mode = dialogLayout.findViewById(R.id.dark_mode);
+							    CheckBox disable_ads = dialogLayout.findViewById(R.id.disable_ads);
+							    title.setTypeface(Typeface.createFromAsset(getAssets(),"fonts/roboto_medium.ttf"), Typeface.NORMAL);
+							    general_title.setTypeface(Typeface.createFromAsset(getAssets(),"fonts/roboto_medium.ttf"), Typeface.NORMAL);
+							    back.setOnClickListener(new View.OnClickListener() {
+									@Override
+									public void onClick(View view) {
+										android.graphics.drawable.RippleDrawable rippleButton = new android.graphics.drawable.RippleDrawable(new android.content.res.ColorStateList(new int[][]{new int[]{}}, new int[]{ Color.parseColor("#BDBDBD") }), null, null);
+										view.setBackground(rippleButton);
+										settingsDialog.dismiss();
+									}
+								});
+							    dark_mode.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+									@Override
+									public void onCheckedChanged(CompoundButton view, boolean isChecked) {
+										if (isChecked) {
+											profileData.put("profileDarkMode", "enabled");
+											ApplicationUtil.toast(getApplicationContext(), "Dark mode enabled.", Toast.LENGTH_SHORT);
+										} else {
+											profileData.put("profileDarkMode", "disabled");
+											ApplicationUtil.toast(getApplicationContext(), "Dark mode disabled.", Toast.LENGTH_SHORT);
+										}
+									}
+								});
+							    disable_ads.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+									@Override
+									public void onCheckedChanged(CompoundButton view, boolean isChecked) {
+										if (isChecked) {
+											profileData.put("profileAds", "enabled");
+											ApplicationUtil.toast(getApplicationContext(), "Ads enabled.", Toast.LENGTH_SHORT);
+										} else {
+											profileData.put("profileAds", "disabled");
+											ApplicationUtil.toast(getApplicationContext(), "Ads disabled.", Toast.LENGTH_SHORT);
+										}
+									}
+								});
+							    Double TopLeft = 20.0;
+							    Double TopRight = 20.0;
+							    Double BottomRight = 0.0;
+							    Double BottomLeft = 0.0;
+							    android.graphics.drawable.GradientDrawable roundedCorners = new android.graphics.drawable.GradientDrawable();
+							    roundedCorners.setShape(android.graphics.drawable.GradientDrawable.RECTANGLE);
+							    roundedCorners.setCornerRadii(new float[] {TopLeft.floatValue(),TopLeft.floatValue(), TopRight.floatValue(),TopRight.floatValue(), BottomRight.floatValue(),BottomRight.floatValue(), BottomLeft.floatValue(),BottomLeft.floatValue()});
+							    roundedCorners.setColor(Color.parseColor("#000000"));
+							    ((ViewGroup)dialogLayout.getParent()).setBackground(roundedCorners);
+							    settingsDialog.show();
 						}
 				});
 				visualizer.setOnClickListener(new View.OnClickListener() {
