@@ -131,35 +131,37 @@ public class LocalStreamActivity extends  AppCompatActivity  {
 		savedData = applicationContext.getSharedPreferences("savedData", Context.MODE_PRIVATE);
 		tabNavigation.addTab(tabNavigation.newTab().setIcon(R.drawable.ic_tabnav_library));
 		tabNavigation.addTab(tabNavigation.newTab().setIcon(R.drawable.ic_tabnav_nowplaying));
-		if (savedData.contains("savedMusicData")) {
-			musicData = ListUtil.getArrayListFromSharedJSON(savedData, "savedMusicData");
-			if (musicData != null) {
-				if (musicData.isEmpty()) {
-					{
-						HashMap<String, Object> _item = new HashMap<>();
-						_item.put("isEmpty", "yes");
-						musicData.add(_item);
-					}
-				}
-			}
-			songList.setAdapter(new SongListAdapter(musicData));
-		} else {
-			ApplicationUtil.toast(getApplicationContext(), "Library data failed to load.", Toast.LENGTH_LONG);
-			{
-				HashMap<String, Object> _item = new HashMap<>();
-				_item.put("isEmpty", "yes");
-				musicData.add(_item);
-			}
-			songList.setAdapter(new SongListAdapter(musicData));
+		if (musicData != null) {
+			if (savedData.contains("savedMusicData")) {
+			    musicData = ListUtil.getArrayListFromSharedJSON(savedData, "savedMusicData");
+			     if (musicData.isEmpty()) {
+				    {
+					     HashMap<String, Object> _item = new HashMap<>();
+					     _item.put("isEmpty", "yes");
+					     musicData.add(_item);
+				    }
+			     }
+			     songList.setAdapter(new SongListAdapter(musicData));
+			} else {
+				 ApplicationUtil.toast(getApplicationContext(), "Library data failed to load.", Toast.LENGTH_LONG);
+			     {
+			     	HashMap<String, Object> _item = new HashMap<>();
+			     	_item.put("isEmpty", "yes");
+				    musicData.add(_item);
+			     }
+			     songList.setAdapter(new SongListAdapter(musicData));
+		    }
 		}
-		if (savedData.contains("savedProfileData")) {
-			profileData = ListUtil.getHashMapFromSharedJSON(savedData, "savedProfileData");
-		} else {
-			ApplicationUtil.toast(getApplicationContext(), "Profile settings failed to load.", Toast.LENGTH_LONG);
+		if (profileData != null) {
+			if (savedData.contains("savedProfileData")) {
+				profileData = ListUtil.getHashMapFromSharedJSON(savedData, "savedProfileData");
+		    } else {
+				ApplicationUtil.toast(getApplicationContext(), "Profile settings failed to load.", Toast.LENGTH_LONG);
+		    }
 		}
 		miniplayer.setOnClickListener(new View.OnClickListener() {
 			@Override
-			public void onClick(View _view) {
+			public void onClick(View view) {
 				miniplayer.setBackground(new android.graphics.drawable.RippleDrawable(new android.content.res.ColorStateList(new int[][]{new int[]{}}, new int[]{ Color.parseColor("#BDBDBD") }), new android.graphics.drawable.ColorDrawable(Color.parseColor("#FFFFFF")), null));
 				tabNavigation.getTabAt(1).select();
 			}
@@ -170,8 +172,7 @@ public class LocalStreamActivity extends  AppCompatActivity  {
 				ObjectAnimator fadeAnim = new ObjectAnimator();
 				if (Build.VERSION.SDK_INT >= 23) {
 					tab.getIcon().setColorFilter(ContextCompat.getColor(getApplicationContext(), R.color.colorPrimary), PorterDuff.Mode.SRC_IN);
-				}
-				else {
+				} else {
 					tab.getIcon().setColorFilter(getResources().getColor(R.color.colorPrimary), PorterDuff.Mode.SRC_IN);
 				}
 				if (tab.getPosition() == 0) {
@@ -207,41 +208,39 @@ public class LocalStreamActivity extends  AppCompatActivity  {
 						}
 					};
 					timer.schedule(timerTask, (int)(250));
-				} else {
-					if (tab.getPosition() == 1) {
-						if (fadeAnim.isRunning()) {
-							fadeAnim.cancel();
-						}
-						profileData.put("savedNavigationIndex", "1");
-						savedData.edit().putString("savedProfileData", ListUtil.setHashMapToSharedJSON(profileData)).apply();
-						player.setVisibility(View.GONE);
-						listRefresh.setVisibility(View.VISIBLE);
-						miniplayer.setVisibility(View.VISIBLE);
-						miniplayerSeekbar.setVisibility(View.VISIBLE);
-						fadeAnim.setTarget(listRefresh);
-						fadeAnim.setPropertyName("alpha");
-						fadeAnim.setFloatValues((float)(1.0d), (float)(0.0d));
-						fadeAnim.start();
-						timerTask = new TimerTask() {
-							@Override
-							public void run() {
-								runOnUiThread(new Runnable() {
-									@Override
-									public void run() {
-										player.setVisibility(View.VISIBLE);
-										listRefresh.setVisibility(View.GONE);
-										miniplayer.setVisibility(View.GONE);
-										miniplayerSeekbar.setVisibility(View.GONE);
-										fadeAnim.setTarget(player);
-										fadeAnim.setPropertyName("alpha");
-										fadeAnim.setFloatValues((float)(0.0d), (float)(1.0d));
-										fadeAnim.start();
-									}
-								});
-							}
-						};
-						timer.schedule(timerTask, (int)(250));
+				} else if (tab.getPosition() == 1) {
+					if (fadeAnim.isRunning()) {
+						fadeAnim.cancel();
 					}
+					profileData.put("savedNavigationIndex", "1");
+					savedData.edit().putString("savedProfileData", ListUtil.setHashMapToSharedJSON(profileData)).apply();
+					player.setVisibility(View.GONE);
+					listRefresh.setVisibility(View.VISIBLE);
+					miniplayer.setVisibility(View.VISIBLE);
+					miniplayerSeekbar.setVisibility(View.VISIBLE);
+					fadeAnim.setTarget(listRefresh);
+					fadeAnim.setPropertyName("alpha");
+					fadeAnim.setFloatValues((float)(1.0d), (float)(0.0d));
+					fadeAnim.start();
+					timerTask = new TimerTask() {
+						@Override
+						public void run() {
+							runOnUiThread(new Runnable() {
+								@Override
+								public void run() {
+									player.setVisibility(View.VISIBLE);
+									listRefresh.setVisibility(View.GONE);
+									miniplayer.setVisibility(View.GONE);
+									miniplayerSeekbar.setVisibility(View.GONE);
+									fadeAnim.setTarget(player);
+									fadeAnim.setPropertyName("alpha");
+									fadeAnim.setFloatValues((float)(0.0d), (float)(1.0d));
+									fadeAnim.start();
+								}
+							});
+						}
+					};
+					timer.schedule(timerTask, (int)(250));
 				}
 			}
 			@Override
@@ -265,14 +264,12 @@ public class LocalStreamActivity extends  AppCompatActivity  {
 				miniplayer.setVisibility(View.VISIBLE);
 				player.setVisibility(View.GONE);
 				miniplayerSeekbar.setVisibility(View.VISIBLE);
-			} else {
-				if (profileData.get("savedNavigationIndex").equals("1")) {
-					tabNavigation.getTabAt(1).select();
-					listRefresh.setVisibility(View.GONE);
-					player.setVisibility(View.VISIBLE);
-					miniplayer.setVisibility(View.GONE);
-					miniplayerSeekbar.setVisibility(View.GONE);
-				}
+			} else if (profileData.get("savedNavigationIndex").equals("1")) {
+				tabNavigation.getTabAt(1).select();
+				listRefresh.setVisibility(View.GONE);
+				player.setVisibility(View.VISIBLE);
+				miniplayer.setVisibility(View.GONE);
+				miniplayerSeekbar.setVisibility(View.GONE);
 			}
 		} else {
 			profileData.put("savedNavigationIndex", "0");
@@ -285,7 +282,7 @@ public class LocalStreamActivity extends  AppCompatActivity  {
 		}
 		menu.setOnClickListener(new View.OnClickListener() {
 			@Override
-			public void onClick(View _view) {
+			public void onClick(View view) {
 				android.graphics.drawable.RippleDrawable rippleButton = new android.graphics.drawable.RippleDrawable(new android.content.res.ColorStateList(new int[][]{new int[]{}}, new int[]{ Color.parseColor("#BDBDBD") }), null, null);
 				menu.setBackground(rippleButton);
 				BottomSheetDialog menuDialog = new BottomSheetDialog(LocalStreamActivity.this);
@@ -422,7 +419,7 @@ public class LocalStreamActivity extends  AppCompatActivity  {
 												android.graphics.drawable.RippleDrawable rippleButton = new android.graphics.drawable.RippleDrawable(new android.content.res.ColorStateList(new int[][]{new int[]{}}, new int[]{ Color.parseColor("#BDBDBD") }), null, null);
 								                view.setBackground(rippleButton);
 												Intent intent = new Intent(getApplicationContext(), LyricsEditorActivity.class);
-												intent.putExtra("songPosition", String.valueOf((long)(Double.parseDouble(savedData.getString("savedSongPosition", "0")))));
+												intent.putExtra("songPosition", String.valueOf((int)(Double.parseDouble(savedData.getString("savedSongPosition", "0")))));
 												startActivity(intent);
 												lyricsDialog.dismiss();
 												menuDialog.dismiss();
@@ -648,7 +645,6 @@ public class LocalStreamActivity extends  AppCompatActivity  {
 						_item.put("isEmpty", "yes");
 						musicData.add(_item);
 					}
-					
 					listRefresh.setRefreshing(false);
 				}
 			}
@@ -678,7 +674,7 @@ public class LocalStreamActivity extends  AppCompatActivity  {
 		
 		skipBackward.setOnClickListener(new View.OnClickListener() {
 			@Override
-			public void onClick(View _view) {
+			public void onClick(View view) {
 				if (playbackSrv != null) {
 					try {
 						profileData.put("lastSongItemPosition", String.valueOf((Integer.parseInt(profileData.get("lastSongItemPosition").toString()) - 1)));
@@ -701,7 +697,7 @@ public class LocalStreamActivity extends  AppCompatActivity  {
 		
 		playPause.setOnClickListener(new View.OnClickListener() {
 			@Override
-			public void onClick(View _view) {
+			public void onClick(View view) {
 				if (playbackSrv.mp != null) {
 					if (!playbackSrv.isPlaying()) {
 						playbackSrv.play();
@@ -741,7 +737,7 @@ public class LocalStreamActivity extends  AppCompatActivity  {
 		
 		skipForward.setOnClickListener(new View.OnClickListener() {
 			@Override
-			public void onClick(View _view) {
+			public void onClick(View view) {
 				if (playbackSrv.mp != null) {
 					try {
 						profileData.put("lastSongItemPosition", String.valueOf((Integer.parseInt(profileData.get("lastSongItemPosition").toString()) + 1)));
@@ -764,21 +760,21 @@ public class LocalStreamActivity extends  AppCompatActivity  {
 		
 		miniplayerSkipPrev.setOnClickListener(new View.OnClickListener() {
 			@Override
-			public void onClick(View _view) {
+			public void onClick(View view) {
 				skipBackward.performClick();
 			}
 		});
 		
 		miniplayerPlayPause.setOnClickListener(new View.OnClickListener() {
 			@Override
-			public void onClick(View _view) {
+			public void onClick(View view) {
 				playPause.performClick();
 			}
 		});
 		
 		miniplayerSkipNext.setOnClickListener(new View.OnClickListener() {
 			@Override
-			public void onClick(View _view) {
+			public void onClick(View view) {
 				skipForward.performClick();
 			}
 		});
