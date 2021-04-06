@@ -159,8 +159,8 @@ public class LocalPlaybackService extends Service {
         miniplayerSongArtist.setText(musicData.get(position).get("songArtist").toString());
         miniplayerSeekbar.setMax(getMaxDuration());
         miniplayerSeekbar.setProgress(getCurrentPosition());
-        maxDuration.setText(String.valueOf((long)((getMaxDuration() / 1000) / 60)).concat(":".concat(new DecimalFormat("00").format((getMaxDuration() / 1000) % 60))));
-        currentDuration.setText(String.valueOf((long)((getCurrentPosition() / 1000) / 60)).concat(":".concat(new DecimalFormat("00").format((getCurrentPosition() / 1000) % 60))));
+        maxDuration.setText(String.valueOf((int)((getMaxDuration() / 1000) / 60)).concat(":".concat(new DecimalFormat("00").format((getMaxDuration() / 1000) % 60))));
+        currentDuration.setText(String.valueOf((int)((getCurrentPosition() / 1000) / 60)).concat(":".concat(new DecimalFormat("00").format((getCurrentPosition() / 1000) % 60))));
         seekbarDuration.setMax(getMaxDuration());
         seekbarDuration.setProgress(getCurrentPosition());
 	    Intent notIntent = new Intent(this, LocalStreamActivity.class);
