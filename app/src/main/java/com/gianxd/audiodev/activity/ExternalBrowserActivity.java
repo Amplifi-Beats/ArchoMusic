@@ -79,14 +79,10 @@ public class ExternalBrowserActivity extends  AppCompatActivity  {
 			public void onClick(View view) {
 				android.graphics.drawable.RippleDrawable rippleButton = new android.graphics.drawable.RippleDrawable(new android.content.res.ColorStateList(new int[][]{new int[]{}}, new int[]{ Color.parseColor("#BDBDBD") }), null, null);
 				back.setBackground(rippleButton);
-				if (web.canGoBack()) {
-					web.goBack();
-				} else {
-					if (web != null) {
-						web.destroy();
-					}
-					finish();
+				if (web != null) {
+					web.destroy();
 				}
+				finish();
 			}
 		});
 	}
