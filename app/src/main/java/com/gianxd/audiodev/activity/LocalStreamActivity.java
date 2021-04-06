@@ -1047,7 +1047,7 @@ public class LocalStreamActivity extends  AppCompatActivity  {
 			RecyclerView.LayoutParams recyclerLayoutParams = new RecyclerView.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
 			view.setLayoutParams(recyclerLayoutParams);
 			if (!data.get((int)position).containsKey("isEmpty")) {
-				Glide.with(getApplicationContext()).asBitmap().load(ImageUtil.getAlbumArt(data.get(position).get("songData").toString(), getResources())).into(albumArt);
+				Glide.with(getApplicationContext()).asBitmap().load(ImageUtil.getAlbumArt(StringUtil.decodeString(data.get(position).get("songData").toString()), getResources())).into(albumArt);
 				songTitle.setText(data.get((int)position).get("songTitle").toString());
 				songArtist.setText(data.get((int)position).get("songArtist").toString());
 				main.setVisibility(View.VISIBLE);

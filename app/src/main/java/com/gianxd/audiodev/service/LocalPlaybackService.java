@@ -151,8 +151,8 @@ public class LocalPlaybackService extends Service {
 			}
 		};
 		audioManager.requestAudioFocus(audioChangeListener, AudioManager.STREAM_MUSIC, AudioManager.AUDIOFOCUS_GAIN);
-		Glide.with(getApplicationContext()).asBitmap().load(ImageUtil.getAlbumArt(musicData.get(position).get("songData").toString(), getResources())).into(albumArt);
-		Glide.with(getApplicationContext()).asBitmap().load(ImageUtil.getAlbumArt(musicData.get(position).get("songData").toString(), getResources())).into(miniplayerAlbumArt);
+		Glide.with(getApplicationContext()).asBitmap().load(ImageUtil.getAlbumArt(StringUtil.decodeString(musicData.get(position).get("songData").toString()), getResources())).into(albumArt);
+		Glide.with(getApplicationContext()).asBitmap().load(ImageUtil.getAlbumArt(StringUtil.decodeString(musicData.get(position).get("songData").toString()), getResources())).into(miniplayerAlbumArt);
         songTitle.setText(musicData.get(position).get("songTitle").toString());
         songArtist.setText(musicData.get(position).get("songArtist").toString());
         miniplayerSongTitle.setText(musicData.get(position).get("songTitle").toString());

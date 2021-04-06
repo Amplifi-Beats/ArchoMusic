@@ -88,7 +88,7 @@ public class IntentFilterActivity extends  AppCompatActivity  {
 								runOnUiThread(new Runnable() {
 									@Override
 									public void run() {
-										currentDuration.setText(String.valueOf((long)((mp.getCurrentPosition() / 1000) / 60)).concat(":".concat(new DecimalFormat("00").format((mp.getCurrentPosition() / 1000) % 60))));
+										currentDuration.setText(String.valueOf((int)((mp.getCurrentPosition() / 1000) / 60)).concat(":".concat(new DecimalFormat("00").format((mp.getCurrentPosition() / 1000) % 60))));
 										seekbarDuration.setProgress((int)mp.getCurrentPosition());
 									}
 								});
@@ -119,7 +119,7 @@ public class IntentFilterActivity extends  AppCompatActivity  {
 			}
 			@Override
 			public void onStopTrackingTouch(SeekBar seekBar) {
-				currentDuration.setText(String.valueOf((long)((seekbarDuration.getProgress() / 1000) / 60)).concat(":".concat(new DecimalFormat("00").format((seekbarDuration.getProgress() / 1000) % 60))));
+				currentDuration.setText(String.valueOf((int)((seekbarDuration.getProgress() / 1000) / 60)).concat(":".concat(new DecimalFormat("00").format((seekbarDuration.getProgress() / 1000) % 60))));
 				seekbarDuration.setProgress((int)seekbarDuration.getProgress());
 				mp.seekTo((int)(seekbarDuration.getProgress()));
 			}
@@ -161,13 +161,13 @@ public class IntentFilterActivity extends  AppCompatActivity  {
 			mp.release();
 		}
 	}
-	public void startupUI () {
+	public void startupUI() {
 		logoName.setTypeface(Typeface.createFromAsset(getAssets(),"fonts/leixo.ttf"), Typeface.BOLD);
 		miniplayerPlayPause.setColorFilter(ContextCompat.getColor(getApplicationContext(), R.color.colorPrimary));
 	}
 	
 	
-	public void startupMP (Uri data) {
+	public void startupMP(Uri data) {
 		if (mp != null) {
 			audioManager.abandonAudioFocus(audioChangeListener);
 			if (mp.isPlaying()) {
@@ -201,8 +201,8 @@ public class IntentFilterActivity extends  AppCompatActivity  {
 		audioManager.requestAudioFocus(audioChangeListener, AudioManager.STREAM_MUSIC, AudioManager.AUDIOFOCUS_GAIN);
 		Glide.with(getApplicationContext()).asBitmap().load(ImageUtil.getAlbumArt(data.toString(), getResources())).into(miniplayerAlbumArt);
 		miniplayerSongTitle.setText(data.getLastPathSegment());
-		maxDuration.setText(String.valueOf((long)((mp.getDuration() / 1000) / 60)).concat(":".concat(new DecimalFormat("00").format((mp.getDuration() / 1000) % 60))));
-		currentDuration.setText(String.valueOf((long)((mp.getCurrentPosition() / 1000) / 60)).concat(":".concat(new DecimalFormat("00").format((mp.getCurrentPosition() / 1000) % 60))));
+		maxDuration.setText(String.valueOf((int)((mp.getDuration() / 1000) / 60)).concat(":".concat(new DecimalFormat("00").format((mp.getDuration() / 1000) % 60))));
+		currentDuration.setText(String.valueOf((int)((mp.getCurrentPosition() / 1000) / 60)).concat(":".concat(new DecimalFormat("00").format((mp.getCurrentPosition() / 1000) % 60))));
 		seekbarDuration.setMax((int)mp.getDuration());
 		seekbarDuration.setProgress((int)mp.getCurrentPosition());
 		miniplayerPlayPause.performClick();
