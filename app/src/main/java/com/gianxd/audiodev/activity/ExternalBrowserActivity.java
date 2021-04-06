@@ -46,6 +46,7 @@ public class ExternalBrowserActivity extends  AppCompatActivity  {
 		loadbar = (ProgressBar) findViewById(R.id.loadbar);
 		back = (ImageView) findViewById(R.id.back);
 		web = (WebView) findViewById(R.id.web);
+		web.getSettings().setJavaScriptEnabled(true);
 		web.getSettings().setSupportZoom(true);
 		webtitle = (TextView) findViewById(R.id.webtitle);
 		weburl = (TextView) findViewById(R.id.weburl);
@@ -81,6 +82,9 @@ public class ExternalBrowserActivity extends  AppCompatActivity  {
 				if (web.canGoBack()) {
 					web.goBack();
 				} else {
+					if (web != null) {
+						web.destroy();
+					}
 					finish();
 				}
 			}
@@ -129,6 +133,9 @@ public class ExternalBrowserActivity extends  AppCompatActivity  {
 		if (web.canGoBack()) {
 			web.goBack();
 		} else {
+			if (web != null) {
+				web.destroy();
+			}
 			finish();
 		}
 	}
