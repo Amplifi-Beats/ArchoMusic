@@ -41,6 +41,7 @@ import com.gianxd.audiodev.service.LocalPlaybackService.MusicBinder;
 import com.gianxd.audiodev.util.ApplicationUtil;
 import com.gianxd.audiodev.util.ImageUtil;
 import com.gianxd.audiodev.util.ListUtil;
+import com.gianxd.audiodev.util.StringUtil;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.android.material.tabs.TabLayout;
@@ -1007,7 +1008,6 @@ public class LocalStreamActivity extends  AppCompatActivity  {
 		@Override
 		public void onBindViewHolder(ViewHolder holder, int position) {
 			View view = holder.itemView;
-			String decodedData = "";
 			LinearLayout main = (LinearLayout) view.findViewById(R.id.main);
 			TextView emptyMsg = (TextView) view.findViewById(R.id.emptyMsg);
 			ImageView more = (ImageView) view.findViewById(R.id.more);
@@ -1016,21 +1016,10 @@ public class LocalStreamActivity extends  AppCompatActivity  {
 			TextView songArtist = (TextView) view.findViewById(R.id.songArtist);
 			RecyclerView.LayoutParams recyclerLayoutParams = new RecyclerView.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
 			view.setLayoutParams(recyclerLayoutParams);
-			if (!data.get(position).get("songData").toString().startsWith("/")) {
-				try {
-					decodedData = new String(android.util.Base64.decode(data.get(position).get("songData").toString(), android.util.Base64.DEFAULT), "UTF-8");
-				} catch (Exception e) {
-					decodedData = data.get(position).get("songData").toString();
-				}
-			} else {
-				// I'm lazy to add a string variable so I set decodedData instead :sus:
-				decodedData = data.get(position).get("songData").toString();
-			}
 			if (!data.get((int)position).containsKey("isEmpty")) {
 				Glide.with(getApplicationContext()).asBitmap().load(ImageUtil.getAlbumArt(data.get(position).get("songData").toString(), getResources())).into(albumArt);
 				songTitle.setText(data.get((int)position).get("songTitle").toString());
 				songArtist.setText(data.get((int)position).get("songArtist").toString());
-				String finalDecodedData = decodedData;
 				main.setVisibility(View.VISIBLE);
 				emptyMsg.setVisibility(View.GONE);
 				main.setOnClickListener(new View.OnClickListener() {
@@ -1039,7 +1028,7 @@ public class LocalStreamActivity extends  AppCompatActivity  {
 						android.graphics.drawable.RippleDrawable rippleButton = new android.graphics.drawable.RippleDrawable(new android.content.res.ColorStateList(new int[][]{new int[]{}}, new int[]{ Color.parseColor("#BDBDBD") }), new android.graphics.drawable.ColorDrawable(Color.parseColor("#FFFFFF")), null);
 						main.setBackground(rippleButton);
 						if (!(position == Integer.parseInt(profileData.get("lastSongItemPosition").toString()))) {
-							if (new java.io.File(finalDecodedData).exists()) {
+							if (new java.io.File(StringUtil.decodeString(musicData.get(position).get("songData").toString())).exists()) {
 								try {
 									playbackSrv.createLocalStream(position);
 									profileData.put("lastSongItemPosition", String.valueOf(position));

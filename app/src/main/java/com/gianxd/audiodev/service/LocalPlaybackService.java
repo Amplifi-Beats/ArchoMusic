@@ -22,8 +22,10 @@ import com.gianxd.audiodev.R;
 import com.gianxd.audiodev.activity.LocalStreamActivity;
 import com.gianxd.audiodev.util.ImageUtil;
 import com.gianxd.audiodev.util.ListUtil;
+import com.gianxd.audiodev.util.StringUtil;
 
 import java.io.File;
+import java.io.UnsupportedEncodingException;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -95,29 +97,19 @@ public class LocalPlaybackService extends Service {
 		stopSelf();
 	}
 	
-	public void createLocalStream(int position){
-		String decodedData = "";
-       if (mp != null) {
-		   audioManager.abandonAudioFocus(audioChangeListener);
-	       if (isPlaying()) {
-			   playPause.performClick();
-	       }
-	       mp.reset();
-	       mp.release();
-       }
-	   if (audioManager == null) {
-		   audioManager = ((AudioManager)getApplicationContext().getSystemService(Context.AUDIO_SERVICE));
-	   }
-	    if (!musicData.get(position).get("songData").toString().startsWith("/")) {
-			try {
-				decodedData = new String(android.util.Base64.decode(musicData.get(position).get("songData").toString(), android.util.Base64.DEFAULT), "UTF-8");
-			} catch (Exception e) {
-			    // DO NOTHING
-			}
-		} else {
-	    	decodedData = musicData.get(position).get("songData").toString();
-		}
-		mp = MediaPlayer.create(getApplicationContext(), Uri.fromFile(new File(decodedData)));
+	public void createLocalStream(int position) {
+        if (mp != null) {
+		    audioManager.abandonAudioFocus(audioChangeListener);
+	        if (isPlaying()) {
+			    playPause.performClick();
+	        }
+	        mp.reset();
+	        mp.release();
+        }
+	    if (audioManager == null) {
+		    audioManager = ((AudioManager)getApplicationContext().getSystemService(Context.AUDIO_SERVICE));
+	    }
+		mp = MediaPlayer.create(getApplicationContext(), Uri.fromFile(new File(StringUtil.decodeString(musicData.get(position).get("songData").toString()))));
 		mp.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
 			@Override
 			public void onCompletion(MediaPlayer mp) {
@@ -196,7 +188,7 @@ public class LocalPlaybackService extends Service {
 				    .setNumber(0)
 				    .setCategory(Notification.CATEGORY_SERVICE)
 				    .setSmallIcon(R.mipmap.ic_launcher_round)
-				    .setLargeIcon(ImageUtil.getAlbumArt(decodedData, getResources()))
+				    .setLargeIcon(ImageUtil.getAlbumArt(StringUtil.decodeString(musicData.get(position).get("songData").toString()), getResources()))
 				    .setContentText("by ".concat(musicData.get(position).get("songArtist").toString()))
 				    .setContentTitle(musicData.get(position).get("songTitle").toString())
 				    .build();

@@ -28,6 +28,7 @@ import androidx.core.content.ContextCompat;
 import com.gianxd.audiodev.R;
 import com.gianxd.audiodev.util.ApplicationUtil;
 import com.gianxd.audiodev.util.ListUtil;
+import com.gianxd.audiodev.util.StringUtil;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.gson.Gson;
 
@@ -301,7 +302,6 @@ public class SplashActivity extends AppCompatActivity {
 							{
 														
 								HashMap<String, Object> songDetails = new HashMap<>();
-								encodedData = android.util.Base64.encodeToString(data.getBytes("UTF-8"), android.util.Base64.DEFAULT);
 								if (name.startsWith("<unknown>")) {
 									name = "Unknown Title";
 								}
@@ -309,7 +309,7 @@ public class SplashActivity extends AppCompatActivity {
 									artist = "Unknown Artist";
 								}
 								songDetails.put("songTitle", name);
-								songDetails.put("songData", encodedData);
+								songDetails.put("songData", StringUtil.encodeString(data));
 								songDetails.put("songArtist", artist);
 								songDetails.put("id", _id);
 								musicData.add(songDetails);
