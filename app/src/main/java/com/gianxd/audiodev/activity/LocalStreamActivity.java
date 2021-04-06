@@ -1114,7 +1114,7 @@ public class LocalStreamActivity extends  AppCompatActivity  {
 					public void onClick(View view) {
 						android.graphics.drawable.RippleDrawable rippleButton = new android.graphics.drawable.RippleDrawable(new android.content.res.ColorStateList(new int[][]{new int[]{}}, new int[]{ Color.parseColor("#BDBDBD") }), new android.graphics.drawable.ColorDrawable(Color.parseColor("#FFFFFF")), null);
 						main.setBackground(rippleButton);
-						if (!(position == Integer.parseInt(profileData.get("lastSongItemPosition").toString()))) {
+						if (!(position == Integer.parseInt(profileData.get("profileSongPosition").toString()))) {
 							if (new java.io.File(StringUtil.decodeString(musicData.get(position).get("songData").toString())).exists()) {
 								try {
 									playbackSrv.createLocalStream(position);
