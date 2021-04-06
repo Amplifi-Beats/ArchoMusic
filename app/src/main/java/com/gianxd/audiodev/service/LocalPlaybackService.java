@@ -22,9 +22,8 @@ import com.gianxd.audiodev.R;
 import com.gianxd.audiodev.activity.LocalStreamActivity;
 import com.gianxd.audiodev.util.ImageUtil;
 import com.gianxd.audiodev.util.ListUtil;
-import com.google.gson.Gson;
-import com.google.gson.reflect.TypeToken;
 
+import java.io.File;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -118,7 +117,7 @@ public class LocalPlaybackService extends Service {
 		} else {
 	    	decodedData = musicData.get(position).get("songData").toString();
 		}
-		mp = MediaPlayer.create(getApplicationContext(), Uri.fromFile(new java.io.File(decodedData)));
+		mp = MediaPlayer.create(getApplicationContext(), Uri.fromFile(new File(decodedData)));
 		mp.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
 			@Override
 			public void onCompletion(MediaPlayer mp) {
