@@ -45,6 +45,7 @@
     <string name="permissions_description">Permissions can be used for playing local audio files in your device, recording audio and accessing the Internet.</string>
     <string name="permissions_description2">Archo Music wants to grant permissions by following:\n\nStorage\nMicrophone\n\nAlthough, Internet permission is not needed to be granted as it is allowed by Android OS in default.</string>
     <string name="permissions_btn_grant">Grant</string>
+    <string name="settings_title">Settings</string>
     <string name="song_opts_title">Song Options</string>
     <string name="song_opts_rename_title">Rename</string>
     <string name="song_opts_share_title">Share</string>
