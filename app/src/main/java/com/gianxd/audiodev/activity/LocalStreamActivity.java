@@ -1065,7 +1065,7 @@ public class LocalStreamActivity extends  AppCompatActivity  {
 									savedData.edit().putString("savedProfileData", ListUtil.setHashMapToSharedJSON(profileData)).apply();
 									playPause.performClick();
 								} catch (Exception e) {
-									ApplicationUtil.toast(getApplicationContext(), "Failed to play selected song. Skipping", Toast.LENGTH_SHORT);
+									ApplicationUtil.toast(getApplicationContext(), "Error loading audio file.", Toast.LENGTH_SHORT);
 									skipForward.performClick();
 								}
 							} else {

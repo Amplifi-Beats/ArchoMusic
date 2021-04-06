@@ -10,6 +10,7 @@ import android.media.MediaMetadataRetriever;
 import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.view.Window;
 import android.widget.ImageView;
@@ -27,6 +28,7 @@ import com.gianxd.audiodev.R;
 import com.gianxd.audiodev.util.ApplicationUtil;
 import com.gianxd.audiodev.util.ImageUtil;
 
+import java.io.FileNotFoundException;
 import java.text.DecimalFormat;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -129,13 +131,13 @@ public class IntentFilterActivity extends  AppCompatActivity  {
 	private void initializeLogic() {
 		startupUI();
 		setVolumeControlStream(AudioManager.STREAM_MUSIC);
+        Intent intent = getIntent();
+        Uri data = intent.getData();
 		try {
-			Intent intent = getIntent();
-			Uri data = intent.getData();
-			startupMP(data);
+            startupMP(data);
 		} catch (Exception e){
-			ApplicationUtil.toast(getApplicationContext(), "Failed to play selected audio file.", Toast.LENGTH_LONG);
-			finish();
+		    ApplicationUtil.toast(getApplicationContext(), "Error loading audio file.", Toast.LENGTH_LONG);
+            finish();
 		}
 	}
 	
@@ -198,8 +200,12 @@ public class IntentFilterActivity extends  AppCompatActivity  {
 						}
 				}
 		};
+		try {
+            Glide.with(getApplicationContext()).asBitmap().load(ImageUtil.getAlbumArt(getContentResolver().openInputStream(data).toString(), getResources())).into(miniplayerAlbumArt);
+        } catch (FileNotFoundException exception) {
+		    // Do nothing
+        }
 		audioManager.requestAudioFocus(audioChangeListener, AudioManager.STREAM_MUSIC, AudioManager.AUDIOFOCUS_GAIN);
-		Glide.with(getApplicationContext()).asBitmap().load(ImageUtil.getAlbumArt(data.toString(), getResources())).into(miniplayerAlbumArt);
 		miniplayerSongTitle.setText(data.getLastPathSegment());
 		maxDuration.setText(String.valueOf((int)((mp.getDuration() / 1000) / 60)).concat(":".concat(new DecimalFormat("00").format((mp.getDuration() / 1000) % 60))));
 		currentDuration.setText(String.valueOf((int)((mp.getCurrentPosition() / 1000) / 60)).concat(":".concat(new DecimalFormat("00").format((mp.getCurrentPosition() / 1000) % 60))));
