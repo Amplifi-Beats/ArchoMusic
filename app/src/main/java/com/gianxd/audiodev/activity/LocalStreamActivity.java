@@ -46,7 +46,6 @@ import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.android.material.tabs.TabLayout;
 import com.google.gson.Gson;
-import com.google.gson.reflect.TypeToken;
 
 import java.text.DecimalFormat;
 import java.util.ArrayList;
