@@ -74,6 +74,7 @@
 			 android:layout_height="wrap_content"
 			 android:gravity="center"
 			 android:padding="8dp"
+			 android:alpha="0.5f"
 			 android:text="@string/settings_note"
 			 android:textSize="11sp" />
 
