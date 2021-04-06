@@ -64,4 +64,8 @@
     <string name="settings_note">More options will come soon!</string>
     <string name="settings_disable_ads">Disable Ads</string>
     <string name="settings_dark_mode">Dark Mode</string>
+    <string name="create_a_profile_icon_title">Set profile picture</string>
+    <string name="create_a_profile_icon_input_hint">Enter specified path or URL here</string>
+    <string name="create_a_profile_icon_btn_finish">Finish</string>
+    <string name="create_a_profile_icon_btn_cancel">Cancel</string>
 </resources>
