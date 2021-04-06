@@ -338,7 +338,6 @@ public class LocalStreamActivity extends  AppCompatActivity  {
 						        create.setOnClickListener(new View.OnClickListener() {
 								        @Override
 								        public void onClick(View view) {
-									            HashMap<String, Object> profileData = new Gson().fromJson(savedData.getString("savedProfileData", ""), new TypeToken<HashMap<String, Object>>(){}.getType());
 										        if (profile_name.getText().toString().length() > 0) {
 														if (profile_name.getText().toString().equals(profileData.get("profileName").toString())) {
 															    renameProfile.dismiss();
