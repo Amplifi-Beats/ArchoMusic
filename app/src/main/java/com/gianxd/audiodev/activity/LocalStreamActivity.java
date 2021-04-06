@@ -213,7 +213,7 @@ public class LocalStreamActivity extends  AppCompatActivity  {
 						if (fadeAnim.isRunning()) {
 							fadeAnim.cancel();
 						}
-						profileData.put("savedNavigationIndex", "0");
+						profileData.put("savedNavigationIndex", "1");
 						savedData.edit().putString("savedProfileData", ListUtil.setHashMapToSharedJSON(profileData)).apply();
 						player.setVisibility(View.GONE);
 						listRefresh.setVisibility(View.VISIBLE);
@@ -350,6 +350,8 @@ public class LocalStreamActivity extends  AppCompatActivity  {
 														        tabNavigation.getTabAt(0).select();
 													            renameProfile.dismiss();
 														        menuDialog.dismiss();
+														        startActivity(new Intent(getApplicationContext(), LauncherActivity.class));
+														        finish();
 														}
 											        } else {
 											           profile_name.setError("Profile name should not be blank.");
