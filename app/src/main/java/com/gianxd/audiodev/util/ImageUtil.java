@@ -2,6 +2,7 @@ package com.gianxd.audiodev.util;
 
 import android.app.Activity;
 import android.content.ActivityNotFoundException;
+import android.content.Context;
 import android.content.Intent;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
@@ -38,7 +39,28 @@ public class ImageUtil {
     public static Bitmap getAlbumArt(String path, Resources resources) {
         Bitmap bitmapArt;
         MediaMetadataRetriever artRetriever = new MediaMetadataRetriever();
-        artRetriever.setDataSource(path);
+        if (path.startsWith("file://")) {
+            artRetriever.setDataSource(path);
+        } else if (path.startsWith("content://")) {
+            throw new IllegalArgumentException("Content URIs cannot be set as path.");
+        }
+        byte[] album_art = artRetriever.getEmbeddedPicture();
+        if( album_art != null ){
+            bitmapArt = BitmapFactory.decodeByteArray(album_art, 0, album_art.length);
+        } else {
+            bitmapArt = ((BitmapDrawable)resources.getDrawable(R.drawable.ic_media_album_art)).getBitmap();
+        }
+        return bitmapArt;
+    }
+
+    public static Bitmap getAlbumArt(Context context, Uri contentUri, Resources resources) {
+        Bitmap bitmapArt;
+        MediaMetadataRetriever artRetriever = new MediaMetadataRetriever();
+        if (contentUri.toString().startsWith("content://")) {
+            artRetriever.setDataSource(context, contentUri);
+        } else if (contentUri.toString().startsWith("file://")) {
+            throw new IllegalArgumentException("Filepaths cannot be set as URIs.");
+        }
         byte[] album_art = artRetriever.getEmbeddedPicture();
         if( album_art != null ){
             bitmapArt = BitmapFactory.decodeByteArray(album_art, 0, album_art.length);
