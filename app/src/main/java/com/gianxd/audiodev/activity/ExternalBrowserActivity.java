@@ -117,13 +117,18 @@ public class ExternalBrowserActivity extends  AppCompatActivity  {
 			break;
 		}
 	}
+
+	@Override
+	public void onDestroy() {
+		web.destroy();
+		super.onDestroy();
+	}
 	
 	@Override
 	public void onBackPressed() {
 		if (web.canGoBack()) {
 			web.goBack();
-		}
-		else {
+		} else {
 			finish();
 		}
 	}
