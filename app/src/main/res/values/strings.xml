@@ -60,4 +60,8 @@
     <string name="song_opts_rename_btn_confirm">Confirm</string>
     <string name="song_opts_rename_btn_cancel">Cancel</string>
     <string name="recyclerview_list_empty_msg">No songs found.</string>
+    <string name="settings_category1">General</string>
+    <string name="settings_note">More options will come soon!</string>
+    <string name="settings_disable_ads">Disable Ads</string>
+    <string name="settings_dark_mode">Dark Mode</string>
 </resources>
