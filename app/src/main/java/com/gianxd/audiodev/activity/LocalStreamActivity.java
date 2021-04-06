@@ -492,6 +492,7 @@ public class LocalStreamActivity extends  AppCompatActivity  {
 						        about.setContentView(dialogLayout);
 						        LinearLayout main = dialogLayout.findViewById(R.id.main);
 						        TextView title = dialogLayout.findViewById(R.id.title);
+						        TextView author = dialogLayout.findViewById(R.id.author);
 								LinearLayout youtube = dialogLayout.findViewById(R.id.youtube);
 								LinearLayout twitter = dialogLayout.findViewById(R.id.twitter);
 						        LinearLayout github = dialogLayout.findViewById(R.id.github);
@@ -499,6 +500,28 @@ public class LocalStreamActivity extends  AppCompatActivity  {
 								LinearLayout licenses = dialogLayout.findViewById(R.id.licenses);
 								LinearLayout privacy = dialogLayout.findViewById(R.id.privacy);
 						        title.setTypeface(Typeface.createFromAsset(getAssets(),"fonts/leixo.ttf"), Typeface.BOLD);
+						        int randomizer = com.gianxd.audiodev.util.MusicDevUtil.getRandom((int)(0), (int)(9));
+						        if (randomizer == 0) {
+						            author.setText(R.string.about_description);
+                                } else if (randomizer == 1) {
+						            author.setText(R.string.about_description2);
+                                } else if (randomizer == 2) {
+						            author.setText(R.string.about_description3);
+                                } else if (randomizer == 3) {
+                                    author.setText(R.string.about_description4);
+                                } else if (randomizer == 4) {
+                                    author.setText(R.string.about_description5);
+                                } else if (randomizer == 5) {
+                                    author.setText(R.string.about_description6);
+                                } else if (randomizer == 6) {
+                                    author.setText(R.string.about_description7);
+                                } else if (randomizer == 7) {
+                                    author.setText(R.string.about_description8);
+                                } else if (randomizer == 8) {
+                                    author.setText(R.string.about_description9);
+                                } else if (randomizer == 10) {
+                                    author.setText(R.string.about_description10);
+                                }
 								youtube.setOnClickListener(new View.OnClickListener() {
 										@Override 
 										public void onClick(View view) {
