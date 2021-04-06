@@ -200,11 +200,7 @@ public class IntentFilterActivity extends  AppCompatActivity  {
 						}
 				}
 		};
-		try {
-            Glide.with(getApplicationContext()).asBitmap().load(ImageUtil.getAlbumArt(getContentResolver().openInputStream(data).toString(), getResources())).into(miniplayerAlbumArt);
-        } catch (FileNotFoundException exception) {
-		    // Do nothing
-        }
+		Glide.with(getApplicationContext()).asBitmap().load(ImageUtil.getAlbumArt(getApplicationContext(), data, getResources())).into(miniplayerAlbumArt);
 		audioManager.requestAudioFocus(audioChangeListener, AudioManager.STREAM_MUSIC, AudioManager.AUDIOFOCUS_GAIN);
 		miniplayerSongTitle.setText(data.getLastPathSegment());
 		maxDuration.setText(String.valueOf((int)((mp.getDuration() / 1000) / 60)).concat(":".concat(new DecimalFormat("00").format((mp.getDuration() / 1000) % 60))));
