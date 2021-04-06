@@ -891,8 +891,8 @@ public class LocalStreamActivity extends  AppCompatActivity  {
 					if (playbackSrv.mp != null && playbackSrv.isPlaying()) {
 						playPause.setImageResource(R.drawable.ic_media_pause);
 						miniplayerPlayPause.setImageResource(R.drawable.ic_media_pause);
-						Glide.with(getApplicationContext()).asBitmap().load(ImageUtil.getAlbumArt(musicData.get(Integer.parseInt(profileData.get("profileSongPosition").toString())).get("songData").toString(), getResources())).into(albumArt);
-						Glide.with(getApplicationContext()).asBitmap().load(ImageUtil.getAlbumArt(musicData.get(Integer.parseInt(profileData.get("profileSongPosition").toString())).get("songData").toString(), getResources())).into(miniplayerAlbumArt);
+						Glide.with(getApplicationContext()).asBitmap().load(ImageUtil.getAlbumArt(StringUtil.decodeString(musicData.get(Integer.parseInt(profileData.get("profileSongPosition").toString())).get("songData").toString()), getResources())).into(albumArt);
+						Glide.with(getApplicationContext()).asBitmap().load(ImageUtil.getAlbumArt(StringUtil.decodeString(musicData.get(Integer.parseInt(profileData.get("profileSongPosition").toString())).get("songData").toString()), getResources())).into(miniplayerAlbumArt);
 						songTitle.setText(musicData.get(Integer.parseInt(profileData.get("profileSongPosition").toString())).get("songTitle").toString());
 						songArtist.setText(musicData.get(Integer.parseInt(profileData.get("profileSongPosition").toString())).get("songArtist").toString());
 						miniplayerSongTitle.setText(musicData.get(Integer.parseInt(profileData.get("profileSongPosition").toString())).get("songTitle").toString());
@@ -1000,7 +1000,7 @@ public class LocalStreamActivity extends  AppCompatActivity  {
 				
 			}
 			songList.setAdapter(new SongListAdapter(musicData));
-			if (profileData.containsKey("lastSongItemPosition")) {
+			if (profileData.containsKey("profileSongPosition")) {
 				songList.scrollToPosition(Integer.parseInt(profileData.get("profileSongPosition").toString()));
 			}
 		} else {
