@@ -133,33 +133,31 @@ public class LocalStreamActivity extends  AppCompatActivity  {
 		savedData = applicationContext.getSharedPreferences("savedData", Context.MODE_PRIVATE);
 		tabNavigation.addTab(tabNavigation.newTab().setIcon(R.drawable.ic_tabnav_library));
 		tabNavigation.addTab(tabNavigation.newTab().setIcon(R.drawable.ic_tabnav_nowplaying));
-		if (musicData != null) {
-			if (savedData.contains("savedMusicData")) {
-			    musicData = ListUtil.getArrayListFromSharedJSON(savedData, "savedMusicData");
-			     if (musicData.isEmpty()) {
-				    {
-					     HashMap<String, Object> _item = new HashMap<>();
-					     _item.put("isEmpty", "yes");
-					     musicData.add(_item);
-				    }
-			     }
-			     songList.setAdapter(new SongListAdapter(musicData));
-			} else {
-				 ApplicationUtil.toast(getApplicationContext(), "Library data failed to load.", Toast.LENGTH_LONG);
-			     {
-			     	HashMap<String, Object> _item = new HashMap<>();
-			     	_item.put("isEmpty", "yes");
-				    musicData.add(_item);
-			     }
-			     songList.setAdapter(new SongListAdapter(musicData));
-		    }
+		if (savedData.contains("savedMusicData")) {
+			musicData = ListUtil.getArrayListFromSharedJSON(savedData, "savedMusicData");
+			if (musicData != null) {
+				if (musicData.isEmpty()) {
+					{
+						HashMap<String, Object> _item = new HashMap<>();
+						_item.put("isEmpty", "yes");
+						musicData.add(_item);
+					}
+				}
+			}
+			songList.setAdapter(new SongListAdapter(musicData));
+		} else {
+			ApplicationUtil.toast(getApplicationContext(), "Library data failed to load.", Toast.LENGTH_LONG);
+			{
+				HashMap<String, Object> _item = new HashMap<>();
+				_item.put("isEmpty", "yes");
+				musicData.add(_item);
+			}
+			songList.setAdapter(new SongListAdapter(musicData));
 		}
-		if (profileData != null) {
-			if (savedData.contains("savedProfileData")) {
-				profileData = ListUtil.getHashMapFromSharedJSON(savedData, "savedProfileData");
-		    } else {
-				ApplicationUtil.toast(getApplicationContext(), "Profile settings failed to load.", Toast.LENGTH_LONG);
-		    }
+		if (savedData.contains("savedProfileData")) {
+			profileData = ListUtil.getHashMapFromSharedJSON(savedData, "savedProfileData");
+		} else {
+			ApplicationUtil.toast(getApplicationContext(), "Profile settings failed to load.", Toast.LENGTH_LONG);
 		}
 		miniplayer.setOnClickListener(new View.OnClickListener() {
 			@Override
