@@ -810,6 +810,18 @@ public class LocalStreamActivity extends  AppCompatActivity  {
 					if (playbackSrv.mp != null && playbackSrv.isPlaying()) {
 						playPause.setImageResource(R.drawable.ic_media_pause);
 						miniplayerPlayPause.setImageResource(R.drawable.ic_media_pause);
+						Glide.with(getApplicationContext()).asBitmap().load(ImageUtil.getAlbumArt(musicData.get(Integer.parseInt(profileData.get("lastSongItemPosition").toString())).get("songData").toString(), getResources())).into(albumArt);
+						Glide.with(getApplicationContext()).asBitmap().load(ImageUtil.getAlbumArt(musicData.get(Integer.parseInt(profileData.get("lastSongItemPosition").toString())).get("songData").toString(), getResources())).into(miniplayerAlbumArt);
+						songTitle.setText(musicData.get(Integer.parseInt(profileData.get("lastSongItemPosition").toString())).get("songTitle").toString());
+						songArtist.setText(musicData.get(Integer.parseInt(profileData.get("lastSongItemPosition").toString())).get("songArtist").toString());
+						miniplayerSongTitle.setText(musicData.get(Integer.parseInt(profileData.get("lastSongItemPosition").toString())).get("songTitle").toString());
+						miniplayerSongArtist.setText(musicData.get(Integer.parseInt(profileData.get("lastSongItemPosition").toString())).get("songArtist").toString());
+						miniplayerSeekbar.setMax(playbackSrv.getMaxDuration());
+						miniplayerSeekbar.setProgress(playbackSrv.getCurrentPosition());
+						maxDuration.setText(String.valueOf((long)((playbackSrv.getMaxDuration() / 1000) / 60)).concat(":".concat(new DecimalFormat("00").format((playbackSrv.getMaxDuration() / 1000) % 60))));
+						currentDuration.setText(String.valueOf((long)((playbackSrv.getCurrentPosition() / 1000) / 60)).concat(":".concat(new DecimalFormat("00").format((playbackSrv.getCurrentPosition() / 1000) % 60))));
+						seekbarDuration.setMax(playbackSrv.getMaxDuration());
+						seekbarDuration.setProgress(playbackSrv.getCurrentPosition());
 					} else {
 						if (profileData.containsKey("lastSongItemPosition")) {
 							if (!profileData.get("lastSongItemPosition").equals("0")) {
