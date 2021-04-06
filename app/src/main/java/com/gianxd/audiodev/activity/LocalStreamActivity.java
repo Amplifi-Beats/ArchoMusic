@@ -294,7 +294,7 @@ public class LocalStreamActivity extends  AppCompatActivity  {
 				LinearLayout profile = dialogLayout.findViewById(R.id.profile);
 				ImageView profile_icon = dialogLayout.findViewById(R.id.profile_icon);
 				TextView profile_name = dialogLayout.findViewById(R.id.profile_name);
-				LinearLayout liveStreaming = dialogLayout.findViewById(R.id.liveStreaming);
+				LinearLayout live_streaming = dialogLayout.findViewById(R.id.live_streaming);
 				LinearLayout lyrics = dialogLayout.findViewById(R.id.lyrics);
 				LinearLayout settings = dialogLayout.findViewById(R.id.settings);
 				LinearLayout visualizer = dialogLayout.findViewById(R.id.visualizer);
@@ -374,7 +374,7 @@ public class LocalStreamActivity extends  AppCompatActivity  {
 						        renameProfile.show();
 						}
 				});
-				liveStreaming.setOnClickListener(new View.OnClickListener() {
+				live_streaming.setOnClickListener(new View.OnClickListener() {
 						@Override
 						public void onClick(View view) {
 								android.graphics.drawable.RippleDrawable rippleButton = new android.graphics.drawable.RippleDrawable(new android.content.res.ColorStateList(new int[][]{new int[]{}}, new int[]{ Color.parseColor("#BDBDBD") }), new android.graphics.drawable.ColorDrawable(Color.parseColor("#FFFFFF")), null);
