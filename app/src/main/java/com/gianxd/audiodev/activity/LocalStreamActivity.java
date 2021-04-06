@@ -181,7 +181,7 @@ public class LocalStreamActivity extends  AppCompatActivity  {
 					if (fadeAnim.isRunning()) {
 						fadeAnim.cancel();
 					}
-					profileData.put("savedNavigationIndex", "0");
+					profileData.put("profileNavigationIndex", "0");
 					savedData.edit().putString("savedProfileData", ListUtil.setHashMapToSharedJSON(profileData)).apply();
 					player.setVisibility(View.VISIBLE);
 					listRefresh.setVisibility(View.GONE);
@@ -214,7 +214,7 @@ public class LocalStreamActivity extends  AppCompatActivity  {
 					if (fadeAnim.isRunning()) {
 						fadeAnim.cancel();
 					}
-					profileData.put("savedNavigationIndex", "1");
+					profileData.put("profileNavigationIndex", "1");
 					savedData.edit().putString("savedProfileData", ListUtil.setHashMapToSharedJSON(profileData)).apply();
 					player.setVisibility(View.GONE);
 					listRefresh.setVisibility(View.VISIBLE);
@@ -259,14 +259,14 @@ public class LocalStreamActivity extends  AppCompatActivity  {
 
 			}
 		});
-		if (profileData.containsKey("savedNavigationIndex")) {
-			if (profileData.get("savedNavigationIndex").equals("0")) {
+		if (profileData.containsKey("profileNavigationIndex")) {
+			if (profileData.get("profileNavigationIndex").equals("0")) {
 				tabNavigation.getTabAt(0).select();
 				listRefresh.setVisibility(View.VISIBLE);
 				miniplayer.setVisibility(View.VISIBLE);
 				player.setVisibility(View.GONE);
 				miniplayerSeekbar.setVisibility(View.VISIBLE);
-			} else if (profileData.get("savedNavigationIndex").equals("1")) {
+			} else if (profileData.get("profileNavigationIndex").equals("1")) {
 				tabNavigation.getTabAt(1).select();
 				listRefresh.setVisibility(View.GONE);
 				player.setVisibility(View.VISIBLE);
@@ -274,7 +274,7 @@ public class LocalStreamActivity extends  AppCompatActivity  {
 				miniplayerSeekbar.setVisibility(View.GONE);
 			}
 		} else {
-			profileData.put("savedNavigationIndex", "0");
+			profileData.put("profileNavigationIndex", "0");
 			savedData.edit().putString("savedProfileData", ListUtil.setHashMapToSharedJSON(profileData)).apply();
 			tabNavigation.getTabAt(0).select();
 			listRefresh.setVisibility(View.VISIBLE);
@@ -398,11 +398,11 @@ public class LocalStreamActivity extends  AppCompatActivity  {
 						        TextView title = dialogLayout.findViewById(R.id.title);
 						        TextView lyrics = dialogLayout.findViewById(R.id.lyrics);
 						        title.setTypeface(Typeface.createFromAsset(getAssets(),"fonts/roboto_medium.ttf"), Typeface.NORMAL);
-								if (musicData.get(Integer.parseInt(profileData.get("lastSongItemPosition").toString())).containsKey("songLyrics")) {
-										if (musicData.get(Integer.parseInt(profileData.get("lastSongItemPosition").toString())).get("songLyrics").toString().length() == 0) {
+								if (musicData.get(Integer.parseInt(profileData.get("profileSongPosition").toString())).containsKey("songLyrics")) {
+										if (musicData.get(Integer.parseInt(profileData.get("profileSongPosition").toString())).get("songLyrics").toString().length() == 0) {
 												// Lyrics added with 0 letters
 										} else {
-											    lyrics.setText(musicData.get(Integer.parseInt(profileData.get("lastSongItemPosition").toString())).get("songLyrics").toString());
+											    lyrics.setText(musicData.get(Integer.parseInt(profileData.get("profileSongPosition").toString())).get("songLyrics").toString());
 										}
 								} else {
 									    // No Lyrics was found.
@@ -421,7 +421,7 @@ public class LocalStreamActivity extends  AppCompatActivity  {
 												android.graphics.drawable.RippleDrawable rippleButton = new android.graphics.drawable.RippleDrawable(new android.content.res.ColorStateList(new int[][]{new int[]{}}, new int[]{ Color.parseColor("#BDBDBD") }), null, null);
 								                view.setBackground(rippleButton);
 												Intent intent = new Intent(getApplicationContext(), LyricsEditorActivity.class);
-												intent.putExtra("songPosition", String.valueOf((int)(Double.parseDouble(savedData.getString("savedSongPosition", "0")))));
+												intent.putExtra("songPosition", String.valueOf((int)(Integer.parseInt(profileData.get("profileSongPosition").toString()))));
 												startActivity(intent);
 												lyricsDialog.dismiss();
 												menuDialog.dismiss();
@@ -688,7 +688,7 @@ public class LocalStreamActivity extends  AppCompatActivity  {
 					}
 					songList.setAdapter(new SongListAdapter(musicData));
 					if (savedData.contains("savedSongPosition")) {
-						songList.scrollToPosition(Integer.parseInt(profileData.get("lastSongItemPosition").toString()));
+						songList.scrollToPosition(Integer.parseInt(profileData.get("profileSongPosition").toString()));
 					}
 					listRefresh.setRefreshing(false);
 				}
@@ -720,7 +720,7 @@ public class LocalStreamActivity extends  AppCompatActivity  {
 					seekbarDuration.setProgress((int)seekbarDuration.getProgress());
 					miniplayerSeekbar.setProgress((int)seekbarDuration.getProgress());
 					currentDuration.setText(String.valueOf((int)((seekbarDuration.getProgress() / 1000) / 60)).concat(":".concat(new DecimalFormat("00").format((seekbarDuration.getProgress() / 1000) % 60))));
-					musicData.get(Integer.parseInt(profileData.get("lastSongItemPosition").toString())).put("lastSongCurrentDuration", String.valueOf((int)(seekbarDuration.getProgress())));
+					musicData.get(Integer.parseInt(profileData.get("profileSongPosition").toString())).put("songCurrentDuration", String.valueOf((int)(seekbarDuration.getProgress())));
 					savedData.edit().putString("savedMusicData", ListUtil.setArrayListToSharedJSON(musicData)).apply();
 				}
 			}
@@ -731,17 +731,17 @@ public class LocalStreamActivity extends  AppCompatActivity  {
 			public void onClick(View view) {
 				if (playbackSrv != null) {
 					try {
-						profileData.put("lastSongItemPosition", String.valueOf((Integer.parseInt(profileData.get("lastSongItemPosition").toString()) - 1)));
+						profileData.put("profileSongPosition", String.valueOf((Integer.parseInt(profileData.get("profileSongPosition").toString()) - 1)));
 						savedData.edit().putString("savedProfileData", ListUtil.setHashMapToSharedJSON(profileData)).apply();
 						if (Integer.parseInt(profileData.get("lastSongItemPosition").toString()) < musicData.size()) {
-							playbackSrv.createLocalStream(Integer.parseInt(profileData.get("lastSongItemPosition").toString()));
+							playbackSrv.createLocalStream(Integer.parseInt(profileData.get("profileSongPosition").toString()));
 							playPause.performClick();
 						}
 					} catch (Exception e) {
-						profileData.put("lastSongItemPosition", String.valueOf((Integer.parseInt(profileData.get("lastSongItemPosition").toString()) - 1)));
+						profileData.put("profileSongPosition", String.valueOf((Integer.parseInt(profileData.get("profileSongPosition").toString()) - 1)));
 						savedData.edit().putString("savedProfileData", ListUtil.setHashMapToSharedJSON(profileData)).apply();
-						if (Integer.parseInt(profileData.get("lastSongItemPosition").toString()) < musicData.size()) {
-							playbackSrv.createLocalStream(Integer.parseInt(profileData.get("lastSongItemPosition").toString()));
+						if (Integer.parseInt(profileData.get("profileSongPosition").toString()) < musicData.size()) {
+							playbackSrv.createLocalStream(Integer.parseInt(profileData.get("profileSongPosition").toString()));
 							playPause.performClick();
 						}
 					}
@@ -767,7 +767,7 @@ public class LocalStreamActivity extends  AppCompatActivity  {
 											seekbarDuration.setProgress((int)playbackSrv.getCurrentPosition());
 											miniplayerSeekbar.setProgress((int)playbackSrv.getCurrentPosition());
 											currentDuration.setText(String.valueOf((int)((playbackSrv.getCurrentPosition() / 1000) / 60)).concat(":".concat(new DecimalFormat("00").format((playbackSrv.getCurrentPosition() / 1000) % 60))));
-											musicData.get(Integer.parseInt(profileData.get("lastSongItemPosition").toString())).put("lastSongCurrentDuration", String.valueOf(playbackSrv.getCurrentPosition()));
+											musicData.get(Integer.parseInt(profileData.get("profileSongPosition").toString())).put("songCurrentDuration", String.valueOf(playbackSrv.getCurrentPosition()));
 											savedData.edit().putString("savedMusicData", ListUtil.setArrayListToSharedJSON(musicData)).apply();
 										} catch (Exception e) {
 											// do nothing 
@@ -794,17 +794,17 @@ public class LocalStreamActivity extends  AppCompatActivity  {
 			public void onClick(View view) {
 				if (playbackSrv.mp != null) {
 					try {
-						profileData.put("lastSongItemPosition", String.valueOf((Integer.parseInt(profileData.get("lastSongItemPosition").toString()) + 1)));
-						savedData.edit().putString("savedProfileData", ListUtil.setHashMapToSharedJSON(profileData)).apply();
-						if (Integer.parseInt(profileData.get("lastSongItemPosition").toString()) < musicData.size()) {
-							playbackSrv.createLocalStream(Integer.parseInt(profileData.get("lastSongItemPosition").toString()));
+						profileData.put("profileSongPosition", String.valueOf((Integer.parseInt(profileData.get("profileSongPosition").toString()) + 1)));
+						savedData.edit().putString("profileSongPosition", ListUtil.setHashMapToSharedJSON(profileData)).apply();
+						if (Integer.parseInt(profileData.get("profileSongPosition").toString()) < musicData.size()) {
+							playbackSrv.createLocalStream(Integer.parseInt(profileData.get("profileSongPosition").toString()));
 							playPause.performClick();
 						}
 					} catch (Exception e) {
-						profileData.put("lastSongItemPosition", String.valueOf((Integer.parseInt(profileData.get("lastSongItemPosition").toString()) + 1)));
+						profileData.put("profileSongPosition", String.valueOf((Integer.parseInt(profileData.get("profileSongPosition").toString()) + 1)));
 						savedData.edit().putString("savedProfileData", ListUtil.setHashMapToSharedJSON(profileData)).apply();
-						if (Integer.parseInt(profileData.get("lastSongItemPosition").toString()) < musicData.size()) {
-							playbackSrv.createLocalStream(Integer.parseInt(profileData.get("lastSongItemPosition").toString()));
+						if (Integer.parseInt(profileData.get("profileSongPosition").toString()) < musicData.size()) {
+							playbackSrv.createLocalStream(Integer.parseInt(profileData.get("profileSongPosition").toString()));
 							playPause.performClick();
 						}
 					}
@@ -856,7 +856,7 @@ public class LocalStreamActivity extends  AppCompatActivity  {
 							view.setBackground(rippleButton);
 							HashMap<String, Object> profileData = ListUtil.getHashMapFromSharedJSON(savedData, "savedProfileData");
 							profileData.remove("profileErrorTrace");
-							savedData.edit().putString("savedProfileData", new Gson().toJson(profileData)).apply();
+							savedData.edit().putString("savedProfileData", ListUtil.setHashMapToSharedJSON(profileData)).apply();
 							errorDialog.dismiss();
 						}
 					});
@@ -893,12 +893,12 @@ public class LocalStreamActivity extends  AppCompatActivity  {
 					if (playbackSrv.mp != null && playbackSrv.isPlaying()) {
 						playPause.setImageResource(R.drawable.ic_media_pause);
 						miniplayerPlayPause.setImageResource(R.drawable.ic_media_pause);
-						Glide.with(getApplicationContext()).asBitmap().load(ImageUtil.getAlbumArt(musicData.get(Integer.parseInt(profileData.get("lastSongItemPosition").toString())).get("songData").toString(), getResources())).into(albumArt);
-						Glide.with(getApplicationContext()).asBitmap().load(ImageUtil.getAlbumArt(musicData.get(Integer.parseInt(profileData.get("lastSongItemPosition").toString())).get("songData").toString(), getResources())).into(miniplayerAlbumArt);
-						songTitle.setText(musicData.get(Integer.parseInt(profileData.get("lastSongItemPosition").toString())).get("songTitle").toString());
-						songArtist.setText(musicData.get(Integer.parseInt(profileData.get("lastSongItemPosition").toString())).get("songArtist").toString());
-						miniplayerSongTitle.setText(musicData.get(Integer.parseInt(profileData.get("lastSongItemPosition").toString())).get("songTitle").toString());
-						miniplayerSongArtist.setText(musicData.get(Integer.parseInt(profileData.get("lastSongItemPosition").toString())).get("songArtist").toString());
+						Glide.with(getApplicationContext()).asBitmap().load(ImageUtil.getAlbumArt(musicData.get(Integer.parseInt(profileData.get("profileSongPosition").toString())).get("songData").toString(), getResources())).into(albumArt);
+						Glide.with(getApplicationContext()).asBitmap().load(ImageUtil.getAlbumArt(musicData.get(Integer.parseInt(profileData.get("profileSongPosition").toString())).get("songData").toString(), getResources())).into(miniplayerAlbumArt);
+						songTitle.setText(musicData.get(Integer.parseInt(profileData.get("profileSongPosition").toString())).get("songTitle").toString());
+						songArtist.setText(musicData.get(Integer.parseInt(profileData.get("profileSongPosition").toString())).get("songArtist").toString());
+						miniplayerSongTitle.setText(musicData.get(Integer.parseInt(profileData.get("profileSongPosition").toString())).get("songTitle").toString());
+						miniplayerSongArtist.setText(musicData.get(Integer.parseInt(profileData.get("profileSongPosition").toString())).get("songArtist").toString());
 						miniplayerSeekbar.setMax(playbackSrv.getMaxDuration());
 						miniplayerSeekbar.setProgress(playbackSrv.getCurrentPosition());
 						maxDuration.setText(String.valueOf((int) ((playbackSrv.getMaxDuration() / 1000) / 60)).concat(":".concat(new DecimalFormat("00").format((playbackSrv.getMaxDuration() / 1000) % 60))));
@@ -906,15 +906,15 @@ public class LocalStreamActivity extends  AppCompatActivity  {
 						seekbarDuration.setMax(playbackSrv.getMaxDuration());
 						seekbarDuration.setProgress(playbackSrv.getCurrentPosition());
 					} else {
-						if (profileData.containsKey("lastSongItemPosition")) {
-							if (!profileData.get("lastSongItemPosition").equals("0")) {
-								playbackSrv.createLocalStream(Integer.parseInt(profileData.get("lastSongItemPosition").toString()));
-								if (musicData.get(Integer.parseInt(profileData.get("lastSongItemPosition").toString())).containsKey("lastSongCurrentDuration")) {
-									if (!musicData.get(Integer.parseInt(profileData.get("lastSongItemPosition").toString())).get("lastSongCurrentDuration").equals(playbackSrv.getCurrentPosition())) {
-										playbackSrv.seek(Integer.parseInt(musicData.get(Integer.parseInt(profileData.get("lastSongItemPosition").toString())).get("lastSongCurrentDuration").toString()));
-										miniplayerSeekbar.setProgress(Integer.parseInt(musicData.get(Integer.parseInt(profileData.get("lastSongItemPosition").toString())).get("lastSongCurrentDuration").toString()));
-										currentDuration.setText(String.valueOf(((Integer.parseInt(musicData.get(Integer.parseInt(profileData.get("lastSongItemPosition").toString())).get("lastSongCurrentDuration").toString()) / 1000) / 60)).concat(":".concat(new DecimalFormat("00").format((Integer.parseInt(musicData.get(Integer.parseInt(profileData.get("lastSongItemPosition").toString())).get("lastSongCurrentDuration").toString()) / 1000) % 60))));
-										seekbarDuration.setProgress(Integer.parseInt(musicData.get(Integer.parseInt(profileData.get("lastSongItemPosition").toString())).get("lastSongCurrentDuration").toString()));
+						if (profileData.containsKey("profileSongPosition")) {
+							if (!profileData.get("profileSongPosition").equals("0")) {
+								playbackSrv.createLocalStream(Integer.parseInt(profileData.get("profileSongPosition").toString()));
+								if (musicData.get(Integer.parseInt(profileData.get("profileSongPosition").toString())).containsKey("songCurrentDuration")) {
+									if (!musicData.get(Integer.parseInt(profileData.get("profileSongPosition").toString())).get("songCurrentDuration").equals(playbackSrv.getCurrentPosition())) {
+										playbackSrv.seek(Integer.parseInt(musicData.get(Integer.parseInt(profileData.get("profileSongPosition").toString())).get("songCurrentDuration").toString()));
+										miniplayerSeekbar.setProgress(Integer.parseInt(musicData.get(Integer.parseInt(profileData.get("profileSongPosition").toString())).get("songCurrentDuration").toString()));
+										currentDuration.setText(String.valueOf(((Integer.parseInt(musicData.get(Integer.parseInt(profileData.get("profileSongPosition").toString())).get("songCurrentDuration").toString()) / 1000) / 60)).concat(":".concat(new DecimalFormat("00").format((Integer.parseInt(musicData.get(Integer.parseInt(profileData.get("profileSongPosition").toString())).get("songCurrentDuration").toString()) / 1000) % 60))));
+										seekbarDuration.setProgress(Integer.parseInt(musicData.get(Integer.parseInt(profileData.get("profileSongPosition").toString())).get("songCurrentDuration").toString()));
 								    }
 								}
 							}
@@ -922,7 +922,7 @@ public class LocalStreamActivity extends  AppCompatActivity  {
 							if (!musicData.isEmpty()) {
 								if (0 < musicData.size()) {
 									playbackSrv.createLocalStream(0);
-									profileData.put("lastSongItemPosition", "0");
+									profileData.put("profileSongPosition", "0");
 									savedData.edit().putString("savedProfileData", ListUtil.setHashMapToSharedJSON(profileData)).apply();
 								}
 							}
@@ -933,7 +933,7 @@ public class LocalStreamActivity extends  AppCompatActivity  {
 					if (!musicData.isEmpty()) {
 						if (0 < musicData.size()) {
 							playbackSrv.createLocalStream(0);
-							profileData.put("lastSongItemPosition", "0");
+							profileData.put("profileSongPosition", "0");
 							savedData.edit().putString("savedProfileData", ListUtil.setHashMapToSharedJSON(profileData)).apply();
 						}
 					}
@@ -1003,7 +1003,7 @@ public class LocalStreamActivity extends  AppCompatActivity  {
 			}
 			songList.setAdapter(new SongListAdapter(musicData));
 			if (profileData.containsKey("lastSongItemPosition")) {
-				songList.scrollToPosition(Integer.parseInt(profileData.get("lastSongItemPosition").toString()));
+				songList.scrollToPosition(Integer.parseInt(profileData.get("profileSongPosition").toString()));
 			}
 		} else {
 			ApplicationUtil.toast(getApplicationContext(), "Library data failed to load.", Toast.LENGTH_LONG);
@@ -1019,15 +1019,15 @@ public class LocalStreamActivity extends  AppCompatActivity  {
 		} else {
 			ApplicationUtil.toast(getApplicationContext(), "Profile settings failed to load.", Toast.LENGTH_LONG);
 		}
-		if (profileData.containsKey("savedNavigationIndex")) {
-			if (profileData.get("savedNavigationIndex").equals("0")) {
+		if (profileData.containsKey("profileNavigationIndex")) {
+			if (profileData.get("profileNavigationIndex").equals("0")) {
 				tabNavigation.getTabAt(0).select();
 				listRefresh.setVisibility(View.VISIBLE);
 				miniplayer.setVisibility(View.VISIBLE);
 				player.setVisibility(View.GONE);
 				miniplayerSeekbar.setVisibility(View.VISIBLE);
 			} else {
-				if (profileData.get("savedNavigationIndex").equals("1")) {
+				if (profileData.get("profileNavigationIndex").equals("1")) {
 					tabNavigation.getTabAt(1).select();
 					listRefresh.setVisibility(View.GONE);
 					player.setVisibility(View.VISIBLE);
@@ -1036,7 +1036,7 @@ public class LocalStreamActivity extends  AppCompatActivity  {
 				}
 			}
 		} else {
-			profileData.put("savedNavigationIndex", "0");
+			profileData.put("profileNavigationIndex", "0");
 			savedData.edit().putString("savedProfileData", ListUtil.setHashMapToSharedJSON(profileData)).apply();
 			tabNavigation.getTabAt(0).select();
 			listRefresh.setVisibility(View.VISIBLE);
@@ -1120,7 +1120,7 @@ public class LocalStreamActivity extends  AppCompatActivity  {
 							if (new java.io.File(StringUtil.decodeString(musicData.get(position).get("songData").toString())).exists()) {
 								try {
 									playbackSrv.createLocalStream(position);
-									profileData.put("lastSongItemPosition", String.valueOf(position));
+									profileData.put("profileSongPosition", String.valueOf(position));
 									savedData.edit().putString("savedProfileData", ListUtil.setHashMapToSharedJSON(profileData)).apply();
 									playPause.performClick();
 								} catch (Exception e) {

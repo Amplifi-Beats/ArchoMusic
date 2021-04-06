@@ -123,14 +123,14 @@ public class LocalPlaybackService extends Service {
 		        miniplayerPlayPause.setImageResource(R.drawable.ic_media_play);
 				try {
 					if (position + 1 < musicData.size()) {
-						profileData.put("lastSongItemPosition", String.valueOf(position + 1));
+						profileData.put("profileSongPosition", String.valueOf(position + 1));
 						savedData.edit().putString("savedProfileData", ListUtil.setHashMapToSharedJSON(profileData)).apply();
 						createLocalStream(position + 1);
 						playPause.performClick();
 					}
 				} catch (Exception e) {
 				    if (position + 1 < musicData.size()) {
-						profileData.put("lastSongItemPosition", String.valueOf(position + 1));
+						profileData.put("profileSongPosition", String.valueOf(position + 1));
 						savedData.edit().putString("savedProfileData", ListUtil.setHashMapToSharedJSON(profileData)).apply();
 						createLocalStream(position + 1);
 						playPause.performClick();
