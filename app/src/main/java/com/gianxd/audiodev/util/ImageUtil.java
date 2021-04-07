@@ -38,7 +38,7 @@ public class ImageUtil {
     public static Bitmap getAlbumArt(String path, Resources resources) {
         Bitmap bitmapArt;
         MediaMetadataRetriever artRetriever = new MediaMetadataRetriever();
-        artRetriever.setDataSource(StringUtil.decodeString(path));
+        artRetriever.setDataSource(path);
         byte[] album_art = artRetriever.getEmbeddedPicture();
         if( album_art != null ){
             bitmapArt = BitmapFactory.decodeByteArray(album_art, 0, album_art.length);
