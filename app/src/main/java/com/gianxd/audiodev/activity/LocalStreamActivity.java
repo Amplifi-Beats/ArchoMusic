@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.content.ServiceConnection;
 import android.content.SharedPreferences;
 import android.content.res.ColorStateList;
+import android.content.res.Configuration;
 import android.graphics.Color;
 import android.graphics.PorterDuff;
 import android.graphics.Typeface;
@@ -90,6 +91,8 @@ public class LocalStreamActivity extends  AppCompatActivity  {
 	private ImageView miniplayerSkipPrev;
     public static ImageView miniplayerPlayPause;
 	private ImageView miniplayerSkipNext;
+	private ImageView repeat;
+	private ImageView shuffle;
 	public static ImageView miniplayerAlbumArt;
     public static TextView miniplayerSongTitle;
     public static TextView miniplayerSongArtist;
@@ -131,6 +134,8 @@ public class LocalStreamActivity extends  AppCompatActivity  {
 		miniplayerAlbumArt = (ImageView) findViewById(R.id.miniplayerAlbumArt);
 		miniplayerSongTitle = (TextView) findViewById(R.id.miniplayerSongTitle);
 		miniplayerSongArtist = (TextView) findViewById(R.id.miniplayerSongArtist);
+		repeat = (ImageView) findViewById(R.id.repeat);
+		shuffle = (ImageView) findViewById(R.id.shuffle);
 		savedData = applicationContext.getSharedPreferences("savedData", Context.MODE_PRIVATE);
 		tabNavigation.addTab(tabNavigation.newTab().setIcon(R.drawable.ic_tabnav_library));
 		tabNavigation.addTab(tabNavigation.newTab().setIcon(R.drawable.ic_tabnav_nowplaying));
@@ -280,6 +285,32 @@ public class LocalStreamActivity extends  AppCompatActivity  {
 			player.setVisibility(View.GONE);
 			miniplayer.setVisibility(View.VISIBLE);
 			miniplayerSeekbar.setVisibility(View.VISIBLE);
+		}
+		if (profileData.containsKey("profileRepeatMode")) {
+			if (profileData.get("profileRepeatMode").equals("0")) {
+				Glide.with(getApplicationContext()).load(R.drawable.ic_media_repeat_off).into(repeat);
+			} else if (profileData.get("profileRepeatMode").equals("1")) {
+				Glide.with(getApplicationContext()).load(R.drawable.ic_media_repeat_on).into(repeat);
+			} else if (profileData.get("profileRepeatMode").equals("2")) {
+				Glide.with(getApplicationContext()).load(R.drawable.ic_media_repeat_once).into(repeat);
+			}
+		} else {
+			Glide.with(getApplicationContext()).load(R.drawable.ic_media_repeat_off).into(repeat);
+			profileData.put("profileRepeatMode", "0");
+			savedData.edit().putString("savedProfileData", ListUtil.setHashMapToSharedJSON(profileData)).apply();
+		}
+		if (profileData.containsKey("profileShuffleMode")) {
+			if (profileData.get("profileShuffleMode").equals("0")) {
+				Glide.with(getApplicationContext()).load(R.drawable.ic_media_shuffle_off).into(shuffle);
+				shuffle.setColorFilter(ContextCompat.getColor(getApplicationContext(), R.color.colorControlHighlight));
+			} else if (profileData.get("profileShuffleMode").equals("1")) {
+				Glide.with(getApplicationContext()).load(R.drawable.ic_media_shuffle_on).into(shuffle);
+				shuffle.setColorFilter(ContextCompat.getColor(getApplicationContext(), R.color.colorPrimary));
+			}
+		} else {
+			Glide.with(getApplicationContext()).load(R.drawable.ic_media_shuffle_off).into(shuffle);
+			profileData.put("profileShuffleMode", "0");
+			savedData.edit().putString("savedProfileData", ListUtil.setHashMapToSharedJSON(profileData)).apply();
 		}
 		menu.setOnClickListener(new View.OnClickListener() {
 			@Override
@@ -813,115 +844,242 @@ public class LocalStreamActivity extends  AppCompatActivity  {
 				}
 			}
 		});
+
+		repeat.setOnClickListener(new View.OnClickListener() {
+			@Override
+			public void onClick(View view) {
+				android.graphics.drawable.RippleDrawable rippleButton = new android.graphics.drawable.RippleDrawable(new android.content.res.ColorStateList(new int[][]{new int[]{}}, new int[]{ Color.parseColor("#BDBDBD") }), null, null);
+				view.setBackground(rippleButton);
+				if (profileData.containsKey("profileRepeatMode")) {
+					if (profileData.get("profileRepeatMode").equals("0")) {
+						Glide.with(getApplicationContext()).load(R.drawable.ic_media_repeat_on).into(repeat);
+						profileData.put("profileRepeatMode", "1");
+						savedData.edit().putString("savedProfileData", ListUtil.setHashMapToSharedJSON(profileData)).apply();
+						if (profileData.get("profileShuffleMode").equals("1")) {
+							Glide.with(getApplicationContext()).load(R.drawable.ic_media_shuffle_off).into(shuffle);
+							profileData.put("profileShuffleMode", "0");
+							savedData.edit().putString("savedProfileData", ListUtil.setHashMapToSharedJSON(profileData)).apply();
+							shuffle.setColorFilter(ContextCompat.getColor(getApplicationContext(), R.color.colorControlHighlight));
+						}
+					} else if (profileData.get("profileRepeatMode").equals("1")) {
+						Glide.with(getApplicationContext()).load(R.drawable.ic_media_repeat_once).into(repeat);
+						profileData.put("profileRepeatMode", "2");
+						savedData.edit().putString("savedProfileData", ListUtil.setHashMapToSharedJSON(profileData)).apply();
+						if (profileData.get("profileShuffleMode").equals("1")) {
+							Glide.with(getApplicationContext()).load(R.drawable.ic_media_shuffle_off).into(shuffle);
+							profileData.put("profileShuffleMode", "0");
+							savedData.edit().putString("savedProfileData", ListUtil.setHashMapToSharedJSON(profileData)).apply();
+							shuffle.setColorFilter(ContextCompat.getColor(getApplicationContext(), R.color.colorControlHighlight));
+						}
+					} else if (profileData.get("profileRepeatMode").equals("2")) {
+						Glide.with(getApplicationContext()).load(R.drawable.ic_media_repeat_off).into(repeat);
+						profileData.put("profileRepeatMode", "0");
+						savedData.edit().putString("savedProfileData", ListUtil.setHashMapToSharedJSON(profileData)).apply();
+					}
+				} else {
+					Glide.with(getApplicationContext()).load(R.drawable.ic_media_repeat_off).into(repeat);
+					profileData.put("profileRepeatMode", "0");
+					savedData.edit().putString("savedProfileData", ListUtil.setHashMapToSharedJSON(profileData)).apply();
+				}
+			}
+		});
 		
 		skipBackward.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View view) {
-				if (playbackSrv != null) {
-					try {
-						profileData.put("profileSongPosition", String.valueOf((Integer.parseInt(profileData.get("profileSongPosition").toString()) - 1)));
-						savedData.edit().putString("savedProfileData", ListUtil.setHashMapToSharedJSON(profileData)).apply();
-						if (Integer.parseInt(profileData.get("profileSongPosition").toString()) < musicData.size()) {
-							playbackSrv.createLocalStream(Integer.parseInt(profileData.get("profileSongPosition").toString()));
-							playPause.performClick();
-						}
-					} catch (Exception e) {
-						profileData.put("profileSongPosition", String.valueOf((Integer.parseInt(profileData.get("profileSongPosition").toString()) - 1)));
-						savedData.edit().putString("savedProfileData", ListUtil.setHashMapToSharedJSON(profileData)).apply();
-						if (Integer.parseInt(profileData.get("profileSongPosition").toString()) < musicData.size()) {
-							playbackSrv.createLocalStream(Integer.parseInt(profileData.get("profileSongPosition").toString()));
-							playPause.performClick();
-						}
-					}
-				}
+				android.graphics.drawable.RippleDrawable rippleButton = new android.graphics.drawable.RippleDrawable(new android.content.res.ColorStateList(new int[][]{new int[]{}}, new int[]{ Color.parseColor("#BDBDBD") }), null, null);
+				view.setBackground(rippleButton);
+				skipPrevious();
 			}
 		});
 		
 		playPause.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View view) {
-				if (playbackSrv.mp != null) {
-					if (!playbackSrv.isPlaying()) {
-						playbackSrv.play();
-						playPause.setImageResource(R.drawable.ic_media_pause);
-						miniplayerPlayPause.setImageResource(R.drawable.ic_media_pause);
-						timerTask = new TimerTask() {
-							@Override
-							public void run() {
-								runOnUiThread(new Runnable() {
-									@Override
-									public void run() {
-										try {
-											seekbarDuration.setProgress((int)playbackSrv.getCurrentPosition());
-											miniplayerSeekbar.setProgress((int)playbackSrv.getCurrentPosition());
-											currentDuration.setText(String.valueOf((int)((playbackSrv.getCurrentPosition() / 1000) / 60)).concat(":".concat(new DecimalFormat("00").format((playbackSrv.getCurrentPosition() / 1000) % 60))));
-											musicData.get(Integer.parseInt(profileData.get("profileSongPosition").toString())).put("songCurrentDuration", String.valueOf(playbackSrv.getCurrentPosition()));
-											savedData.edit().putString("savedMusicData", ListUtil.setArrayListToSharedJSON(musicData)).apply();
-										} catch (Exception e) {
-											// do nothing 
-										}
-									}
-								});
-							}
-						};
-						timer.scheduleAtFixedRate(timerTask, (int)(0), (int)(1000));
-					} else {
-						playbackSrv.pause();
-						playPause.setImageResource(R.drawable.ic_media_play);
-						miniplayerPlayPause.setImageResource(R.drawable.ic_media_play);
-						if (timerTask != null) {
-							timerTask.cancel();
-						}
-					}
-				}
+				android.graphics.drawable.RippleDrawable rippleButton = new android.graphics.drawable.RippleDrawable(new android.content.res.ColorStateList(new int[][]{new int[]{}}, new int[]{ Color.parseColor("#BDBDBD") }), null, null);
+				view.setBackground(rippleButton);
+				playPause();
 			}
 		});
 		
 		skipForward.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View view) {
-				if (playbackSrv.mp != null) {
-					try {
-						profileData.put("profileSongPosition", String.valueOf((Integer.parseInt(profileData.get("profileSongPosition").toString()) + 1)));
-						savedData.edit().putString("profileSongPosition", ListUtil.setHashMapToSharedJSON(profileData)).apply();
-						if (Integer.parseInt(profileData.get("profileSongPosition").toString()) < musicData.size()) {
-							playbackSrv.createLocalStream(Integer.parseInt(profileData.get("profileSongPosition").toString()));
-							playPause.performClick();
-						}
-					} catch (Exception e) {
-						profileData.put("profileSongPosition", String.valueOf((Integer.parseInt(profileData.get("profileSongPosition").toString()) + 1)));
-						savedData.edit().putString("savedProfileData", ListUtil.setHashMapToSharedJSON(profileData)).apply();
-						if (Integer.parseInt(profileData.get("profileSongPosition").toString()) < musicData.size()) {
-							playbackSrv.createLocalStream(Integer.parseInt(profileData.get("profileSongPosition").toString()));
-							playPause.performClick();
-						}
-					}
-				}
+				android.graphics.drawable.RippleDrawable rippleButton = new android.graphics.drawable.RippleDrawable(new android.content.res.ColorStateList(new int[][]{new int[]{}}, new int[]{ Color.parseColor("#BDBDBD") }), null, null);
+				view.setBackground(rippleButton);
+				skipNext();
 			}
 		});
 		
 		miniplayerSkipPrev.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View view) {
-				skipBackward.performClick();
+				android.graphics.drawable.RippleDrawable rippleButton = new android.graphics.drawable.RippleDrawable(new android.content.res.ColorStateList(new int[][]{new int[]{}}, new int[]{ Color.parseColor("#BDBDBD") }), null, null);
+				view.setBackground(rippleButton);
+				skipPrevious();
 			}
 		});
 		
 		miniplayerPlayPause.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View view) {
-				playPause.performClick();
+				android.graphics.drawable.RippleDrawable rippleButton = new android.graphics.drawable.RippleDrawable(new android.content.res.ColorStateList(new int[][]{new int[]{}}, new int[]{ Color.parseColor("#BDBDBD") }), null, null);
+				view.setBackground(rippleButton);
+				playPause();
 			}
 		});
 		
 		miniplayerSkipNext.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View view) {
-				skipForward.performClick();
+				android.graphics.drawable.RippleDrawable rippleButton = new android.graphics.drawable.RippleDrawable(new android.content.res.ColorStateList(new int[][]{new int[]{}}, new int[]{ Color.parseColor("#BDBDBD") }), null, null);
+				view.setBackground(rippleButton);
+				skipNext();
+			}
+		});
+
+		shuffle.setOnClickListener(new View.OnClickListener() {
+			@Override
+			public void onClick(View view) {
+				android.graphics.drawable.RippleDrawable rippleButton = new android.graphics.drawable.RippleDrawable(new android.content.res.ColorStateList(new int[][]{new int[]{}}, new int[]{ Color.parseColor("#BDBDBD") }), null, null);
+				view.setBackground(rippleButton);
+				if (profileData.containsKey("profileShuffleMode")) {
+					if (profileData.get("profileShuffleMode").equals("0")) {
+						Glide.with(getApplicationContext()).load(R.drawable.ic_media_shuffle_on).into(shuffle);
+						shuffle.setColorFilter(ContextCompat.getColor(getApplicationContext(), R.color.colorPrimary));
+						profileData.put("profileShuffleMode", "1");
+						savedData.edit().putString("savedProfileData", ListUtil.setHashMapToSharedJSON(profileData)).apply();
+						if (profileData.get("profileRepeatMode").equals("1") || profileData.get("profileRepeatMode").equals("2")) {
+							Glide.with(getApplicationContext()).load(R.drawable.ic_media_repeat_off).into(repeat);
+							profileData.put("profileRepeatMode", "0");
+							savedData.edit().putString("savedProfileData", ListUtil.setHashMapToSharedJSON(profileData)).apply();
+						}
+					} else if (profileData.get("profileShuffleMode").equals("1")) {
+						Glide.with(getApplicationContext()).load(R.drawable.ic_media_shuffle_off).into(shuffle);
+						profileData.put("profileShuffleMode", "0");
+						savedData.edit().putString("savedProfileData", ListUtil.setHashMapToSharedJSON(profileData)).apply();
+						shuffle.setColorFilter(ContextCompat.getColor(getApplicationContext(), R.color.colorControlHighlight));
+					}
+				} else {
+					Glide.with(getApplicationContext()).load(R.drawable.ic_media_shuffle_off).into(shuffle);
+					profileData.put("profileShuffleMode", "0");
+					savedData.edit().putString("savedProfileData", ListUtil.setHashMapToSharedJSON(profileData)).apply();
+				}
 			}
 		});
 	}
-	
+
+	private void skipPrevious() {
+		if (playbackSrv != null) {
+			if (!profileData.get("profileRepeatMode").equals("1") || profileData.get("profileRepeatMode").equals("2") || profileData.get("profileShuffleMode").equals("1") && profileData.get("profileRepeatMode").equals("0") && profileData.get("profileShuffleMode").equals("0")) {
+				if (!(Integer.parseInt(profileData.get("profileSongPosition").toString()) == 0)) {
+					profileData.put("profileSongPosition", String.valueOf((Integer.parseInt(profileData.get("profileSongPosition").toString()) - 1)));
+					savedData.edit().putString("savedProfileData", ListUtil.setHashMapToSharedJSON(profileData)).apply();
+					if (Integer.parseInt(profileData.get("profileSongPosition").toString()) < musicData.size()) {
+						playbackSrv.createLocalStream(Integer.parseInt(profileData.get("profileSongPosition").toString()));
+						playPause.performClick();
+					}
+				}
+			} else if (profileData.get("profileRepeatMode").equals("1")) {
+				if (Integer.parseInt(profileData.get("profileSongPosition").toString()) == 0) {
+					playbackSrv.createLocalStream(Integer.parseInt(profileData.get("profileSongPosition").toString()));
+					playPause.performClick();
+				} else {
+					profileData.put("profileSongPosition", String.valueOf((Integer.parseInt(profileData.get("profileSongPosition").toString()) - 1)));
+					savedData.edit().putString("savedProfileData", ListUtil.setHashMapToSharedJSON(profileData)).apply();
+					if (Integer.parseInt(profileData.get("profileSongPosition").toString()) < musicData.size()) {
+						playbackSrv.createLocalStream(Integer.parseInt(profileData.get("profileSongPosition").toString()));
+						playPause.performClick();
+					}
+				}
+			} else if (profileData.get("profileRepeatMode").equals("2")) {
+				playbackSrv.createLocalStream(Integer.parseInt(profileData.get("profileSongPosition").toString()));
+			} else if (profileData.get("profileShuffleMode").equals("1")) {
+				profileData.put("profileSongPosition", String.valueOf(com.gianxd.audiodev.util.MusicDevUtil.getRandom((int)(Integer.parseInt(profileData.get("profileSongPosition").toString())), (int)(musicData.size()))));
+				savedData.edit().putString("savedProfileData", ListUtil.setHashMapToSharedJSON(profileData)).apply();
+				if (Integer.parseInt(profileData.get("profileSongPosition").toString()) < musicData.size()) {
+					playbackSrv.createLocalStream(Integer.parseInt(profileData.get("profileSongPosition").toString()));
+					playPause.performClick();
+				}
+			}
+		}
+	}
+
+	private void playPause() {
+		if (playbackSrv.mp != null) {
+			if (!playbackSrv.isPlaying()) {
+				playbackSrv.play();
+				playPause.setImageResource(R.drawable.ic_media_pause);
+				miniplayerPlayPause.setImageResource(R.drawable.ic_media_pause);
+				timerTask = new TimerTask() {
+					@Override
+					public void run() {
+						runOnUiThread(new Runnable() {
+							@Override
+							public void run() {
+								try {
+									seekbarDuration.setProgress((int)playbackSrv.getCurrentPosition());
+									miniplayerSeekbar.setProgress((int)playbackSrv.getCurrentPosition());
+									currentDuration.setText(String.valueOf((int)((playbackSrv.getCurrentPosition() / 1000) / 60)).concat(":".concat(new DecimalFormat("00").format((playbackSrv.getCurrentPosition() / 1000) % 60))));
+									musicData.get(Integer.parseInt(profileData.get("profileSongPosition").toString())).put("songCurrentDuration", String.valueOf(playbackSrv.getCurrentPosition()));
+									savedData.edit().putString("savedMusicData", ListUtil.setArrayListToSharedJSON(musicData)).apply();
+								} catch (Exception e) {
+									// do nothing
+								}
+							}
+						});
+					}
+				};
+				timer.scheduleAtFixedRate(timerTask, (int)(0), (int)(1000));
+			} else {
+				playbackSrv.pause();
+				playPause.setImageResource(R.drawable.ic_media_play);
+				miniplayerPlayPause.setImageResource(R.drawable.ic_media_play);
+				if (timerTask != null) {
+					timerTask.cancel();
+				}
+			}
+		}
+	}
+
+	private void skipNext() {
+		if (playbackSrv != null) {
+			if (!profileData.get("profileRepeatMode").equals("1") || profileData.get("profileRepeatMode").equals("2") || profileData.get("profileShuffleMode").equals("1") && profileData.get("profileRepeatMode").equals("0") && profileData.get("profileShuffleMode").equals("0")) {
+				if (!(Integer.parseInt(profileData.get("profileSongPosition").toString()) == musicData.size())) {
+					profileData.put("profileSongPosition", String.valueOf((Integer.parseInt(profileData.get("profileSongPosition").toString()) + 1)));
+					savedData.edit().putString("savedProfileData", ListUtil.setHashMapToSharedJSON(profileData)).apply();
+					if (Integer.parseInt(profileData.get("profileSongPosition").toString()) < musicData.size()) {
+						playbackSrv.createLocalStream(Integer.parseInt(profileData.get("profileSongPosition").toString()));
+						playPause.performClick();
+					}
+				}
+			} else if (profileData.get("profileRepeatMode").equals("1")) {
+				if (Integer.parseInt(profileData.get("profileSongPosition").toString()) == musicData.size()) {
+					profileData.put("profileSongPosition", String.valueOf(0));
+					savedData.edit().putString("savedProfileData", ListUtil.setHashMapToSharedJSON(profileData)).apply();
+					playbackSrv.createLocalStream(Integer.parseInt(profileData.get("profileSongPosition").toString()));
+					playPause.performClick();
+				} else {
+					profileData.put("profileSongPosition", String.valueOf((Integer.parseInt(profileData.get("profileSongPosition").toString()) + 1)));
+					savedData.edit().putString("savedProfileData", ListUtil.setHashMapToSharedJSON(profileData)).apply();
+					if (Integer.parseInt(profileData.get("profileSongPosition").toString()) < musicData.size()) {
+						playbackSrv.createLocalStream(Integer.parseInt(profileData.get("profileSongPosition").toString()));
+						playPause.performClick();
+					}
+				}
+			} else if (profileData.get("profileRepeatMode").equals("2")) {
+				playbackSrv.createLocalStream(Integer.parseInt(profileData.get("profileSongPosition").toString()));
+			} else if (profileData.get("profileShuffleMode").equals("1")) {
+				profileData.put("profileSongPosition", String.valueOf(com.gianxd.audiodev.util.MusicDevUtil.getRandom((int)(Integer.parseInt(profileData.get("profileSongPosition").toString())), (int)(musicData.size()))));
+				savedData.edit().putString("savedProfileData", ListUtil.setHashMapToSharedJSON(profileData)).apply();
+				if (Integer.parseInt(profileData.get("profileSongPosition").toString()) < musicData.size()) {
+					playbackSrv.createLocalStream(Integer.parseInt(profileData.get("profileSongPosition").toString()));
+					playPause.performClick();
+				}
+			}
+		}
+	}
+
 	private void initializeLogic() {
 		startupUI();
 		if (profileData.containsKey("profileErrorTrace")) {
@@ -1055,6 +1213,18 @@ public class LocalStreamActivity extends  AppCompatActivity  {
 			break;
 		}
 	}
+
+	@Override
+	public void onConfigurationChanged(Configuration config) {
+		super.onConfigurationChanged(config);
+		if (config.orientation == Configuration.ORIENTATION_PORTRAIT) {
+			startActivity(new Intent(getApplicationContext(), SplashActivity.class));
+			finish();
+		} else if (config.orientation == Configuration.ORIENTATION_LANDSCAPE) {
+			startActivity(new Intent(getApplicationContext(), SplashActivity.class));
+			finish();
+		}
+	}
 	
 	@Override
 	public void onBackPressed() {
@@ -1152,6 +1322,8 @@ public class LocalStreamActivity extends  AppCompatActivity  {
 		miniplayerSkipPrev.setColorFilter(ContextCompat.getColor(getApplicationContext(), R.color.colorPrimary)); 
 		miniplayerPlayPause.setColorFilter(ContextCompat.getColor(getApplicationContext(), R.color.colorPrimary)); 
 		miniplayerSkipNext.setColorFilter(ContextCompat.getColor(getApplicationContext(), R.color.colorPrimary));
+		repeat.setColorFilter(ContextCompat.getColor(getApplicationContext(), R.color.colorPrimary));
+		shuffle.setColorFilter(ContextCompat.getColor(getApplicationContext(), R.color.colorPrimary));
 		listRefresh.setColorSchemeColors(Color.parseColor("#03A9F4"), Color.parseColor("#03A9F4"), Color.parseColor("#03A9F4"));
 		songList.setLayoutManager(new LinearLayoutManager(this));
 		if (Build.VERSION.SDK_INT >= 23) {
