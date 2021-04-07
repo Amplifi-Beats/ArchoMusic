@@ -66,43 +66,30 @@
 			android:layout_height="match_parent"
 			android:layout_weight="1"
 			android:background="#FFFFFF"
-			android:orientation="vertical"
+			android:orientation="horizontal"
 			android:padding="8dp">
 
-			<LinearLayout
-				android:layout_width="match_parent"
-				android:layout_height="wrap_content"
-				android:layout_weight="1"
-				android:orientation="horizontal"
-				android:padding="8dp" />
-
 			<androidx.cardview.widget.CardView
-				android:layout_width="300dp"
-				android:layout_height="300dp"
-				android:layout_gravity="center_horizontal"
+				android:layout_width="250dp"
+				android:layout_height="250dp"
+				android:layout_gravity="center_vertical"
 				android:layout_margin="10dp"
 				app:cardCornerRadius="8dp">
 
 				<ImageView
 					android:id="@+id/albumArt"
-					android:layout_width="300dp"
-					android:layout_height="300dp"
+					android:layout_width="250dp"
+					android:layout_height="250dp"
 					android:layout_gravity="center_vertical"
 					android:scaleType="fitCenter"
 					android:src="@drawable/ic_media_album_art" />
 			</androidx.cardview.widget.CardView>
 
 			<LinearLayout
-				android:layout_width="match_parent"
-				android:layout_height="wrap_content"
-				android:layout_weight="1"
-				android:gravity="center_horizontal"
-				android:orientation="horizontal"
-				android:padding="8dp" />
-
-			<LinearLayout
-				android:layout_width="match_parent"
+				android:layout_width="315dp"
 				android:layout_height="195dp"
+				android:layout_gravity="center_vertical"
+				android:layout_marginStart="50dp"
 				android:gravity="bottom"
 				android:orientation="vertical"
 				android:padding="8dp">
@@ -200,13 +187,6 @@
 						android:src="@drawable/ic_media_skip_next" />
 				</LinearLayout>
 			</LinearLayout>
-
-			<LinearLayout
-				android:layout_width="match_parent"
-				android:layout_height="wrap_content"
-				android:layout_weight="1"
-				android:orientation="horizontal"
-				android:padding="8dp" />
 		</LinearLayout>
 	</LinearLayout>
 	<ProgressBar
