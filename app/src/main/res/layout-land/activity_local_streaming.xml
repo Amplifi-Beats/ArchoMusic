@@ -70,16 +70,16 @@
 			android:padding="8dp">
 
 			<androidx.cardview.widget.CardView
-				android:layout_width="250dp"
-				android:layout_height="250dp"
+				android:layout_width="210dp"
+				android:layout_height="210dp"
 				android:layout_gravity="center_vertical"
 				android:layout_margin="10dp"
 				app:cardCornerRadius="8dp">
 
 				<ImageView
 					android:id="@+id/albumArt"
-					android:layout_width="250dp"
-					android:layout_height="250dp"
+					android:layout_width="210dp"
+					android:layout_height="210dp"
 					android:layout_gravity="center_vertical"
 					android:scaleType="fitCenter"
 					android:src="@drawable/ic_media_album_art" />
@@ -89,7 +89,7 @@
 				android:layout_width="315dp"
 				android:layout_height="195dp"
 				android:layout_gravity="center_vertical"
-				android:layout_marginStart="50dp"
+				android:layout_marginStart="80dp"
 				android:gravity="bottom"
 				android:orientation="vertical"
 				android:padding="8dp">
@@ -163,6 +163,15 @@
 					android:padding="8dp">
 
 					<ImageView
+						android:id="@+id/repeat"
+						android:layout_width="30dp"
+						android:layout_height="25dp"
+						android:layout_gravity="center_vertical"
+						android:layout_marginEnd="20dp"
+						android:scaleType="fitCenter"
+						android:src="@drawable/ic_media_repeat_off" />
+
+					<ImageView
 						android:id="@+id/skipBackward"
 						android:layout_width="30dp"
 						android:layout_height="35dp"
@@ -185,6 +194,15 @@
 						android:layout_gravity="center_vertical"
 						android:scaleType="fitCenter"
 						android:src="@drawable/ic_media_skip_next" />
+
+					<ImageView
+						android:id="@+id/shuffle"
+						android:layout_width="30dp"
+						android:layout_height="25dp"
+						android:layout_gravity="center_vertical"
+						android:layout_marginEnd="20dp"
+						android:scaleType="fitCenter"
+						android:src="@drawable/ic_media_shuffle_off" />
 				</LinearLayout>
 			</LinearLayout>
 		</LinearLayout>
