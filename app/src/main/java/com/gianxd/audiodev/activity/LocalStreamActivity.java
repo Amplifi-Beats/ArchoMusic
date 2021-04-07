@@ -15,6 +15,9 @@ import android.media.AudioManager;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.IBinder;
+import android.text.Editable;
+import android.text.TextWatcher;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -47,7 +50,6 @@ import com.gianxd.audiodev.util.StringUtil;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.android.material.tabs.TabLayout;
-import com.google.gson.Gson;
 
 import java.text.DecimalFormat;
 import java.util.ArrayList;
@@ -309,9 +311,9 @@ public class LocalStreamActivity extends  AppCompatActivity  {
 						public void onClick(View view) {
 								android.graphics.drawable.RippleDrawable rippleButton = new android.graphics.drawable.RippleDrawable(new android.content.res.ColorStateList(new int[][]{new int[]{}}, new int[]{ Color.parseColor("#BDBDBD") }), new android.graphics.drawable.ColorDrawable(Color.parseColor("#FFFFFF")), null);
 						        view.setBackground(rippleButton);
-								BottomSheetDialog renameProfile = new BottomSheetDialog(LocalStreamActivity.this);
+								BottomSheetDialog renameDialog = new BottomSheetDialog(LocalStreamActivity.this);
 						        View dialogLayout = getLayoutInflater().inflate(R.layout.dialog_create_a_profile, null);
-						        renameProfile.setContentView(dialogLayout);
+						        renameDialog.setContentView(dialogLayout);
 						        LinearLayout main = dialogLayout.findViewById(R.id.main);
 						        TextView title = dialogLayout.findViewById(R.id.title);
 						        ImageView profile_icon = dialogLayout.findViewById(R.id.profile_icon);
@@ -323,27 +325,114 @@ public class LocalStreamActivity extends  AppCompatActivity  {
 											    create.setText("Finish");
 										        profile_name.setText(profileData.get("profileName").toString());
 										}
-							        }
+									    if (profileData.containsKey("profilePicture")) {
+										        Glide.with(getApplicationContext()).load(profileData.get("profilePicture").toString()).into(profile_icon);
+									    }
+								}
 						        title.setTypeface(Typeface.createFromAsset(getAssets(),"fonts/roboto_medium.ttf"), Typeface.NORMAL);
 						        profile_icon.setOnClickListener(new View.OnClickListener() {
 								        @Override
 								        public void onClick(View view) {
-										        ApplicationUtil.toast(getApplicationContext(), "Profile picture under construction.", Toast.LENGTH_SHORT);
-									        }
+								        	BottomSheetDialog pfpDialog = new BottomSheetDialog(LocalStreamActivity.this);
+								        	View dialogLayout = getLayoutInflater().inflate(R.layout.dialog_create_a_profile_icon, null);
+								        	pfpDialog.setContentView(dialogLayout);
+								        	LinearLayout main = dialogLayout.findViewById(R.id.main);
+								        	TextView title = dialogLayout.findViewById(R.id.title);
+								        	ImageView profile_picture = dialogLayout.findViewById(R.id.profile_icon);
+								        	EditText url = dialogLayout.findViewById(R.id.url);
+								        	Button finish = dialogLayout.findViewById(R.id.finish);
+								        	Button cancel = dialogLayout.findViewById(R.id.cancel);
+								        	if (savedData.contains("savedProfileData")) {
+								        		if (profileData.containsKey("profilePicture")) {
+								        			Glide.with(getApplicationContext()).load(profileData.get("profilePicture").toString()).into(profile_picture);
+								        			url.setText(profileData.get("profilePicture").toString());
+												}
+											}
+											title.setTypeface(Typeface.createFromAsset(getAssets(),"fonts/roboto_medium.ttf"), Typeface.NORMAL);
+								        	url.addTextChangedListener(new TextWatcher() {
+												@Override
+												public void beforeTextChanged(CharSequence charSequence, int start, int count, int after) {
+													// DO NOTHING
+												}
+
+												@Override
+												public void onTextChanged(CharSequence charSequence, int start, int before, int count) {
+													Glide.with(getApplicationContext()).load(url.getText().toString()).into(profile_picture);
+												}
+
+												@Override
+												public void afterTextChanged(Editable editable) {
+													// DO NOTHING
+												}
+											});
+								        	finish.setOnClickListener(new View.OnClickListener() {
+												@Override
+												public void onClick(View view) {
+													android.graphics.drawable.RippleDrawable rippleButton = new android.graphics.drawable.RippleDrawable(new android.content.res.ColorStateList(new int[][]{new int[]{}}, new int[]{ Color.parseColor("#BDBDBD") }), new android.graphics.drawable.ColorDrawable(Color.parseColor("#FFFFFF")), null);
+													view.setBackground(rippleButton);
+													if (url.getText().toString().length() > 0) {
+														if (url.getText().toString().equals(profileData.get("profileName").toString())) {
+															pfpDialog.dismiss();
+														} else {
+															String pfpUrl = url.getText().toString();
+															profileData.put("profilePicture", pfpUrl);
+															savedData.edit().putString("savedProfileData", ListUtil.setHashMapToSharedJSON(profileData)).apply();
+															ApplicationUtil.toast(getApplicationContext(), "Set profile picture successfully.", Toast.LENGTH_SHORT);
+															Glide.with(getApplicationContext()).load(url.getText().toString()).into(profile_icon);
+															Glide.with(getApplicationContext()).load(url.getText().toString()).into(menu);
+															tabNavigation.getTabAt(0).select();
+															pfpDialog.dismiss();
+														}
+													} else {
+														url.setError("Path/URI should not be blank.");
+													}
+												}
+											});
+								        	cancel.setOnClickListener(new View.OnClickListener() {
+								        		@Override
+												public void onClick(View view) {
+													android.graphics.drawable.RippleDrawable rippleButton = new android.graphics.drawable.RippleDrawable(new android.content.res.ColorStateList(new int[][]{new int[]{}}, new int[]{ Color.parseColor("#BDBDBD") }), new android.graphics.drawable.ColorDrawable(Color.parseColor("#FFFFFF")), null);
+													view.setBackground(rippleButton);
+													pfpDialog.dismiss();
+												}
+											});
+											Double TopLeft = 20.0;
+											Double TopRight = 20.0;
+											Double BottomRight = 0.0;
+											Double BottomLeft = 0.0;
+											android.graphics.drawable.GradientDrawable roundedCorners = new android.graphics.drawable.GradientDrawable();
+											roundedCorners.setShape(android.graphics.drawable.GradientDrawable.RECTANGLE);
+											roundedCorners.setCornerRadii(new float[] {TopLeft.floatValue(),TopLeft.floatValue(), TopRight.floatValue(),TopRight.floatValue(), BottomRight.floatValue(),BottomRight.floatValue(), BottomLeft.floatValue(),BottomLeft.floatValue()});
+											roundedCorners.setColor(Color.parseColor("#FFFFFF"));
+											((ViewGroup)dialogLayout.getParent()).setBackground(roundedCorners);
+											android.graphics.drawable.GradientDrawable roundedCorners2 = new android.graphics.drawable.GradientDrawable();
+											roundedCorners2.setShape(android.graphics.drawable.GradientDrawable.RECTANGLE);
+											roundedCorners2.setCornerRadius(20);
+											roundedCorners2.setColor(Color.parseColor("#EEEEEE"));
+											url.setBackground(roundedCorners2);
+											android.graphics.drawable.GradientDrawable gradientButton = new android.graphics.drawable.GradientDrawable();
+											gradientButton.setColor(Color.parseColor("#03A9F4"));
+											gradientButton.setCornerRadius(20);
+											finish.setBackground(gradientButton);
+											cancel.setBackground(gradientButton);
+											pfpDialog.show();
+								        }
 							        });
 						        create.setOnClickListener(new View.OnClickListener() {
 								        @Override
 								        public void onClick(View view) {
+											android.graphics.drawable.RippleDrawable rippleButton = new android.graphics.drawable.RippleDrawable(new android.content.res.ColorStateList(new int[][]{new int[]{}}, new int[]{ Color.parseColor("#BDBDBD") }), new android.graphics.drawable.ColorDrawable(Color.parseColor("#FFFFFF")), null);
+											view.setBackground(rippleButton);
 										        if (profile_name.getText().toString().length() > 0) {
 														if (profile_name.getText().toString().equals(profileData.get("profileName").toString())) {
-															    renameProfile.dismiss();
+															    renameDialog.dismiss();
 														} else {
 													            String profileName = profile_name.getText().toString();
 													            profileData.put("profileName", profileName);
 													            savedData.edit().putString("savedProfileData", ListUtil.setHashMapToSharedJSON(profileData)).apply();
 														        ApplicationUtil.toast(getApplicationContext(), "Renamed profile sucessfully.", Toast.LENGTH_SHORT);
 														        tabNavigation.getTabAt(0).select();
-													            renameProfile.dismiss();
+													            renameDialog.dismiss();
 														        menuDialog.dismiss();
 														        startActivity(new Intent(getApplicationContext(), LauncherActivity.class));
 														        finish();
@@ -371,7 +460,7 @@ public class LocalStreamActivity extends  AppCompatActivity  {
 						        gradientButton.setColor(Color.parseColor("#03A9F4"));
 						        gradientButton.setCornerRadius(20);
 						        create.setBackground(gradientButton);
-						        renameProfile.show();
+						        renameDialog.show();
 						}
 				});
 				live_streaming.setOnClickListener(new View.OnClickListener() {
@@ -674,7 +763,9 @@ public class LocalStreamActivity extends  AppCompatActivity  {
 			@Override 
 			public void onRefresh() {
 				if (savedData.contains("savedMusicData")) {
-					musicData.clear();
+					if (musicData != null) {
+						musicData.clear();
+					}
 					musicData = ListUtil.getArrayListFromSharedJSON(savedData, "savedMusicData");
 					if (musicData.isEmpty()) {
 						{
@@ -731,7 +822,7 @@ public class LocalStreamActivity extends  AppCompatActivity  {
 					try {
 						profileData.put("profileSongPosition", String.valueOf((Integer.parseInt(profileData.get("profileSongPosition").toString()) - 1)));
 						savedData.edit().putString("savedProfileData", ListUtil.setHashMapToSharedJSON(profileData)).apply();
-						if (Integer.parseInt(profileData.get("lastSongItemPosition").toString()) < musicData.size()) {
+						if (Integer.parseInt(profileData.get("profileSongPosition").toString()) < musicData.size()) {
 							playbackSrv.createLocalStream(Integer.parseInt(profileData.get("profileSongPosition").toString()));
 							playPause.performClick();
 						}
@@ -899,7 +990,7 @@ public class LocalStreamActivity extends  AppCompatActivity  {
 						miniplayerSongArtist.setText(musicData.get(Integer.parseInt(profileData.get("profileSongPosition").toString())).get("songArtist").toString());
 						miniplayerSeekbar.setMax(playbackSrv.getMaxDuration());
 						miniplayerSeekbar.setProgress(playbackSrv.getCurrentPosition());
-						maxDuration.setText(String.valueOf((int) ((playbackSrv.getMaxDuration() / 1000) / 60)).concat(":".concat(new DecimalFormat("00").format((playbackSrv.getMaxDuration() / 1000) % 60))));
+						maxDuration.setText(String.valueOf((int)((playbackSrv.getMaxDuration() / 1000) / 60)).concat(":".concat(new DecimalFormat("00").format((playbackSrv.getMaxDuration() / 1000) % 60))));
 						currentDuration.setText(String.valueOf((int)((playbackSrv.getCurrentPosition() / 1000) / 60)).concat(":".concat(new DecimalFormat("00").format((playbackSrv.getCurrentPosition() / 1000) % 60))));
 						seekbarDuration.setMax(playbackSrv.getMaxDuration());
 						seekbarDuration.setProgress(playbackSrv.getCurrentPosition());
@@ -960,10 +1051,10 @@ public class LocalStreamActivity extends  AppCompatActivity  {
 	}
 	
 	@Override
-	protected void onActivityResult(int _requestCode, int _resultCode, Intent _data) {
-		super.onActivityResult(_requestCode, _resultCode, _data);
-		switch (_requestCode) {
-			default:
+	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+		super.onActivityResult(requestCode, resultCode, data);
+		switch(requestCode) {
+            default:
 			break;
 		}
 	}
@@ -989,7 +1080,9 @@ public class LocalStreamActivity extends  AppCompatActivity  {
 	public void onResume() {
 		super.onResume();
 		if (savedData.contains("savedMusicData")) {
-			musicData.clear();
+			if (musicData != null) {
+				musicData.clear();
+			}
 			musicData = ListUtil.getArrayListFromSharedJSON(savedData, "savedMusicData");
 			if (musicData.isEmpty()) {
 				{
@@ -1024,14 +1117,12 @@ public class LocalStreamActivity extends  AppCompatActivity  {
 				miniplayer.setVisibility(View.VISIBLE);
 				player.setVisibility(View.GONE);
 				miniplayerSeekbar.setVisibility(View.VISIBLE);
-			} else {
-				if (profileData.get("profileNavigationIndex").equals("1")) {
-					tabNavigation.getTabAt(1).select();
-					listRefresh.setVisibility(View.GONE);
-					player.setVisibility(View.VISIBLE);
-					miniplayer.setVisibility(View.GONE);
-					miniplayerSeekbar.setVisibility(View.GONE);
-				}
+			} else if (profileData.get("profileNavigationIndex").equals("1")) {
+				tabNavigation.getTabAt(1).select();
+				listRefresh.setVisibility(View.GONE);
+				player.setVisibility(View.VISIBLE);
+				miniplayer.setVisibility(View.GONE);
+				miniplayerSeekbar.setVisibility(View.GONE);
 			}
 		} else {
 			profileData.put("profileNavigationIndex", "0");
