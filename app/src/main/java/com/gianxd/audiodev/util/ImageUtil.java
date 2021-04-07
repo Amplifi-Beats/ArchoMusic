@@ -39,7 +39,7 @@ public class ImageUtil {
     public static Bitmap getAlbumArt(String path, Resources resources) {
         Bitmap bitmapArt;
         MediaMetadataRetriever artRetriever = new MediaMetadataRetriever();
-        if (path.startsWith("file://")) {
+        if (path.startsWith("file://") || path.startsWith("/")) {
             artRetriever.setDataSource(path);
         } else if (path.startsWith("content://")) {
             throw new IllegalArgumentException("Content URIs cannot be set as path.");
@@ -58,7 +58,7 @@ public class ImageUtil {
         MediaMetadataRetriever artRetriever = new MediaMetadataRetriever();
         if (contentUri.toString().startsWith("content://")) {
             artRetriever.setDataSource(context, contentUri);
-        } else if (contentUri.toString().startsWith("file://")) {
+        } else if (contentUri.toString().startsWith("file://") || contentUri.toString().startsWith("/")) {
             throw new IllegalArgumentException("Filepaths cannot be set as URIs.");
         }
         byte[] album_art = artRetriever.getEmbeddedPicture();
