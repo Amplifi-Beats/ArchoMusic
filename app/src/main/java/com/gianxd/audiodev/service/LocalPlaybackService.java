@@ -121,21 +121,39 @@ public class LocalPlaybackService extends Service {
 				}
 				playPause.setImageResource(R.drawable.ic_media_play);
 		        miniplayerPlayPause.setImageResource(R.drawable.ic_media_play);
-				try {
-					if (position + 1 < musicData.size()) {
-						profileData.put("profileSongPosition", String.valueOf(position + 1));
+				if (!profileData.get("profileRepeatMode").equals("1") || profileData.get("profileRepeatMode").equals("2") || profileData.get("profileShuffleMode").equals("1") && profileData.get("profileRepeatMode").equals("0") && profileData.get("profileShuffleMode").equals("0")) {
+					if (!(Integer.parseInt(profileData.get("profileSongPosition").toString()) == musicData.size())) {
+						profileData.put("profileSongPosition", String.valueOf((Integer.parseInt(profileData.get("profileSongPosition").toString()) + 1)));
 						savedData.edit().putString("savedProfileData", ListUtil.setHashMapToSharedJSON(profileData)).apply();
-						createLocalStream(position + 1);
+						if (Integer.parseInt(profileData.get("profileSongPosition").toString()) < musicData.size()) {
+							createLocalStream(Integer.parseInt(profileData.get("profileSongPosition").toString()));
+							playPause.performClick();
+						}
+					}
+				} else if (profileData.get("profileRepeatMode").equals("1")) {
+					if (Integer.parseInt(profileData.get("profileSongPosition").toString()) == musicData.size()) {
+						profileData.put("profileSongPosition", String.valueOf(0));
+						savedData.edit().putString("savedProfileData", ListUtil.setHashMapToSharedJSON(profileData)).apply();
+						createLocalStream(Integer.parseInt(profileData.get("profileSongPosition").toString()));
+						playPause.performClick();
+					} else {
+						profileData.put("profileSongPosition", String.valueOf((Integer.parseInt(profileData.get("profileSongPosition").toString()) + 1)));
+						savedData.edit().putString("savedProfileData", ListUtil.setHashMapToSharedJSON(profileData)).apply();
+						if (Integer.parseInt(profileData.get("profileSongPosition").toString()) < musicData.size()) {
+							createLocalStream(Integer.parseInt(profileData.get("profileSongPosition").toString()));
+							playPause.performClick();
+						}
+					}
+				} else if (profileData.get("profileRepeatMode").equals("2")) {
+					createLocalStream(Integer.parseInt(profileData.get("profileSongPosition").toString()));
+				} else if (profileData.get("profileShuffleMode").equals("1")) {
+					profileData.put("profileSongPosition", String.valueOf(com.gianxd.audiodev.util.MusicDevUtil.getRandom((int)(Integer.parseInt(profileData.get("profileSongPosition").toString())), (int)(musicData.size()))));
+					savedData.edit().putString("savedProfileData", ListUtil.setHashMapToSharedJSON(profileData)).apply();
+					if (Integer.parseInt(profileData.get("profileSongPosition").toString()) < musicData.size()) {
+						createLocalStream(Integer.parseInt(profileData.get("profileSongPosition").toString()));
 						playPause.performClick();
 					}
-				} catch (Exception e) {
-				    if (position + 1 < musicData.size()) {
-						profileData.put("profileSongPosition", String.valueOf(position + 1));
-						savedData.edit().putString("savedProfileData", ListUtil.setHashMapToSharedJSON(profileData)).apply();
-						createLocalStream(position + 1);
-						playPause.performClick();
-					}
-			    }
+				}
 			}
 		});
 		audioChangeListener = new AudioManager.OnAudioFocusChangeListener() {
