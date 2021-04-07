@@ -5,59 +5,66 @@
 	android:layout_width="match_parent"
 	android:layout_height="match_parent"
 	android:orientation="vertical">
+
 	<LinearLayout
 		android:id="@+id/up"
 		android:layout_width="match_parent"
 		android:layout_height="wrap_content"
-		android:padding="8dp"
 		android:background="#FFFFFF"
-		android:orientation="horizontal">
+		android:orientation="horizontal"
+		android:padding="8dp">
+
 		<TextView
 			android:id="@+id/logoName"
 			android:layout_width="wrap_content"
 			android:layout_height="wrap_content"
+			android:layout_weight="1"
 			android:padding="8dp"
 			android:text="@string/local_stream_title"
-			android:textSize="18sp"
 			android:textColor="#03A9F4"
-			android:layout_weight="1"/>
+			android:textSize="18sp" />
+
 		<com.google.android.material.tabs.TabLayout
 			android:id="@+id/tabNavigation"
 			android:layout_width="90dp"
 			android:layout_height="30dp"
-			android:background="#FFFFFF"
 			app:tabGravity="fill"
-			app:tabMode="fixed"
-			app:tabIndicatorHeight="3dp"
 			app:tabIndicatorColor="@color/colorPrimary"
 			app:tabIndicatorFullWidth="false"
-			app:tabMaxWidth="40dp"
 			app:tabIndicatorGravity="top"
-			app:tabUnboundedRipple="true"/>
+			app:tabIndicatorHeight="3dp"
+			app:tabMaxWidth="40dp"
+			app:tabMode="fixed"
+			app:tabUnboundedRipple="true" />
+
 		<ImageView
 			android:id="@+id/menu"
 			android:layout_width="40dp"
 			android:layout_height="30dp"
-			android:src="@drawable/ic_profile_icon"
+			android:layout_gravity="top"
 			android:scaleType="fitCenter"
-			android:layout_gravity="top"/>
+			android:src="@drawable/ic_profile_icon" />
 	</LinearLayout>
+
 	<LinearLayout
+		android:id="@+id/main"
 		android:layout_width="match_parent"
 		android:layout_height="match_parent"
+		android:layout_weight="1"
 		android:background="#FFFFFF"
-		android:orientation="horizontal"
-		android:layout_weight="1">
+		android:orientation="horizontal">
+
 		<androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 			android:id="@+id/listRefresh"
 			android:layout_width="wrap_content"
 			android:layout_height="match_parent"
 			android:layout_weight="1">
+
 			<androidx.recyclerview.widget.RecyclerView
 				android:id="@+id/songList"
 				android:layout_width="match_parent"
 				android:layout_height="match_parent"
-				android:layout_weight="1"/>
+				android:layout_weight="1" />
 		</androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 
 		<LinearLayout
@@ -65,7 +72,6 @@
 			android:layout_width="match_parent"
 			android:layout_height="match_parent"
 			android:layout_weight="1"
-			android:background="#FFFFFF"
 			android:orientation="vertical"
 			android:padding="8dp">
 
@@ -234,30 +240,35 @@
 		android:background="#FFFFFF"
 		android:indeterminate="false"
 		style="?android:progressBarStyleHorizontal"/>
+
 	<LinearLayout
 		android:id="@+id/miniplayer"
 		android:layout_width="match_parent"
 		android:layout_height="wrap_content"
-		android:padding="8dp"
 		android:background="#FFFFFF"
-		android:orientation="horizontal">
+		android:orientation="horizontal"
+		android:padding="8dp">
+
 		<androidx.cardview.widget.CardView
 			android:id="@+id/miniplayerCorneredView"
 			android:layout_width="50dp"
 			android:layout_height="50dp"
 			app:cardCornerRadius="8dp">
+
 			<ImageView
 				android:id="@+id/miniplayerAlbumArt"
 				android:layout_width="wrap_content"
 				android:layout_height="wrap_content"
-				android:src="@drawable/ic_media_album_art"
-				android:scaleType="fitCenter"/>
+				android:scaleType="fitCenter"
+				android:src="@drawable/ic_media_album_art" />
 		</androidx.cardview.widget.CardView>
+
 		<LinearLayout
 			android:layout_width="match_parent"
 			android:layout_height="match_parent"
-			android:orientation="vertical"
-			android:layout_weight="1">
+			android:layout_weight="1"
+			android:orientation="vertical">
+
 			<TextView
 				android:id="@+id/miniplayerSongTitle"
 				android:layout_width="wrap_content"
@@ -265,43 +276,47 @@
 				android:paddingLeft="8dp"
 				android:paddingTop="8dp"
 				android:paddingRight="8dp"
+				android:singleLine="true"
 				android:text="@string/song_title_null"
-				android:textSize="14sp"
 				android:textColor="#000000"
-				android:singleLine="true"/>
+				android:textSize="14sp" />
+
 			<TextView
 				android:id="@+id/miniplayerSongArtist"
 				android:layout_width="wrap_content"
 				android:layout_height="wrap_content"
+				android:alpha="0.5"
 				android:paddingLeft="8dp"
 				android:paddingRight="8dp"
 				android:paddingBottom="8dp"
-				android:text="@string/song_artist_null"
-				android:textSize="11sp"
-				android:textColor="#000000"
 				android:singleLine="true"
-				android:alpha="0.5"/>
+				android:text="@string/song_artist_null"
+				android:textColor="#000000"
+				android:textSize="11sp" />
 		</LinearLayout>
+
 		<ImageView
 			android:id="@+id/miniplayerSkipPrev"
 			android:layout_width="30dp"
 			android:layout_height="35dp"
-			android:src="@drawable/ic_media_skip_previous"
+			android:layout_gravity="center_vertical"
 			android:scaleType="fitCenter"
-			android:layout_gravity="center_vertical"/>
+			android:src="@drawable/ic_media_skip_previous" />
+
 		<ImageView
 			android:id="@+id/miniplayerPlayPause"
 			android:layout_width="65dp"
 			android:layout_height="45dp"
-			android:src="@drawable/ic_media_play"
+			android:layout_gravity="center_vertical"
 			android:scaleType="fitCenter"
-			android:layout_gravity="center_vertical"/>
+			android:src="@drawable/ic_media_play" />
+
 		<ImageView
 			android:id="@+id/miniplayerSkipNext"
 			android:layout_width="30dp"
 			android:layout_height="35dp"
-			android:src="@drawable/ic_media_skip_next"
+			android:layout_gravity="center_vertical"
 			android:scaleType="fitCenter"
-			android:layout_gravity="center_vertical"/>
+			android:src="@drawable/ic_media_skip_next" />
 	</LinearLayout>
 </LinearLayout>

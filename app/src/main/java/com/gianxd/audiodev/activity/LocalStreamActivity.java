@@ -71,6 +71,7 @@ public class LocalStreamActivity extends  AppCompatActivity  {
 	private boolean musicBound = false;
 
 	private LinearLayout top;
+	private LinearLayout main;
 	public static ProgressBar miniplayerSeekbar;
 	private LinearLayout miniplayer;
 	private TextView logoName;
@@ -111,6 +112,7 @@ public class LocalStreamActivity extends  AppCompatActivity  {
 	
 	private void initialize(Bundle savedInstanceState) {
 		top = (LinearLayout) findViewById(R.id.up);
+		main = (LinearLayout) findViewById(R.id.main);
 		miniplayerSeekbar = (ProgressBar) findViewById(R.id.miniplayerSeekbar);
 		miniplayer = (LinearLayout) findViewById(R.id.miniplayer);
 		logoName = (TextView) findViewById(R.id.logoName);
@@ -163,12 +165,16 @@ public class LocalStreamActivity extends  AppCompatActivity  {
 		if (savedData.contains("savedProfileData")) {
 			profileData = ListUtil.getHashMapFromSharedJSON(savedData, "savedProfileData");
 		} else {
-			ApplicationUtil.toast(getApplicationContext(), "Profile settings failed to load.", Toast.LENGTH_LONG);
+			profileData = new HashMap<>();
 		}
 		miniplayer.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View view) {
-				miniplayer.setBackground(new android.graphics.drawable.RippleDrawable(new android.content.res.ColorStateList(new int[][]{new int[]{}}, new int[]{ Color.parseColor("#BDBDBD") }), new android.graphics.drawable.ColorDrawable(Color.parseColor("#FFFFFF")), null));
+				if (!profileData.get("profileDarkMode").equals("true")) {
+					miniplayer.setBackground(new android.graphics.drawable.RippleDrawable(new android.content.res.ColorStateList(new int[][]{new int[]{}}, new int[]{ Color.parseColor("#BDBDBD") }), new android.graphics.drawable.ColorDrawable(Color.parseColor("#FFFFFF")), null));
+				} else {
+					miniplayer.setBackground(new android.graphics.drawable.RippleDrawable(new android.content.res.ColorStateList(new int[][]{new int[]{}}, new int[]{ Color.parseColor("#BDBDBD") }), new android.graphics.drawable.ColorDrawable(Color.parseColor("#212121")), null));
+				}
 				tabNavigation.getTabAt(1).select();
 			}
 		});
@@ -310,6 +316,10 @@ public class LocalStreamActivity extends  AppCompatActivity  {
 		} else {
 			Glide.with(getApplicationContext()).load(R.drawable.ic_media_shuffle_off).into(shuffle);
 			profileData.put("profileShuffleMode", "0");
+			savedData.edit().putString("savedProfileData", ListUtil.setHashMapToSharedJSON(profileData)).apply();
+		}
+		if (!profileData.containsKey("profileDarkMode")) {
+			profileData.put("profileShuffleMode", "false");
 			savedData.edit().putString("savedProfileData", ListUtil.setHashMapToSharedJSON(profileData)).apply();
 		}
 		menu.setOnClickListener(new View.OnClickListener() {
@@ -572,6 +582,11 @@ public class LocalStreamActivity extends  AppCompatActivity  {
 							    CheckBox disable_ads = dialogLayout.findViewById(R.id.disable_ads);
 							    title.setTypeface(Typeface.createFromAsset(getAssets(),"fonts/roboto_medium.ttf"), Typeface.NORMAL);
 							    general_title.setTypeface(Typeface.createFromAsset(getAssets(),"fonts/roboto_medium.ttf"), Typeface.NORMAL);
+							    if (profileData.containsKey("profileDarkMode")) {
+							    	if (profileData.get("profileDarkMode").equals("true")) {
+							    		dark_mode.setChecked(true);
+							    	}
+								}
 							    back.setOnClickListener(new View.OnClickListener() {
 									@Override
 									public void onClick(View view) {
@@ -584,10 +599,16 @@ public class LocalStreamActivity extends  AppCompatActivity  {
 									@Override
 									public void onCheckedChanged(CompoundButton view, boolean isChecked) {
 										if (isChecked) {
-											profileData.put("profileDarkMode", "enabled");
+											profileData.put("profileDarkMode", "true");
+											savedData.edit().putString("savedProfileData", ListUtil.setHashMapToSharedJSON(profileData)).apply();
+											startActivity(new Intent(getApplicationContext(), SplashActivity.class));
+											finish();
 											ApplicationUtil.toast(getApplicationContext(), "Dark mode enabled.", Toast.LENGTH_SHORT);
 										} else {
-											profileData.put("profileDarkMode", "disabled");
+											profileData.put("profileDarkMode", "false");
+											savedData.edit().putString("savedProfileData", ListUtil.setHashMapToSharedJSON(profileData)).apply();
+											startActivity(new Intent(getApplicationContext(), SplashActivity.class));
+											finish();
 											ApplicationUtil.toast(getApplicationContext(), "Dark mode disabled.", Toast.LENGTH_SHORT);
 										}
 									}
@@ -1326,12 +1347,36 @@ public class LocalStreamActivity extends  AppCompatActivity  {
 		shuffle.setColorFilter(ContextCompat.getColor(getApplicationContext(), R.color.colorPrimary));
 		listRefresh.setColorSchemeColors(Color.parseColor("#03A9F4"), Color.parseColor("#03A9F4"), Color.parseColor("#03A9F4"));
 		songList.setLayoutManager(new LinearLayoutManager(this));
-		if (Build.VERSION.SDK_INT >= 23) {
-			top.setSystemUiVisibility(View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR);
-			getWindow().setStatusBarColor(Color.parseColor("#FFFFFF"));
-			getWindow().setNavigationBarColor(Color.parseColor("#FFFFFF"));
+		if (profileData.containsKey("profileDarkMode")) {
+			if (profileData.get("profileDarkMode").equals("true")) {
+				top.setBackgroundColor(Color.parseColor("#212121"));
+				main.setBackgroundColor(Color.parseColor("#1A1A1A"));
+				songTitle.setTextColor(Color.parseColor("#FFFFFF"));
+				songArtist.setTextColor(Color.parseColor("#FFFFFF"));
+				currentDuration.setTextColor(Color.parseColor("#FFFFFF"));
+				maxDuration.setTextColor(Color.parseColor("#FFFFFF"));
+				miniplayer.setBackgroundColor(Color.parseColor("#212121"));
+				miniplayerSeekbar.setBackgroundColor(Color.parseColor("#212121"));
+				miniplayerSongTitle.setTextColor(Color.parseColor("#FFFFFF"));
+				miniplayerSongArtist.setTextColor(Color.parseColor("#FFFFFF"));
+			}
 		}
-		else {
+		if (Build.VERSION.SDK_INT >= 23) {
+			if (profileData.containsKey("profileDarkMode")) {
+				if (!profileData.get("profileDarkMode").equals("true")) {
+					top.setSystemUiVisibility(View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR);
+					getWindow().setStatusBarColor(Color.parseColor("#FFFFFF"));
+					getWindow().setNavigationBarColor(Color.parseColor("#FFFFFF"));
+				} else {
+					getWindow().setStatusBarColor(Color.parseColor("#212121"));
+					getWindow().setNavigationBarColor(Color.parseColor("#212121"));
+				}
+			} else {
+				top.setSystemUiVisibility(View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR);
+				getWindow().setStatusBarColor(Color.parseColor("#FFFFFF"));
+				getWindow().setNavigationBarColor(Color.parseColor("#FFFFFF"));
+			}
+		} else {
 			getWindow().setStatusBarColor(Color.parseColor("#000000"));
 			getWindow().setNavigationBarColor(Color.parseColor("#000000"));
 		}
@@ -1363,6 +1408,14 @@ public class LocalStreamActivity extends  AppCompatActivity  {
 			TextView songArtist = (TextView) view.findViewById(R.id.songArtist);
 			RecyclerView.LayoutParams recyclerLayoutParams = new RecyclerView.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
 			view.setLayoutParams(recyclerLayoutParams);
+			if (profileData.containsKey("profileDarkMode")) {
+				if (profileData.get("profileDarkMode").equals("true")) {
+					main.setBackgroundColor(Color.parseColor("#1A1A1A"));
+					emptyMsg.setTextColor(Color.parseColor("#FFFFFF"));
+					songTitle.setTextColor(Color.parseColor("#FFFFFF"));
+					songArtist.setTextColor(Color.parseColor("#FFFFFF"));
+				}
+			}
 			if (!data.get((int)position).containsKey("isEmpty")) {
 				Glide.with(getApplicationContext()).asBitmap().load(ImageUtil.getAlbumArt(StringUtil.decodeString(data.get(position).get("songData").toString()), getResources())).into(albumArt);
 				songTitle.setText(data.get((int)position).get("songTitle").toString());
@@ -1372,8 +1425,13 @@ public class LocalStreamActivity extends  AppCompatActivity  {
 				main.setOnClickListener(new View.OnClickListener() {
 					@Override
 					public void onClick(View view) {
-						android.graphics.drawable.RippleDrawable rippleButton = new android.graphics.drawable.RippleDrawable(new android.content.res.ColorStateList(new int[][]{new int[]{}}, new int[]{ Color.parseColor("#BDBDBD") }), new android.graphics.drawable.ColorDrawable(Color.parseColor("#FFFFFF")), null);
-						main.setBackground(rippleButton);
+						if (!profileData.get("profileDarkMode").equals("true")) {
+							android.graphics.drawable.RippleDrawable rippleButton = new android.graphics.drawable.RippleDrawable(new android.content.res.ColorStateList(new int[][]{new int[]{}}, new int[]{ Color.parseColor("#BDBDBD") }), new android.graphics.drawable.ColorDrawable(Color.parseColor("#FFFFFF")), null);
+							main.setBackground(rippleButton);
+						} else {
+							android.graphics.drawable.RippleDrawable rippleButton = new android.graphics.drawable.RippleDrawable(new android.content.res.ColorStateList(new int[][]{new int[]{}}, new int[]{ Color.parseColor("#BDBDBD") }), new android.graphics.drawable.ColorDrawable(Color.parseColor("#1A1A1A")), null);
+							main.setBackground(rippleButton);
+						}
 						if (!(position == Integer.parseInt(profileData.get("profileSongPosition").toString()))) {
 							if (new java.io.File(StringUtil.decodeString(musicData.get(position).get("songData").toString())).exists()) {
 								try {

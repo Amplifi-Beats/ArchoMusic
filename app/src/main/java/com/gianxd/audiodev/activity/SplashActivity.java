@@ -44,6 +44,7 @@ public class SplashActivity extends AppCompatActivity {
 	private Timer timer = new Timer();
 	
 	private ArrayList<HashMap<String, Object>> musicData;
+	private HashMap<String, Object> profileData;
 	
 	private LinearLayout mainLayout;
 	private TextView logo;
@@ -72,11 +73,31 @@ public class SplashActivity extends AppCompatActivity {
 		logo.setTypeface(Typeface.createFromAsset(getAssets(),"fonts/leixo.ttf"), Typeface.BOLD);
 		loadanim.setVisibility(View.GONE);
 		loadanim.getIndeterminateDrawable().setColorFilter(0xFFFFFFFF, android.graphics.PorterDuff.Mode.MULTIPLY);
-		if (Build.VERSION.SDK_INT >= 23) {
-			getWindow().setStatusBarColor(Color.parseColor("#03A9F4"));
-			getWindow().setNavigationBarColor(Color.parseColor("#03A9F4"));
+		if (savedData.contains("savedProfileData")) {
+			profileData = ListUtil.getHashMapFromSharedJSON(savedData, "savedProfileData");
+		} else {
+			profileData = new HashMap<>();
 		}
-		else {
+		if (profileData.containsKey("profileDarkMode")) {
+			if (profileData.get("profileDarkMode").equals("true")) {
+				mainLayout.setBackgroundColor(Color.parseColor("#1A1A1A"));
+				logo.setTextColor(Color.parseColor("#03A9F4"));
+			}
+		}
+		if (Build.VERSION.SDK_INT >= 23) {
+			if (profileData.containsKey("profileDarkMode")) {
+				if (!profileData.get("profileDarkMode").equals("true")) {
+					getWindow().setStatusBarColor(Color.parseColor("#03A9F4"));
+					getWindow().setNavigationBarColor(Color.parseColor("#03A9F4"));
+				} else {
+					getWindow().setStatusBarColor(Color.parseColor("#1A1A1A"));
+					getWindow().setNavigationBarColor(Color.parseColor("#1A1A1A"));
+				}
+			} else {
+				getWindow().setStatusBarColor(Color.parseColor("#03A9F4"));
+				getWindow().setNavigationBarColor(Color.parseColor("#03A9F4"));
+			}
+		} else {
 			getWindow().setStatusBarColor(Color.parseColor("#000000"));
 			getWindow().setNavigationBarColor(Color.parseColor("#000000"));
 		}
