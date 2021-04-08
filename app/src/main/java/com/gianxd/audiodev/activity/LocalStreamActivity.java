@@ -775,6 +775,7 @@ public class LocalStreamActivity extends  AppCompatActivity  {
 								View dialogLayout = getLayoutInflater().inflate(R.layout.dialog_visualizer, null);
 								visualizerDialog.setContentView(dialogLayout);
 								ImageView back = dialogLayout.findViewById(R.id.back);
+								ImageView fullscreen = dialogLayout.findViewById(R.id.fullscreen);
 								BarVisualizer visualizer = dialogLayout.findViewById(R.id.visualizer);
 								back.setOnClickListener(new View.OnClickListener() {
 										@Override
@@ -786,6 +787,14 @@ public class LocalStreamActivity extends  AppCompatActivity  {
 												}
 												visualizerDialog.dismiss();
 										}
+								});
+								fullscreen.setOnClickListener(new View.OnClickListener() {
+									@Override
+									public void onClick(View view) {
+										RippleDrawable rippleButton = new RippleDrawable(new ColorStateList(new int[][]{new int[]{}}, new int[]{ Color.parseColor("#BDBDBD") }), null, null);
+										view.setBackground(rippleButton);
+										startActivity(new Intent(getApplicationContext(), FullVisualizerActivity.class));
+									}
 								});
 								if (playbackSrv.mp != null) {
 										if (playbackSrv.mp.getAudioSessionId() != -1) {
