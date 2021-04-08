@@ -1002,6 +1002,7 @@ public class LocalStreamActivity extends  AppCompatActivity  {
 							    } else {
 							    	if (profileData.get("profileDarkMode").equals("true")) {
 							    		roundedCorners.setColor(Color.parseColor("#1A1A1A"));
+										author.setTextColor(Color.parseColor("#FFFFFF"));
 										youtube_name.setTextColor(Color.parseColor("#FFFFFF"));
 										twitter_name.setTextColor(Color.parseColor("#FFFFFF"));
 										github_name.setTextColor(Color.parseColor("#FFFFFF"));
