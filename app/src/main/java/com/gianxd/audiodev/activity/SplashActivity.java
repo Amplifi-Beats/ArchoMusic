@@ -6,6 +6,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
+import android.content.res.Configuration;
 import android.graphics.Color;
 import android.graphics.Typeface;
 import android.os.AsyncTask;
@@ -318,7 +319,7 @@ public class SplashActivity extends AppCompatActivity {
 			break;
 		}
 	}
-	
+
 	public void scanMedia () {
 		(new MediaScanTask()).execute();
 	}
