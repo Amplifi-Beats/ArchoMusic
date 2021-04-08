@@ -23,6 +23,19 @@
 				android:layout_height="30dp"
 				android:src="@drawable/ic_visualizer_back_key"
 				android:scaleType="fitCenter"/>
+			<LinearLayout
+				android:layout_width="match_parent"
+				android:layout_height="match_parent"
+				android:layout_weight="1"
+				android:padding="8dp"
+				android:orientation="horizontal"/>
+			<ImageView
+				android:id="@+id/fullscreen"
+				android:focusable="false"
+				android:layout_width="30dp"
+				android:layout_height="30dp"
+				android:src="@drawable/ic_visualizer_fullscreen"
+				android:scaleType="fitCenter"/>
 		</LinearLayout>
 		<com.gauravk.audiovisualizer.visualizer.BarVisualizer
 			xmlns:custom="http://schemas.android.com/apk/res-auto"
