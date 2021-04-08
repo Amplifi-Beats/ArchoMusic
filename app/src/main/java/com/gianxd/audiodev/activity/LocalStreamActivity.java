@@ -295,7 +295,7 @@ public class LocalStreamActivity extends  AppCompatActivity  {
 			player.setVisibility(View.GONE);
 			miniplayer.setVisibility(View.VISIBLE);
 			miniplayerSeekbar.setVisibility(View.VISIBLE);
-		}
+        }
 		if (profileData.containsKey("profileRepeatMode")) {
 			if (profileData.get("profileRepeatMode").equals("0")) {
 				Glide.with(getApplicationContext()).load(R.drawable.ic_media_repeat_off).into(repeat);
@@ -1286,7 +1286,7 @@ public class LocalStreamActivity extends  AppCompatActivity  {
 								seekbarDuration.setProgress((int)playbackSrv.getCurrentPosition());
 								miniplayerSeekbar.setProgress((int)playbackSrv.getCurrentPosition());
 								currentDuration.setText(String.valueOf((int)((playbackSrv.getCurrentPosition() / 1000) / 60)).concat(":".concat(new DecimalFormat("00").format((playbackSrv.getCurrentPosition() / 1000) % 60))));
-								musicData.get(Integer.parseInt(profileData.get("profileSongPosition").toString()) - 1).put("songCurrentDuration", String.valueOf(playbackSrv.getCurrentPosition()));
+								musicData.get(Integer.parseInt(profileData.get("profileSongPosition").toString())).put("songCurrentDuration", String.valueOf(playbackSrv.getCurrentPosition()));
 								savedData.edit().putString("savedMusicData", ListUtil.setArrayListToSharedJSON(musicData)).apply();
 							}
 						});
