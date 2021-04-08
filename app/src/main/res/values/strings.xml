@@ -18,7 +18,7 @@
     <string name="splash_title">ARcho</string>
     <string name="create_a_profile_title">Create a profile</string>
     <string name="create_a_profile_input_hint">Enter your name</string>
-    <string name="create_a_profile_description">Your profile is used for live streaming and sending messages in live chat.\n\nWithout profile, you cannot access to live streams.</string>
+    <string name="create_a_profile_description">Your profile is used for live streaming and sending messages in live chat.\n\nNote: You cannot access livestreams without a profile.</string>
     <string name="create_a_profile_btn_finish">Create profile</string>
     <string name="about_youtube_title">YouTube</string>
     <string name="about_twitter_title">Twitter</string>
@@ -26,7 +26,7 @@
     <string name="about_github_title">GitHub</string>
     <string name="about_licenses_title">Licenses</string>
     <string name="about_policy_title">Privacy Policy</string>
-    <string name="about_build_version">build v5.18_android BETA</string>
+    <string name="about_build_version">build v5.18_android</string>
     <string name="debug_title">Error</string>
     <string name="debug_description">An unknown error was occurred.</string>
     <string name="debug_error_log">An error was occurred during cheems bruh moment poggers champ bruh bruh bruh.</string>
