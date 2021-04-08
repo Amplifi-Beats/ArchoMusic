@@ -59,7 +59,7 @@ public class FullVisualizerActivity extends AppCompatActivity {
 
     private void initializeLogic() {
         if (profileData.containsKey("profileSongPosition")) {
-            mp = MediaPlayer.create(getApplicationContext(), Uri.fromFile(new File(StringUtil.decodeString(profileData.get("profileSongPosition").toString()))));
+            mp = MediaPlayer.create(getApplicationContext(), Uri.fromFile(new File(StringUtil.decodeString(musicData.get(Integer.parseInt(profileData.get("profileSongPosition").toString())).get("songData").toString()))));
             if (musicData.get(Integer.parseInt(profileData.get("profileSongPosition").toString())).containsKey("songCurrentDuration")) {
                 mp.seekTo(Integer.parseInt(musicData.get(Integer.parseInt(profileData.get("profileSongPosition").toString())).get("songCurrentDuration").toString()));
             }
