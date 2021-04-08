@@ -687,6 +687,7 @@ public class LocalStreamActivity extends  AppCompatActivity  {
 								ImageView back = dialogLayout.findViewById(R.id.back);
 								TextView title = dialogLayout.findViewById(R.id.title);
 								TextView general_title = dialogLayout.findViewById(R.id.general_title);
+								TextView note = dialogLayout.findViewById(R.id.note);
 							    CheckBox dark_mode = dialogLayout.findViewById(R.id.dark_mode);
 							    CheckBox disable_ads = dialogLayout.findViewById(R.id.disable_ads);
 							    title.setTypeface(Typeface.createFromAsset(getAssets(),"fonts/roboto_medium.ttf"), Typeface.NORMAL);
@@ -748,6 +749,7 @@ public class LocalStreamActivity extends  AppCompatActivity  {
 							    		roundedCorners.setColor(Color.parseColor("#1A1A1A"));
 										dark_mode.setTextColor(Color.parseColor("#FFFFFF"));
 										disable_ads.setTextColor(Color.parseColor("#FFFFFF"));
+										note.setTextColor(Color.parseColor("#FFFFFF"));
 							    	} else {
 							    		roundedCorners.setColor(Color.parseColor("#FFFFFF"));
 							    	}
@@ -1281,15 +1283,11 @@ public class LocalStreamActivity extends  AppCompatActivity  {
 						runOnUiThread(new Runnable() {
 							@Override
 							public void run() {
-								try {
-									seekbarDuration.setProgress((int)playbackSrv.getCurrentPosition());
-									miniplayerSeekbar.setProgress((int)playbackSrv.getCurrentPosition());
-									currentDuration.setText(String.valueOf((int)((playbackSrv.getCurrentPosition() / 1000) / 60)).concat(":".concat(new DecimalFormat("00").format((playbackSrv.getCurrentPosition() / 1000) % 60))));
-									musicData.get(Integer.parseInt(profileData.get("profileSongPosition").toString()) - 1).put("songCurrentDuration", String.valueOf(playbackSrv.getCurrentPosition()));
-									savedData.edit().putString("savedMusicData", ListUtil.setArrayListToSharedJSON(musicData)).apply();
-								} catch (Exception e) {
-
-								}
+								seekbarDuration.setProgress((int)playbackSrv.getCurrentPosition());
+								miniplayerSeekbar.setProgress((int)playbackSrv.getCurrentPosition());
+								currentDuration.setText(String.valueOf((int)((playbackSrv.getCurrentPosition() / 1000) / 60)).concat(":".concat(new DecimalFormat("00").format((playbackSrv.getCurrentPosition() / 1000) % 60))));
+								musicData.get(Integer.parseInt(profileData.get("profileSongPosition").toString()) - 1).put("songCurrentDuration", String.valueOf(playbackSrv.getCurrentPosition()));
+								savedData.edit().putString("savedMusicData", ListUtil.setArrayListToSharedJSON(musicData)).apply();
 							}
 						});
 					}
