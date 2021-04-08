@@ -16,7 +16,6 @@
 			android:id="@+id/back"
 			android:layout_width="30dp"
 			android:layout_height="40dp"
-			android:background="#FFFFFF"
 			android:src="@drawable/ic_extbrowser_back_key"
 			android:scaleType="fitCenter"/>
 		<LinearLayout

@@ -1,7 +1,9 @@
 package com.gianxd.audiodev.activity;
 
 import android.Manifest;
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.Color;
@@ -21,9 +23,16 @@ import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 
 import com.gianxd.audiodev.R;
+import com.gianxd.audiodev.util.ListUtil;
+
+import java.util.HashMap;
+
+import static com.gianxd.audiodev.AudioDev.applicationContext;
 
 
-public class ExternalBrowserActivity extends  AppCompatActivity  { 
+public class ExternalBrowserActivity extends  AppCompatActivity  {
+
+	private HashMap<String, Object> profileData;
 
 	private LinearLayout toolbar;
 	private ProgressBar loadbar;
@@ -31,6 +40,8 @@ public class ExternalBrowserActivity extends  AppCompatActivity  {
 	private ImageView back;
 	private TextView webtitle;
 	private TextView weburl;
+
+	private SharedPreferences savedData;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -50,6 +61,12 @@ public class ExternalBrowserActivity extends  AppCompatActivity  {
 		web.getSettings().setSupportZoom(true);
 		webtitle = (TextView) findViewById(R.id.webtitle);
 		weburl = (TextView) findViewById(R.id.weburl);
+		savedData = applicationContext.getSharedPreferences("savedData", Context.MODE_PRIVATE);
+		if (savedData.contains("savedProfileData")) {
+			profileData = ListUtil.getHashMapFromSharedJSON(savedData, "savedProfileData");
+		} else {
+			profileData = new HashMap<>();
+		}
 		web.setWebViewClient(new WebViewClient() {
 			@Override
 			public void onPageStarted(WebView webView, String url, Bitmap favicon) {
@@ -93,13 +110,25 @@ public class ExternalBrowserActivity extends  AppCompatActivity  {
 		loadbar.setElevation((float)10);
 		toolbar.setElevation((float)10);
 		if (Build.VERSION.SDK_INT >= 23) {
-			toolbar.setSystemUiVisibility(View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR);
-			getWindow().setStatusBarColor(Color.parseColor("#FFFFFF"));
-			getWindow().setNavigationBarColor(Color.parseColor("#FFFFFF"));
-		}
-		else {
+			if (profileData.containsKey("profileDarkMode")) {
+				if (profileData.get("profileDarkMode").equals("true")) {
+					getWindow().setStatusBarColor(Color.parseColor("#1A1A1A"));
+					getWindow().setNavigationBarColor(Color.parseColor("#1A1A1A"));
+				}
+			} else {
+				toolbar.setSystemUiVisibility(View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR);
+				getWindow().setStatusBarColor(Color.parseColor("#FFFFFF"));
+				getWindow().setNavigationBarColor(Color.parseColor("#FFFFFF"));
+			}
+		} else {
 			getWindow().setStatusBarColor(Color.parseColor("#000000"));
 			getWindow().setNavigationBarColor(Color.parseColor("#000000"));
+		}
+		if (profileData.containsKey("profileDarkMode")) {
+			if (profileData.get("profileDarkMode").equals("true")) {
+				toolbar.setBackgroundColor(Color.parseColor("#1A1A1A"));
+				weburl.setTextColor(Color.parseColor("#BDBDBD"));
+			}
 		}
 		if (getIntent().getStringExtra("url") != null) {
 			web.loadUrl(getIntent().getStringExtra("url"));
