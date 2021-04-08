@@ -835,6 +835,7 @@ public class LocalStreamActivity extends  AppCompatActivity  {
 							    TextView discord_name = dialogLayout.findViewById(R.id.discord_name);
 							    TextView licenses_name = dialogLayout.findViewById(R.id.licenses_name);
 							    TextView privacy_name = dialogLayout.findViewById(R.id.privacy_name);
+							    TextView version = dialogLayout.findViewById(R.id.version);
 								LinearLayout youtube = dialogLayout.findViewById(R.id.youtube);
 								LinearLayout twitter = dialogLayout.findViewById(R.id.twitter);
 						        LinearLayout github = dialogLayout.findViewById(R.id.github);
@@ -1009,6 +1010,7 @@ public class LocalStreamActivity extends  AppCompatActivity  {
 										discord_name.setTextColor(Color.parseColor("#FFFFFF"));
 										licenses_name.setTextColor(Color.parseColor("#FFFFFF"));
 										privacy_name.setTextColor(Color.parseColor("#FFFFFF"));
+										version.setTextColor(Color.parseColor("#FFFFFF"));
 							    	} else {
 							    		roundedCorners.setColor(Color.parseColor("#FFFFFF"));
 							    	}
