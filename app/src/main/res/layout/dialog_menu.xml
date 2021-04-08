@@ -58,9 +58,9 @@
 				android:padding="8dp"
 				android:text="@string/profile_name_null"
 				android:textSize="14sp"
-				android:textColor="#000000"
 				android:singleLine="true"
-				android:layout_gravity="center_vertical"/>
+				android:layout_gravity="center_vertical"
+				android:textColor="#000000"/>
 		</LinearLayout>
 		<LinearLayout
 			android:id="@+id/line"
@@ -91,8 +91,8 @@
 				android:padding="8dp"
 				android:text="@string/menu_live_stream_title"
 				android:textSize="12sp"
-				android:textColor="#000000"
-				android:layout_gravity="center_vertical"/>
+				android:layout_gravity="center_vertical"
+				android:textColor="#000000"/>
 		</LinearLayout>
 		<LinearLayout
 			android:id="@+id/visualizer"
@@ -153,7 +153,8 @@
 				android:layout_width="30dp"
 				android:layout_height="30dp"
 				android:src="@drawable/ic_settings"
-				android:scaleType="fitCenter"/>
+				android:scaleType="fitCenter"
+				android:textColor="#000000"/>
 			<TextView
 				android:id="@+id/settings_name"
 				android:focusable="false"

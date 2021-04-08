@@ -32,6 +32,8 @@ import com.gianxd.audiodev.util.StringUtil;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.gson.Gson;
 
+import org.w3c.dom.Text;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Timer;
@@ -126,6 +128,8 @@ public class SplashActivity extends AppCompatActivity {
 											View dialogLayout = getLayoutInflater().inflate(R.layout.dialog_permissions, null);
 											permRequest.setContentView(dialogLayout);
 											TextView title = dialogLayout.findViewById(R.id.title);
+											TextView message = dialogLayout.findViewById(R.id.message);
+											TextView message2 = dialogLayout.findViewById(R.id.message2);
 											Button accept = dialogLayout.findViewById(R.id.accept);
 											title.setTypeface(Typeface.createFromAsset(getAssets(),"fonts/roboto_medium.ttf"), Typeface.NORMAL);
 											accept.setOnClickListener(new View.OnClickListener() {
@@ -144,7 +148,17 @@ public class SplashActivity extends AppCompatActivity {
 											android.graphics.drawable.GradientDrawable roundedCorners = new android.graphics.drawable.GradientDrawable();
 											roundedCorners.setShape(android.graphics.drawable.GradientDrawable.RECTANGLE);
 											roundedCorners.setCornerRadii(new float[] {TopLeft.floatValue(),TopLeft.floatValue(), TopRight.floatValue(),TopRight.floatValue(), BottomRight.floatValue(),BottomRight.floatValue(), BottomLeft.floatValue(),BottomLeft.floatValue()});
-											roundedCorners.setColor(Color.parseColor("#FFFFFF"));
+											if (!profileData.containsKey("profileDarkMode")) {
+												roundedCorners.setColor(Color.parseColor("#FFFFFF"));
+											} else {
+												if (profileData.get("profileDarkMode").equals("true")) {
+													roundedCorners.setColor(Color.parseColor("#1A1A1A"));
+													message.setTextColor(Color.parseColor("#FFFFFF"));
+													message2.setTextColor(Color.parseColor("#FFFFFF"));
+												} else {
+													roundedCorners.setColor(Color.parseColor("#FFFFFF"));
+												}
+											}
 											android.graphics.drawable.GradientDrawable gradientButton = new android.graphics.drawable.GradientDrawable();
 											gradientButton.setColor(Color.parseColor("#03A9F4"));
 											gradientButton.setCornerRadius(20);
@@ -160,13 +174,14 @@ public class SplashActivity extends AppCompatActivity {
 								if (ContextCompat.checkSelfPermission(getApplicationContext(), Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED && ContextCompat.checkSelfPermission(getApplicationContext(), Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED
 								&& ContextCompat.checkSelfPermission(getApplicationContext(), Manifest.permission.RECORD_AUDIO) == PackageManager.PERMISSION_GRANTED) {
 									scanMedia();
-								}
-								else {
+								} else {
 									BottomSheetDialog permRequest = new BottomSheetDialog(SplashActivity.this);
 									View dialogLayout = getLayoutInflater().inflate(R.layout.dialog_permissions, null);
 									permRequest.setContentView(dialogLayout);
 									LinearLayout main = dialogLayout.findViewById(R.id.main);
 									TextView title = dialogLayout.findViewById(R.id.title);
+									TextView message = dialogLayout.findViewById(R.id.message);
+									TextView message2 = dialogLayout.findViewById(R.id.message2);
 									Button accept = dialogLayout.findViewById(R.id.accept);
 									title.setTypeface(Typeface.createFromAsset(getAssets(),"fonts/roboto_medium.ttf"), Typeface.NORMAL);
 									accept.setOnClickListener(new View.OnClickListener() {
@@ -185,7 +200,17 @@ public class SplashActivity extends AppCompatActivity {
 									android.graphics.drawable.GradientDrawable roundedCorners = new android.graphics.drawable.GradientDrawable();
 									roundedCorners.setShape(android.graphics.drawable.GradientDrawable.RECTANGLE);
 									roundedCorners.setCornerRadii(new float[] {TopLeft.floatValue(),TopLeft.floatValue(), TopRight.floatValue(),TopRight.floatValue(), BottomRight.floatValue(),BottomRight.floatValue(), BottomLeft.floatValue(),BottomLeft.floatValue()});
-									roundedCorners.setColor(Color.parseColor("#FFFFFF"));
+									if (!profileData.containsKey("profileDarkMode")) {
+										roundedCorners.setColor(Color.parseColor("#FFFFFF"));
+									} else {
+										if (profileData.get("profileDarkMode").equals("true")) {
+											roundedCorners.setColor(Color.parseColor("#1A1A1A"));
+											message.setTextColor(Color.parseColor("#FFFFFF"));
+											message2.setTextColor(Color.parseColor("#FFFFFF"));
+										} else {
+											roundedCorners.setColor(Color.parseColor("#FFFFFF"));
+										}
+									}
 									android.graphics.drawable.GradientDrawable gradientButton = new android.graphics.drawable.GradientDrawable();
 									gradientButton.setColor(Color.parseColor("#03A9F4"));
 									gradientButton.setCornerRadius(20);
@@ -201,6 +226,7 @@ public class SplashActivity extends AppCompatActivity {
 							createProfile.setContentView(dialogLayout);
 							LinearLayout main = dialogLayout.findViewById(R.id.main);
 							TextView title = dialogLayout.findViewById(R.id.title);
+							TextView desc = dialogLayout.findViewById(R.id.desc);
 							ImageView profile_icon = dialogLayout.findViewById(R.id.profile_icon);
 							EditText profile_name = dialogLayout.findViewById(R.id.profile_name);
 							Button create = dialogLayout.findViewById(R.id.create);
@@ -235,7 +261,15 @@ public class SplashActivity extends AppCompatActivity {
 							android.graphics.drawable.GradientDrawable roundedCorners = new android.graphics.drawable.GradientDrawable();
 							roundedCorners.setShape(android.graphics.drawable.GradientDrawable.RECTANGLE);
 							roundedCorners.setCornerRadii(new float[] {TopLeft.floatValue(),TopLeft.floatValue(), TopRight.floatValue(),TopRight.floatValue(), BottomRight.floatValue(),BottomRight.floatValue(), BottomLeft.floatValue(),BottomLeft.floatValue()});
-							roundedCorners.setColor(Color.parseColor("#FFFFFF"));
+							if (!profileData.containsKey("profileDarkMode")) {
+								roundedCorners.setColor(Color.parseColor("#FFFFFF"));
+							} else {
+								if (profileData.get("profileDarkMode").equals("true")) {
+									roundedCorners.setColor(Color.parseColor("#1A1A1A"));
+								} else {
+									roundedCorners.setColor(Color.parseColor("#FFFFFF"));
+								}
+							}
 							((ViewGroup)dialogLayout.getParent()).setBackground(roundedCorners);
 							android.graphics.drawable.GradientDrawable roundedCorners2 = new android.graphics.drawable.GradientDrawable();
 							roundedCorners2.setShape(android.graphics.drawable.GradientDrawable.RECTANGLE);
