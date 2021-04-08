@@ -1246,29 +1246,24 @@ public class LocalStreamActivity extends  AppCompatActivity  {
 		if (playbackSrv != null) {
 			if (profileData.get("profileRepeatMode").equals("0") || profileData.get("profileShuffleMode").equals("0")) {
 				if (!profileData.get("profileSongPosition").equals("-1")) {
-					ApplicationUtil.toast(getApplicationContext(), "amogus", Toast.LENGTH_SHORT);
 					profileData.put("profileSongPosition", String.valueOf(Integer.parseInt(profileData.get("profileSongPosition").toString()) - 1));
 					savedData.edit().putString("savedProfileData", ListUtil.setHashMapToSharedJSON(profileData)).apply();
 					playbackSrv.createLocalStream(Integer.parseInt(profileData.get("profileSongPosition").toString()));
 				}
 			} else if (profileData.get("profileRepeatMode").equals("1")) {
 				if (!profileData.get("profileSongPosition").equals("-1")) {
-					ApplicationUtil.toast(getApplicationContext(), "amogus 2", Toast.LENGTH_SHORT);
 					profileData.put("profileSongPosition", String.valueOf(Integer.parseInt(profileData.get("profileSongPosition").toString()) - 1));
 					savedData.edit().putString("savedProfileData", ListUtil.setHashMapToSharedJSON(profileData)).apply();
 					playbackSrv.createLocalStream(Integer.parseInt(profileData.get("profileSongPosition").toString()));
 				} else {
-					ApplicationUtil.toast(getApplicationContext(), "amogus 3", Toast.LENGTH_SHORT);
 					profileData.put("profileSongPosition", String.valueOf(musicData.size()));
 					savedData.edit().putString("savedProfileData", ListUtil.setHashMapToSharedJSON(profileData)).apply();
 					playbackSrv.createLocalStream(Integer.parseInt(profileData.get("profileSongPosition").toString()));
 				}
 			} else if (profileData.get("profileRepeatMode").equals("2")) {
-				ApplicationUtil.toast(getApplicationContext(), "amogus 4", Toast.LENGTH_SHORT);
 				playbackSrv.createLocalStream(Integer.parseInt(profileData.get("profileSongPosition").toString()));
 			} else if (profileData.get("profileShuffleMode").equals("1")) {
 				if (!profileData.get("profileSongPosition").equals("-1")) {
-					ApplicationUtil.toast(getApplicationContext(), "amogus 5", Toast.LENGTH_SHORT);
 					profileData.put("profileSongPosition", String.valueOf(com.gianxd.audiodev.util.MusicDevUtil.getRandom(Integer.parseInt(profileData.get("profileSongPosition").toString()), 0)));
 					savedData.edit().putString("savedProfileData", ListUtil.setHashMapToSharedJSON(profileData)).apply();
 					playbackSrv.createLocalStream(Integer.parseInt(profileData.get("profileSongPosition").toString()));
