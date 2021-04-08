@@ -2,34 +2,45 @@ package com.gianxd.audiodev.activity;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.ComponentName;
 import android.content.Context;
+import android.content.Intent;
+import android.content.ServiceConnection;
 import android.content.SharedPreferences;
+import android.content.res.ColorStateList;
+import android.graphics.Color;
+import android.graphics.drawable.RippleDrawable;
 import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.IBinder;
+import android.view.View;
 import android.widget.ImageView;
 import android.widget.Toast;
 
+import com.bumptech.glide.Glide;
 import com.gauravk.audiovisualizer.visualizer.BarVisualizer;
 import com.gianxd.audiodev.R;
+import com.gianxd.audiodev.service.LocalPlaybackService;
 import com.gianxd.audiodev.util.ApplicationUtil;
+import com.gianxd.audiodev.util.ImageUtil;
 import com.gianxd.audiodev.util.ListUtil;
 import com.gianxd.audiodev.util.StringUtil;
 
 import java.io.File;
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
 
 public class FullVisualizerActivity extends AppCompatActivity {
 
-    private ArrayList<HashMap<String, Object>> musicData;
-    private HashMap<String, Object> profileData;
+    private ServiceConnection musicConnection;
+    private LocalPlaybackService playbackSrv;
+    private Intent playIntent;
+    private boolean musicBound = false;
 
     private ImageView back;
     private BarVisualizer visualizer;
-
-    private SharedPreferences savedData;
-    private MediaPlayer mp;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -43,42 +54,58 @@ public class FullVisualizerActivity extends AppCompatActivity {
     private void initialize(Bundle savedInstanceState) {
         back = (ImageView) findViewById(R.id.back);
         visualizer = (BarVisualizer) findViewById(R.id.visualizer);
-        savedData = getSharedPreferences("savedData", Context.MODE_PRIVATE);
-        mp = new MediaPlayer();
-        if (savedData.contains("savedMusicData")) {
-            musicData = ListUtil.getArrayListFromSharedJSON(savedData, "savedMusicData");
-        } else {
-            musicData = new ArrayList<>();
-        }
-        if (savedData.contains("savedProfileData")) {
-            profileData = ListUtil.getHashMapFromSharedJSON(savedData, "savedProfileData");
-        } else {
-            profileData = new HashMap<>();
-        }
+        back.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                RippleDrawable rippleButton = new RippleDrawable(new ColorStateList(new int[][]{new int[]{}}, new int[]{ Color.parseColor("#BDBDBD") }), null, null);
+                view.setBackground(rippleButton);
+                finish();
+            }
+        });
     }
 
     private void initializeLogic() {
-        if (profileData.containsKey("profileSongPosition")) {
-            mp = MediaPlayer.create(getApplicationContext(), Uri.fromFile(new File(StringUtil.decodeString(musicData.get(Integer.parseInt(profileData.get("profileSongPosition").toString())).get("songData").toString()))));
-            if (musicData.get(Integer.parseInt(profileData.get("profileSongPosition").toString())).containsKey("songCurrentDuration")) {
-                mp.seekTo(Integer.parseInt(musicData.get(Integer.parseInt(profileData.get("profileSongPosition").toString())).get("songCurrentDuration").toString()));
-            }
-            if (mp.getAudioSessionId() != -1) {
-                visualizer.setAudioSessionId(mp.getAudioSessionId());
-            }
-            if (mp != null) {
-                if (!mp.isPlaying()) {
+        musicConnection = new ServiceConnection(){
+            @Override
+            public void onServiceConnected(ComponentName name, IBinder service) {
+                LocalPlaybackService.MusicBinder binder = (LocalPlaybackService.MusicBinder)service;
+                playbackSrv = binder.getService();
+                musicBound = true;
+                if (playbackSrv.mp != null && playbackSrv.isPlaying()) {
+                    if (playbackSrv.mp.getAudioSessionId() != -1) {
+                        visualizer.setAudioSessionId(playbackSrv.mp.getAudioSessionId());
+                    }
+                } else  if (playbackSrv.mp != null && !playbackSrv.isPlaying()){
                     ApplicationUtil.toast(getApplicationContext(), "Visualizer not visible, please resume/play the song.", Toast.LENGTH_LONG);
+                } else if (playbackSrv.mp != null) {
+                    ApplicationUtil.toast(getApplicationContext(), "Failed to initialize Visualizer.", Toast.LENGTH_LONG);
                 }
             }
+
+            @Override
+            public void onServiceDisconnected(ComponentName name) {
+                musicBound = false;
+            }
+        };
+        if (playIntent == null) {
+            playIntent = new Intent(this, LocalPlaybackService.class);
+            bindService(playIntent, musicConnection, Context.BIND_AUTO_CREATE);
+            startService(playIntent);
         } else {
-            ApplicationUtil.toast(getApplicationContext(), "Failed to initialize Visualizer.", Toast.LENGTH_LONG);
+            if (playbackSrv != null) {
+                playIntent = new Intent(this, LocalPlaybackService.class);
+                unbindService(musicConnection);
+                stopService(playIntent);
+                // Restart service
+                bindService(playIntent, musicConnection, Context.BIND_AUTO_CREATE);
+                startService(playIntent);
+            }
         }
     }
 
     @Override
     public void onBackPressed() {
-        if (mp != null && visualizer != null) {
+        if (playbackSrv.mp != null && visualizer != null) {
             visualizer.release();
         }
         finish();
@@ -86,10 +113,10 @@ public class FullVisualizerActivity extends AppCompatActivity {
 
     @Override
     public void onDestroy() {
-        super.onDestroy();
-        if (mp != null && visualizer != null) {
+        if (playbackSrv.mp != null && visualizer != null) {
             visualizer.release();
         }
+        super.onDestroy();
     }
 
 }

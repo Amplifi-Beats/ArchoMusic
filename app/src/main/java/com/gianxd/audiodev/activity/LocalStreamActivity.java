@@ -794,6 +794,8 @@ public class LocalStreamActivity extends  AppCompatActivity  {
 										RippleDrawable rippleButton = new RippleDrawable(new ColorStateList(new int[][]{new int[]{}}, new int[]{ Color.parseColor("#BDBDBD") }), null, null);
 										view.setBackground(rippleButton);
 										startActivity(new Intent(getApplicationContext(), FullVisualizerActivity.class));
+										visualizerDialog.dismiss();
+										menuDialog.dismiss();
 									}
 								});
 								if (playbackSrv.mp != null) {
