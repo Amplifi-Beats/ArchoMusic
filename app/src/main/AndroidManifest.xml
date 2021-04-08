@@ -69,6 +69,7 @@
         <activity
             android:name=".activity.FullVisualizerActivity"
             android:configChanges="orientation|screenSize|keyboardHidden|smallestScreenSize|screenLayout"
+            android:screenOrientation="landscape"
             android:theme="@style/Theme.ArchoMusic.FullScreen"
             android:windowSoftInputMode="stateHidden" />
         <activity
