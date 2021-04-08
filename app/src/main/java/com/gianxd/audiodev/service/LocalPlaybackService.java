@@ -178,7 +178,7 @@ public class LocalPlaybackService extends Service {
 		    Notification notification = new Notification.Builder(getApplicationContext())
 				 .setContentTitle(musicData.get(position).get("songTitle").toString())
 				 .setContentText("by ".concat(musicData.get(position).get("songArtist").toString()))
-			     .setSmallIcon(R.mipmap.ic_launcher_round)
+			     .setSmallIcon(R.drawable.ic_media_notification)
 				 .setContentIntent(pendInt)
 				. build();
 		    startForeground(NOTIFY_ID, notification);
@@ -195,7 +195,7 @@ public class LocalPlaybackService extends Service {
 				    .setPriority(NotificationManager.IMPORTANCE_LOW)
 				    .setNumber(0)
 				    .setCategory(Notification.CATEGORY_SERVICE)
-				    .setSmallIcon(R.mipmap.ic_launcher_round)
+				    .setSmallIcon(R.drawable.ic_media_notification)
 				    .setLargeIcon(ImageUtil.getAlbumArt(StringUtil.decodeString(musicData.get(position).get("songData").toString()), getResources()))
 				    .setContentText("by ".concat(musicData.get(position).get("songArtist").toString()))
 				    .setContentTitle(musicData.get(position).get("songTitle").toString())
