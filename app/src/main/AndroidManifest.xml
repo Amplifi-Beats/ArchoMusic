@@ -20,7 +20,6 @@
         android:requestLegacyExternalStorage="true"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:theme="@style/Theme.ArchoMusic">
-        <activity android:name=".activity.FullVisualizerActivity"></activity>
         <activity
             android:name=".activity.LauncherActivity"
             android:configChanges="orientation|screenSize|keyboardHidden|smallestScreenSize|screenLayout"
@@ -28,7 +27,6 @@
             android:windowSoftInputMode="stateHidden">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
@@ -36,6 +34,11 @@
             android:name=".activity.LocalStreamActivity"
             android:configChanges="orientation|screenSize|keyboardHidden|smallestScreenSize|screenLayout"
             android:theme="@style/Theme.ArchoMusic"
+            android:windowSoftInputMode="stateHidden" />
+        <activity
+            android:name=".activity.LiveStreamActivity"
+            android:theme="@style/Theme.ArchoMusic"
+            android:configChanges="orientation|screenSize|keyboardHidden|smallestScreenSize|screenLayout"
             android:windowSoftInputMode="stateHidden" />
         <activity
             android:name=".activity.SplashActivity"
@@ -57,37 +60,33 @@
             android:windowSoftInputMode="stateHidden">
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
-
                 <category android:name="android.intent.category.DEFAULT" />
-
                 <data android:scheme="content" />
                 <data android:scheme="file" />
                 <data android:mimeType="audio/*" />
             </intent-filter>
         </activity>
         <activity
-            android:name=".activity.LiveStreamActivity"
+            android:name=".activity.FullVisualizerActivity"
             android:configChanges="orientation|screenSize|keyboardHidden|smallestScreenSize|screenLayout"
+            android:theme="@style/Theme.ArchoMusic.FullScreen"
             android:windowSoftInputMode="stateHidden" />
         <activity
             android:name="com.google.android.gms.ads.AdActivity"
             android:configChanges="keyboard|keyboardHidden|orientation|screenLayout|uiMode|screenSize|smallestScreenSize"
             android:theme="@android:style/Theme.Translucent" />
-
         <meta-data
             android:name="com.google.android.gms.version"
             android:value="@integer/google_play_services_version" />
         <meta-data
             android:name="com.google.android.gms.ads.APPLICATION_ID"
             android:value="@string/admob_app_id" />
-
         <provider
             android:name="com.google.firebase.provider.FirebaseInitProvider"
             android:authorities="com.gianxd.musicdev.firebaseinitprovider"
             android:exported="false"
             android:initOrder="100"
             tools:replace="android:authorities" />
-
         <service
             android:name="com.google.firebase.components.ComponentDiscoveryService"
             android:exported="false">
@@ -95,11 +94,9 @@
                 android:name="com.google.firebase.components:com.google.firebase.auth.FirebaseAuthRegistrar"
                 android:value="com.google.firebase.components.ComponentRegistrar" />
         </service>
-
         <uses-library
             android:name="org.apache.http.legacy"
             android:required="false" />
-
         <service
             android:name=".service.LocalPlaybackService"
             android:enabled="true"
