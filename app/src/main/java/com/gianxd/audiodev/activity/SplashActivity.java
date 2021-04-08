@@ -68,7 +68,7 @@ public class SplashActivity extends AppCompatActivity {
 		mainLayout = (LinearLayout) findViewById(R.id.mainLayout);
 		logo = (TextView) findViewById(R.id.logo);
 		loadanim = (ProgressBar) findViewById(R.id.loadanim);
-		savedData = applicationContext.getSharedPreferences("savedData", Context.MODE_PRIVATE);
+		savedData = getSharedPreferences("savedData", Context.MODE_PRIVATE);
 	}
 	
 	private void initializeLogic() {

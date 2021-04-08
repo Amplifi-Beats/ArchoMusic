@@ -138,7 +138,7 @@ public class LocalStreamActivity extends  AppCompatActivity  {
 		miniplayerSongArtist = (TextView) findViewById(R.id.miniplayerSongArtist);
 		repeat = (ImageView) findViewById(R.id.repeat);
 		shuffle = (ImageView) findViewById(R.id.shuffle);
-		savedData = applicationContext.getSharedPreferences("savedData", Context.MODE_PRIVATE);
+		savedData = getSharedPreferences("savedData", Context.MODE_PRIVATE);
 		tabNavigation.addTab(tabNavigation.newTab().setIcon(R.drawable.ic_tabnav_library));
 		tabNavigation.addTab(tabNavigation.newTab().setIcon(R.drawable.ic_tabnav_nowplaying));
 		if (savedData.contains("savedMusicData")) {
@@ -575,8 +575,18 @@ public class LocalStreamActivity extends  AppCompatActivity  {
 				live_streaming.setOnClickListener(new View.OnClickListener() {
 						@Override
 						public void onClick(View view) {
-								android.graphics.drawable.RippleDrawable rippleButton = new android.graphics.drawable.RippleDrawable(new android.content.res.ColorStateList(new int[][]{new int[]{}}, new int[]{ Color.parseColor("#BDBDBD") }), new android.graphics.drawable.ColorDrawable(Color.parseColor("#FFFFFF")), null);
-						        view.setBackground(rippleButton);
+                                if (!profileData.containsKey("profileDarkMode")) {
+                                    android.graphics.drawable.RippleDrawable rippleButton = new android.graphics.drawable.RippleDrawable(new android.content.res.ColorStateList(new int[][]{new int[]{}}, new int[]{ Color.parseColor("#BDBDBD") }), new android.graphics.drawable.ColorDrawable(Color.parseColor("#FFFFFF")), null);
+                                    view.setBackground(rippleButton);
+                                } else {
+                                    if (profileData.get("profileDarkMode").equals("true")) {
+                                        android.graphics.drawable.RippleDrawable rippleButton = new android.graphics.drawable.RippleDrawable(new android.content.res.ColorStateList(new int[][]{new int[]{}}, new int[]{ Color.parseColor("#BDBDBD") }), new android.graphics.drawable.ColorDrawable(Color.parseColor("#1A1A1A")), null);
+                                        view.setBackground(rippleButton);
+                                    } else {
+                                        android.graphics.drawable.RippleDrawable rippleButton = new android.graphics.drawable.RippleDrawable(new android.content.res.ColorStateList(new int[][]{new int[]{}}, new int[]{ Color.parseColor("#BDBDBD") }), new android.graphics.drawable.ColorDrawable(Color.parseColor("#FFFFFF")), null);
+                                        view.setBackground(rippleButton);
+                                    }
+                                }
 								ApplicationUtil.toast(getApplicationContext(), "Feature under construction.", Toast.LENGTH_SHORT);
 						}
 				});
