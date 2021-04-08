@@ -1,11 +1,8 @@
 package com.gianxd.audiodev.util;
 
 import android.util.Log;
-import android.widget.Toast;
 
 import java.io.UnsupportedEncodingException;
-
-import static com.gianxd.audiodev.AudioDev.applicationContext;
 
 public class StringUtil {
 

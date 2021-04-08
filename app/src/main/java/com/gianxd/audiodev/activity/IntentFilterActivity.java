@@ -2,15 +2,11 @@ package com.gianxd.audiodev.activity;
 
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.graphics.Typeface;
 import android.media.AudioManager;
-import android.media.MediaMetadataRetriever;
 import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.view.Window;
 import android.widget.ImageView;
@@ -28,7 +24,6 @@ import com.gianxd.audiodev.R;
 import com.gianxd.audiodev.util.ApplicationUtil;
 import com.gianxd.audiodev.util.ImageUtil;
 
-import java.io.FileNotFoundException;
 import java.text.DecimalFormat;
 import java.util.Timer;
 import java.util.TimerTask;

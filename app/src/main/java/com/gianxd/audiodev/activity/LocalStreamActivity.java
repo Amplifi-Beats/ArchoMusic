@@ -57,8 +57,6 @@ import java.util.HashMap;
 import java.util.Timer;
 import java.util.TimerTask;
 
-import static com.gianxd.audiodev.AudioDev.applicationContext;
-
 public class LocalStreamActivity extends  AppCompatActivity  {
 	
 	private Timer timer = new Timer();

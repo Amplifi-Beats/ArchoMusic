@@ -6,13 +6,11 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Handler;
 
-import java.util.HashMap;
-
 import com.gianxd.audiodev.activity.LauncherActivity;
 import com.gianxd.audiodev.util.ApplicationUtil;
 import com.gianxd.audiodev.util.ListUtil;
-import com.google.gson.Gson;
-import com.google.gson.reflect.TypeToken;
+
+import java.util.HashMap;
 
 public class AudioDev extends Application {
 

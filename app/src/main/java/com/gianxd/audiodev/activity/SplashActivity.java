@@ -1,12 +1,10 @@
 package com.gianxd.audiodev.activity;
 
 import android.Manifest;
-import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
-import android.content.res.Configuration;
 import android.graphics.Color;
 import android.graphics.Typeface;
 import android.os.AsyncTask;
@@ -31,16 +29,11 @@ import com.gianxd.audiodev.util.ApplicationUtil;
 import com.gianxd.audiodev.util.ListUtil;
 import com.gianxd.audiodev.util.StringUtil;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
-import com.google.gson.Gson;
-
-import org.w3c.dom.Text;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Timer;
 import java.util.TimerTask;
-
-import static com.gianxd.audiodev.AudioDev.applicationContext;
 
 public class SplashActivity extends AppCompatActivity {
 	

@@ -1,16 +1,22 @@
 package com.gianxd.audiodev.util;
 
-import android.content.*;
-import android.view.*;
-import android.widget.*;
-import android.util.*;
-import java.util.*;
-import android.app.*;
-import android.content.*;
-import android.net.*;
-import java.io.*;
-import android.graphics.drawable.*;
-import android.view.inputmethod.*;
+import android.app.Activity;
+import android.content.Context;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
+import android.util.SparseBooleanArray;
+import android.util.TypedValue;
+import android.view.View;
+import android.view.inputmethod.InputMethodManager;
+import android.widget.ListView;
+
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.Map;
+import java.util.Random;
 
 public class MusicDevUtil {
 

@@ -14,20 +14,17 @@ import android.net.Uri;
 import android.os.Binder;
 import android.os.Build;
 import android.os.IBinder;
-import android.widget.Toast;
 
 import androidx.core.app.NotificationCompat;
 
 import com.bumptech.glide.Glide;
 import com.gianxd.audiodev.R;
 import com.gianxd.audiodev.activity.LocalStreamActivity;
-import com.gianxd.audiodev.util.ApplicationUtil;
 import com.gianxd.audiodev.util.ImageUtil;
 import com.gianxd.audiodev.util.ListUtil;
 import com.gianxd.audiodev.util.StringUtil;
 
 import java.io.File;
-import java.io.UnsupportedEncodingException;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.HashMap;

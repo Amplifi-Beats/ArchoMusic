@@ -3,7 +3,6 @@ package com.gianxd.audiodev.activity;
 import android.app.Activity;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.content.res.Configuration;
 import android.graphics.Color;
 import android.graphics.Typeface;
 import android.os.Build;
@@ -19,11 +18,9 @@ import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.gianxd.audiodev.R;
 import com.gianxd.audiodev.util.ApplicationUtil;
 import com.gianxd.audiodev.util.ListUtil;
-import com.google.gson.Gson;
-import com.google.gson.reflect.TypeToken;
-import com.gianxd.audiodev.R;
 
 import java.util.ArrayList;
 import java.util.HashMap;
