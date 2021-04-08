@@ -34,7 +34,6 @@
             android:layout_gravity="center_horizontal|center_vertical"
             android:gravity="center_horizontal|center_vertical"
             android:orientation="horizontal"
-            android:background="#000000"
             app:avColor="@color/colorPrimary"
             app:avDensity="0.8"
             app:avSpeed="fast"
