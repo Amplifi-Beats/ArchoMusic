@@ -105,9 +105,6 @@ public class FullVisualizerActivity extends AppCompatActivity {
 
     @Override
     public void onBackPressed() {
-        if (playbackSrv.mp != null && visualizer != null) {
-            visualizer.release();
-        }
         finish();
     }
 

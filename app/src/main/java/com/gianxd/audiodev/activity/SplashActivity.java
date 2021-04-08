@@ -69,6 +69,7 @@ public class SplashActivity extends AppCompatActivity {
 		logo.setTypeface(Typeface.createFromAsset(getAssets(),"fonts/leixo.ttf"), Typeface.BOLD);
 		loadanim.setVisibility(View.GONE);
 		loadanim.getIndeterminateDrawable().setColorFilter(0xFFFFFFFF, android.graphics.PorterDuff.Mode.MULTIPLY);
+		musicData = new ArrayList<>();
 		if (savedData.contains("savedProfileData")) {
 			profileData = ListUtil.getHashMapFromSharedJSON(savedData, "savedProfileData");
 		} else {
@@ -319,7 +320,9 @@ public class SplashActivity extends AppCompatActivity {
 	private class MediaScanTask extends AsyncTask<Void, Void, Void> {
 		@Override
 		protected void onPreExecute() {
-			musicData = new ArrayList<>();
+			if (musicData != null) {
+				musicData.clear();
+			}
 			loadanim.setVisibility(View.VISIBLE);
 		}
 		
@@ -342,7 +345,6 @@ public class SplashActivity extends AppCompatActivity {
 						String name;
 						String data;
 						String artist;
-						String encodedData;
 						do {
 							_id = cursor.getLong(cursor.getColumnIndexOrThrow(android.provider.MediaStore.Audio.Media._ID));
 							name = cursor.getString(cursor.getColumnIndexOrThrow(android.provider.MediaStore.Audio.Media.TITLE));
@@ -378,16 +380,15 @@ public class SplashActivity extends AppCompatActivity {
 
 		@Override
 		protected void onPostExecute(Void param){
-			if (musicData != null) {
-				if (savedData.contains("savedMusicData")) {
-					if (musicData.size() > savedData.getString("savedMusicData", "").length()) {
-						savedData.edit().putString("savedMusicData", ListUtil.setArrayListToSharedJSON(musicData)).apply();
-					}
-				} else {
-					savedData.edit().putString("savedMusicData",  ListUtil.setArrayListToSharedJSON(musicData)).apply();
+			if (savedData.contains("savedMusicData")) {
+				ArrayList<HashMap<String, Object>> tempMusicData = ListUtil.getArrayListFromSharedJSON(savedData, "savedMusicData");
+				if (musicData.size() > tempMusicData.size()) {
+					savedData.edit().putString("savedMusicData", ListUtil.setArrayListToSharedJSON(musicData)).apply();
 				}
+				loadanim.setVisibility(View.GONE);
+			} else {
+				savedData.edit().putString("savedMusicData", ListUtil.setArrayListToSharedJSON(musicData)).apply();
 			}
-			loadanim.setVisibility(View.GONE);
 			timerTask = new TimerTask() {
 				@Override
 				public void run() {

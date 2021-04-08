@@ -385,6 +385,7 @@ public class LocalStreamActivity extends  AppCompatActivity  {
 						        renameDialog.setContentView(dialogLayout);
 						        LinearLayout main = dialogLayout.findViewById(R.id.main);
 						        TextView title = dialogLayout.findViewById(R.id.title);
+						        TextView desc = dialogLayout.findViewById(R.id.desc);
 						        ImageView profile_icon = dialogLayout.findViewById(R.id.profile_icon);
 						        EditText profile_name = dialogLayout.findViewById(R.id.profile_name);
 						        Button create = dialogLayout.findViewById(R.id.create);
@@ -487,7 +488,7 @@ public class LocalStreamActivity extends  AppCompatActivity  {
 											} else {
 												if (profileData.get("profileDarkMode").equals("true")) {
 													roundedCorners.setColor(Color.parseColor("#1A1A1A"));
-													roundedCorners2.setColor(Color.parseColor("212121"));
+													roundedCorners2.setColor(Color.parseColor("#212121"));
 													url.setTextColor(Color.parseColor("#FFFFFF"));
 													url.setHintTextColor(Color.parseColor("#BDBDBD"));
 												} else {
@@ -556,6 +557,7 @@ public class LocalStreamActivity extends  AppCompatActivity  {
 						        		roundedCorners.setColor(Color.parseColor("#1A1A1A"));
 										roundedCorners2.setColor(Color.parseColor("#212121"));
 										profile_name.setTextColor(Color.parseColor("#FFFFFF"));
+										desc.setTextColor(Color.parseColor("#FFFFFF"));
 										profile_name.setHintTextColor(Color.parseColor("#BDBDBD"));
 						        	} else {
 						        		roundedCorners.setColor(Color.parseColor("#FFFFFF"));
@@ -793,6 +795,9 @@ public class LocalStreamActivity extends  AppCompatActivity  {
 									public void onClick(View view) {
 										RippleDrawable rippleButton = new RippleDrawable(new ColorStateList(new int[][]{new int[]{}}, new int[]{ Color.parseColor("#BDBDBD") }), null, null);
 										view.setBackground(rippleButton);
+										if (playbackSrv.mp != null && visualizerDialog != null) {
+											visualizer.release();
+										}
 										startActivity(new Intent(getApplicationContext(), FullVisualizerActivity.class));
 										visualizerDialog.dismiss();
 										menuDialog.dismiss();
@@ -800,7 +805,7 @@ public class LocalStreamActivity extends  AppCompatActivity  {
 								});
 								if (playbackSrv.mp != null) {
 										if (playbackSrv.mp.getAudioSessionId() != -1) {
-												visualizer.setAudioSessionId(playbackSrv.mp.getAudioSessionId());
+											    visualizer.setAudioSessionId(playbackSrv.mp.getAudioSessionId());
 										}
 										if (!playbackSrv.isPlaying()) {
 												ApplicationUtil.toast(getApplicationContext(), "Visualizer not visible, please resume/play the song.", Toast.LENGTH_LONG);
