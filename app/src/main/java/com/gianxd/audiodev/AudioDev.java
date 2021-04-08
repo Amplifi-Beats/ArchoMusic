@@ -18,6 +18,7 @@ public class AudioDev extends Application {
 
     public static Context applicationContext;
 	private Thread.UncaughtExceptionHandler uncaughtExceptionHandler;
+	private HashMap<String, Object> profileData;
 	public static volatile Handler applicationHandler;
 	private SharedPreferences savedData;
 	
@@ -26,18 +27,18 @@ public class AudioDev extends Application {
         applicationContext = this;
 		applicationHandler = new Handler(AudioDev.applicationContext.getMainLooper());
 		savedData = getSharedPreferences("savedData", Context.MODE_PRIVATE);
+		if (!savedData.contains("savedProfileData")) {
+			profileData = new HashMap<>();
+		} else {
+			profileData = ListUtil.getHashMapFromSharedJSON(savedData, "savedProfileData");
+		}
 		this.uncaughtExceptionHandler = Thread.getDefaultUncaughtExceptionHandler();
 		Thread.setDefaultUncaughtExceptionHandler(new Thread.UncaughtExceptionHandler() {
 			@Override
 			public void uncaughtException(Thread thread, Throwable ex) {
-				HashMap<String, Object> profileData;
-				if (!savedData.contains("savedProfileData")) {
-					profileData = new HashMap<>();
-				} else {
-					profileData = ListUtil.getHashMapFromSharedJSON(savedData, "savedProfileData");
-				}
 				profileData.put("profileErrorTrace", ApplicationUtil.getStackTrace(ex));
 				savedData.edit().putString("savedProfileData", ListUtil.setHashMapToSharedJSON(profileData)).apply();
+				startActivity(new Intent(getApplicationContext(), LauncherActivity.class));
 				uncaughtExceptionHandler.uncaughtException(thread, ex);
 			}
 		});
