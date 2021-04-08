@@ -14,12 +14,14 @@ import android.net.Uri;
 import android.os.Binder;
 import android.os.Build;
 import android.os.IBinder;
+import android.widget.Toast;
 
 import androidx.core.app.NotificationCompat;
 
 import com.bumptech.glide.Glide;
 import com.gianxd.audiodev.R;
 import com.gianxd.audiodev.activity.LocalStreamActivity;
+import com.gianxd.audiodev.util.ApplicationUtil;
 import com.gianxd.audiodev.util.ImageUtil;
 import com.gianxd.audiodev.util.ListUtil;
 import com.gianxd.audiodev.util.StringUtil;
@@ -47,7 +49,8 @@ public class LocalPlaybackService extends Service {
 
 	public MediaPlayer mp;
 	private final IBinder musicBind = new MusicBinder();
-	private ArrayList<HashMap<String, Object>> musicData = new ArrayList<>();
+	private ArrayList<HashMap<String, Object>> musicData;
+	private HashMap<String, Object> profileData;
 	private static final int NOTIFY_ID = 1;
 	private NotificationChannel notificationChannel;
 	private NotificationManager notificationManager;
@@ -57,7 +60,7 @@ public class LocalPlaybackService extends Service {
 	
 	public void onCreate(){
 		super.onCreate();
-		initArrayList();
+		initObjects();
 	}
 	
 	public class MusicBinder extends Binder {
@@ -113,47 +116,34 @@ public class LocalPlaybackService extends Service {
 		mp.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
 			@Override
 			public void onCompletion(MediaPlayer mp) {
-				HashMap<String, Object> profileData;
-				if (savedData.contains("savedProfileData")) {
-					profileData = ListUtil.getHashMapFromSharedJSON(savedData, "savedProfileData");
-				} else {
-					profileData = new HashMap<>();
-				}
 				playPause.setImageResource(R.drawable.ic_media_play);
 		        miniplayerPlayPause.setImageResource(R.drawable.ic_media_play);
-				if (!profileData.get("profileRepeatMode").equals("1") || profileData.get("profileRepeatMode").equals("2") || profileData.get("profileShuffleMode").equals("1") && profileData.get("profileRepeatMode").equals("0") && profileData.get("profileShuffleMode").equals("0")) {
-					if (!(Integer.parseInt(profileData.get("profileSongPosition").toString()) == musicData.size())) {
-						profileData.put("profileSongPosition", String.valueOf((Integer.parseInt(profileData.get("profileSongPosition").toString()) + 1)));
+				if (!profileData.get("profileRepeatMode").equals("1") || !profileData.get("profileRepeatMode").equals("2") || !profileData.get("profileShuffleMode").equals("1")) {
+					if (!profileData.get("profileSongPosition").equals(musicData.size())) {
+						profileData.put("profileSongPosition", String.valueOf(Integer.parseInt(profileData.get("profileSongPosition").toString()) + 1));
 						savedData.edit().putString("savedProfileData", ListUtil.setHashMapToSharedJSON(profileData)).apply();
-						if (Integer.parseInt(profileData.get("profileSongPosition").toString()) < musicData.size()) {
-							createLocalStream(Integer.parseInt(profileData.get("profileSongPosition").toString()));
-							playPause.performClick();
-						}
+						createLocalStream(Integer.parseInt(profileData.get("profileSongPosition").toString()));
 					}
 				} else if (profileData.get("profileRepeatMode").equals("1")) {
-					if (Integer.parseInt(profileData.get("profileSongPosition").toString()) == musicData.size()) {
+					if (!profileData.get("profileSongPosition").equals(musicData.size())) {
+						profileData.put("profileSongPosition", String.valueOf(Integer.parseInt(profileData.get("profileSongPosition").toString()) + 1));
+						savedData.edit().putString("savedProfileData", ListUtil.setHashMapToSharedJSON(profileData)).apply();
+						createLocalStream(Integer.parseInt(profileData.get("profileSongPosition").toString()));
+					} else {
 						profileData.put("profileSongPosition", String.valueOf(0));
 						savedData.edit().putString("savedProfileData", ListUtil.setHashMapToSharedJSON(profileData)).apply();
 						createLocalStream(Integer.parseInt(profileData.get("profileSongPosition").toString()));
-						playPause.performClick();
-					} else {
-						profileData.put("profileSongPosition", String.valueOf((Integer.parseInt(profileData.get("profileSongPosition").toString()) + 1)));
-						savedData.edit().putString("savedProfileData", ListUtil.setHashMapToSharedJSON(profileData)).apply();
-						if (Integer.parseInt(profileData.get("profileSongPosition").toString()) < musicData.size()) {
-							createLocalStream(Integer.parseInt(profileData.get("profileSongPosition").toString()));
-							playPause.performClick();
-						}
 					}
 				} else if (profileData.get("profileRepeatMode").equals("2")) {
 					createLocalStream(Integer.parseInt(profileData.get("profileSongPosition").toString()));
 				} else if (profileData.get("profileShuffleMode").equals("1")) {
-					profileData.put("profileSongPosition", String.valueOf(com.gianxd.audiodev.util.MusicDevUtil.getRandom((int)(Integer.parseInt(profileData.get("profileSongPosition").toString())), (int)(musicData.size()))));
-					savedData.edit().putString("savedProfileData", ListUtil.setHashMapToSharedJSON(profileData)).apply();
-					if (Integer.parseInt(profileData.get("profileSongPosition").toString()) < musicData.size()) {
+					if (!profileData.get("profileSongPosition").equals(musicData.size())) {
+						profileData.put("profileSongPosition", String.valueOf(com.gianxd.audiodev.util.MusicDevUtil.getRandom(Integer.parseInt(profileData.get("profileSongPosition").toString()), musicData.size())));
+						savedData.edit().putString("savedProfileData", ListUtil.setHashMapToSharedJSON(profileData)).apply();
 						createLocalStream(Integer.parseInt(profileData.get("profileSongPosition").toString()));
-						playPause.performClick();
 					}
 				}
+				playPause.performClick();
 			}
 		});
 		audioChangeListener = new AudioManager.OnAudioFocusChangeListener() {
@@ -215,9 +205,18 @@ public class LocalPlaybackService extends Service {
 		
 	}
 	
-	public void initArrayList() {
+	public void initObjects() {
 		savedData = getSharedPreferences("savedData", Context.MODE_PRIVATE);
-		musicData = ListUtil.getArrayListFromSharedJSON(savedData, "savedMusicData");
+		if (savedData.contains("savedMusicData")) {
+			musicData = ListUtil.getArrayListFromSharedJSON(savedData, "savedMusicData");
+		} else {
+			musicData = new ArrayList<>();
+		}
+		if (savedData.contains("savedProfileData")) {
+			profileData = ListUtil.getHashMapFromSharedJSON(savedData, "savedProfileData");
+		} else {
+			profileData = new HashMap<>();
+		}
 	}
 	
 	public int getCurrentPosition(){
