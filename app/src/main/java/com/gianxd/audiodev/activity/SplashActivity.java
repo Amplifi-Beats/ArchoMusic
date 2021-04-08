@@ -111,7 +111,6 @@ public class SplashActivity extends AppCompatActivity {
 									logo.setTransitionName("fade");
 									android.app.ActivityOptions optionsCompat = android.app.ActivityOptions.makeSceneTransitionAnimation(SplashActivity.this, logo, "fade");
 									startActivity(intent, optionsCompat.toBundle());
-									finish();
 								}
 								else {
 									if (randomizer == 1) {
