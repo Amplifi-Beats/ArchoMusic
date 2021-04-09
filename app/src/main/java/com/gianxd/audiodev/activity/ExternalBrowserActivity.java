@@ -102,6 +102,7 @@ public class ExternalBrowserActivity extends  AppCompatActivity  {
 	
 	private void initializeLogic() {
 		webtitle.setTypeface(Typeface.createFromAsset(getAssets(),"fonts/roboto_medium.ttf"), Typeface.NORMAL);
+		loadbar.setBackgroundColor(Color.parseColor("#03A9F4"));
 		loadbar.setVisibility(View.GONE);
 		loadbar.setElevation((float)10);
 		toolbar.setElevation((float)10);
@@ -110,6 +111,10 @@ public class ExternalBrowserActivity extends  AppCompatActivity  {
 				if (profileData.get("profileDarkMode").equals("true")) {
 					getWindow().setStatusBarColor(Color.parseColor("#1A1A1A"));
 					getWindow().setNavigationBarColor(Color.parseColor("#1A1A1A"));
+				} else {
+					toolbar.setSystemUiVisibility(View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR);
+					getWindow().setStatusBarColor(Color.parseColor("#FFFFFF"));
+					getWindow().setNavigationBarColor(Color.parseColor("#FFFFFF"));
 				}
 			} else {
 				toolbar.setSystemUiVisibility(View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR);
