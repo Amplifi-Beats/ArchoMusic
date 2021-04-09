@@ -188,7 +188,7 @@
 						android:layout_gravity="center_vertical"
 						android:layout_marginStart="20dp"
 						android:scaleType="fitCenter"
-						android:src="@drawable/ic_media_repeat_off" />
+						android:src="@drawable/ic_media_repeat_on" />
 
 					<ImageView
 						android:id="@+id/skipBackward"
