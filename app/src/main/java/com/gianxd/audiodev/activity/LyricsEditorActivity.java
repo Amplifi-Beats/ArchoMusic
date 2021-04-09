@@ -123,6 +123,10 @@ public class LyricsEditorActivity extends  AppCompatActivity  {
 				if (profileData.get("profileDarkMode").equals("true")) {
 					getWindow().setStatusBarColor(Color.parseColor("#1A1A1A"));
 					getWindow().setNavigationBarColor(Color.parseColor("#1A1A1A"));
+				} else {
+					toolbar.setSystemUiVisibility(View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR);
+					getWindow().setStatusBarColor(Color.parseColor("#FFFFFF"));
+					getWindow().setNavigationBarColor(Color.parseColor("#FFFFFF"));
 				}
 			} else {
 				toolbar.setSystemUiVisibility(View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR);
