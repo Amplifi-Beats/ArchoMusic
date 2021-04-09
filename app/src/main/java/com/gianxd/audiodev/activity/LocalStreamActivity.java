@@ -847,18 +847,8 @@ public class LocalStreamActivity extends  AppCompatActivity  {
 				about.setOnClickListener(new View.OnClickListener() {
 						@Override
 						public void onClick(View view) {
-							    if (!profileData.containsKey("profileDarkMode")) {
-								    android.graphics.drawable.RippleDrawable rippleButton = new android.graphics.drawable.RippleDrawable(new android.content.res.ColorStateList(new int[][]{new int[]{}}, new int[]{ Color.parseColor("#BDBDBD") }), new android.graphics.drawable.ColorDrawable(Color.parseColor("#FFFFFF")), null);
-								    view.setBackground(rippleButton);
-							    } else {
-							    	if (profileData.get("profileDarkMode").equals("true")) {
-							    		android.graphics.drawable.RippleDrawable rippleButton = new android.graphics.drawable.RippleDrawable(new android.content.res.ColorStateList(new int[][]{new int[]{}}, new int[]{ Color.parseColor("#BDBDBD") }), new android.graphics.drawable.ColorDrawable(Color.parseColor("#1A1A1A")), null);
-									    view.setBackground(rippleButton);
-								    } else {
-							    		android.graphics.drawable.RippleDrawable rippleButton = new android.graphics.drawable.RippleDrawable(new android.content.res.ColorStateList(new int[][]{new int[]{}}, new int[]{ Color.parseColor("#BDBDBD") }), new android.graphics.drawable.ColorDrawable(Color.parseColor("#FFFFFF")), null);
-									    view.setBackground(rippleButton);
-								    }
-							    }
+                                android.graphics.drawable.RippleDrawable rippleButton = new android.graphics.drawable.RippleDrawable(new android.content.res.ColorStateList(new int[][]{new int[]{}}, new int[]{ Color.parseColor("#BDBDBD") }), null, null);
+                                view.setBackground(rippleButton);
 								BottomSheetDialog about = new BottomSheetDialog(LocalStreamActivity.this);
 						        View dialogLayout = getLayoutInflater().inflate(R.layout.dialog_about, null);
 						        about.setContentView(dialogLayout);
