@@ -298,7 +298,6 @@ public class LocalStreamActivity extends  AppCompatActivity  {
         }
 		if (profileData.containsKey("profileRepeatMode")) {
 			if (profileData.get("profileRepeatMode").equals("0")) {
-				Glide.with(getApplicationContext()).load(R.drawable.ic_media_repeat_off).into(repeat);
 				if (Build.VERSION.SDK_INT >= 23) {
 					repeat.setColorFilter(ContextCompat.getColor(getApplicationContext(), R.color.colorControlHighlight), PorterDuff.Mode.SRC_IN);
 				} else {
