@@ -84,9 +84,9 @@ public class LocalStreamActivity extends  AppCompatActivity  {
     public static TextView currentDuration;
     public static SeekBar seekbarDuration;
     public static TextView maxDuration;
-    public static ImageView skipBackward;
+    public ImageView skipBackward;
     public static ImageView playPause;
-    public static ImageView skipForward;
+    public ImageView skipForward;
 	private ImageView miniplayerSkipPrev;
     public static ImageView miniplayerPlayPause;
 	private ImageView miniplayerSkipNext;

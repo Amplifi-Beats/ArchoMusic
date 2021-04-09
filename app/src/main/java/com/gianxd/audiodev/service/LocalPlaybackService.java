@@ -92,11 +92,10 @@ public class LocalPlaybackService extends Service {
 	public void endService() {
 		if (notificationManager != null) {
 			notificationManager.cancelAll();
-			
 		}
 		stopSelf();
 	}
-	
+
 	public void createLocalStream(int position) {
         if (mp != null) {
 		    audioManager.abandonAudioFocus(audioChangeListener);
@@ -158,16 +157,16 @@ public class LocalPlaybackService extends Service {
 		audioManager.requestAudioFocus(audioChangeListener, AudioManager.STREAM_MUSIC, AudioManager.AUDIOFOCUS_GAIN);
 		Glide.with(getApplicationContext()).asBitmap().load(ImageUtil.getAlbumArt(StringUtil.decodeString(musicData.get(position).get("songData").toString()), getResources())).into(albumArt);
 		Glide.with(getApplicationContext()).asBitmap().load(ImageUtil.getAlbumArt(StringUtil.decodeString(musicData.get(position).get("songData").toString()), getResources())).into(miniplayerAlbumArt);
-        songTitle.setText(musicData.get(position).get("songTitle").toString());
-        songArtist.setText(musicData.get(position).get("songArtist").toString());
-        miniplayerSongTitle.setText(musicData.get(position).get("songTitle").toString());
-        miniplayerSongArtist.setText(musicData.get(position).get("songArtist").toString());
-        miniplayerSeekbar.setMax(getMaxDuration());
-        miniplayerSeekbar.setProgress(getCurrentPosition());
-        maxDuration.setText(String.valueOf((int)((getMaxDuration() / 1000) / 60)).concat(":".concat(new DecimalFormat("00").format((getMaxDuration() / 1000) % 60))));
-        currentDuration.setText(String.valueOf((int)((getCurrentPosition() / 1000) / 60)).concat(":".concat(new DecimalFormat("00").format((getCurrentPosition() / 1000) % 60))));
-        seekbarDuration.setMax(getMaxDuration());
-        seekbarDuration.setProgress(getCurrentPosition());
+		songTitle.setText(musicData.get(position).get("songTitle").toString());
+		songArtist.setText(musicData.get(position).get("songArtist").toString());
+		miniplayerSongTitle.setText(musicData.get(position).get("songTitle").toString());
+		miniplayerSongArtist.setText(musicData.get(position).get("songArtist").toString());
+		miniplayerSeekbar.setMax(getMaxDuration());
+		miniplayerSeekbar.setProgress(getCurrentPosition());
+		maxDuration.setText(String.valueOf((int)((getMaxDuration() / 1000) / 60)).concat(":".concat(new DecimalFormat("00").format((getMaxDuration() / 1000) % 60))));
+		currentDuration.setText(String.valueOf((int)((getCurrentPosition() / 1000) / 60)).concat(":".concat(new DecimalFormat("00").format((getCurrentPosition() / 1000) % 60))));
+		seekbarDuration.setMax(getMaxDuration());
+		seekbarDuration.setProgress(getCurrentPosition());
 	    Intent notIntent = new Intent(this, LocalStreamActivity.class);
 	    notIntent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
 	    PendingIntent pendInt = PendingIntent.getActivity(this, 0, notIntent, PendingIntent.FLAG_UPDATE_CURRENT);
