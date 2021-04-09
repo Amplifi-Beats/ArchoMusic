@@ -585,6 +585,7 @@ public class LocalStreamActivity extends  AppCompatActivity  {
    							    roundedCorners2.setCornerRadius(20);
 						        if (!profileData.containsKey("profileDarkMode")) {
 						        	roundedCorners.setColor(Color.parseColor("#FFFFFF"));
+									roundedCorners2.setColor(Color.parseColor("#EEEEEE"));
 						        } else {
 						        	if (profileData.get("profileDarkMode").equals("true")) {
 						        		roundedCorners.setColor(Color.parseColor("#1A1A1A"));
@@ -593,6 +594,7 @@ public class LocalStreamActivity extends  AppCompatActivity  {
 										desc.setTextColor(Color.parseColor("#FFFFFF"));
 										profile_name.setHintTextColor(Color.parseColor("#BDBDBD"));
 						        	} else {
+										roundedCorners2.setColor(Color.parseColor("#EEEEEE"));
 						        		roundedCorners.setColor(Color.parseColor("#FFFFFF"));
 						        	}
 						        }
