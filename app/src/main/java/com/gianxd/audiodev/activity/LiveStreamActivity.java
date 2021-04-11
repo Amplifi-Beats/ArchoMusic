@@ -12,6 +12,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.gianxd.audiodev.R;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.FirebaseDatabase;
 
 
 public class LiveStreamActivity extends  AppCompatActivity  {
@@ -28,7 +29,8 @@ public class LiveStreamActivity extends  AppCompatActivity  {
 	private ImageView skipForward;
 	
 	private SharedPreferences savedData;
-	private FirebaseAuth authentication;
+	private FirebaseDatabase fDatabase;
+	private FirebaseAuth fAuth;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -51,7 +53,8 @@ public class LiveStreamActivity extends  AppCompatActivity  {
 		playPause = (ImageView) findViewById(R.id.playPause);
 		skipForward = (ImageView) findViewById(R.id.skipForward);
 		savedData = getSharedPreferences("savedData", Activity.MODE_PRIVATE);
-		authentication = FirebaseAuth.getInstance();
+		fDatabase = FirebaseDatabase.getInstance();
+		fAuth = FirebaseAuth.getInstance();
 	}
 	
 	private void initializeLogic() {
