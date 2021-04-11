@@ -70,7 +70,7 @@
             android:name=".activity.FullVisualizerActivity"
             android:configChanges="orientation|screenSize|keyboardHidden|smallestScreenSize|screenLayout"
             android:screenOrientation="landscape"
-            android:theme="@style/Theme.ArchoMusic.FullScreen"
+            android:theme="@style/Theme.ArchoMusic.Dark.FullScreen"
             android:windowSoftInputMode="stateHidden" />
         <activity
             android:name="com.google.android.gms.ads.AdActivity"

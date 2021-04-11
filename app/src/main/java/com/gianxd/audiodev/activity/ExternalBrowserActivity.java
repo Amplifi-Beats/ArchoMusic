@@ -109,14 +109,17 @@ public class ExternalBrowserActivity extends  AppCompatActivity  {
 		if (Build.VERSION.SDK_INT >= 23) {
 			if (profileData.containsKey("profileDarkMode")) {
 				if (profileData.get("profileDarkMode").equals("true")) {
+					setTheme(R.style.Theme_ArchoMusic_Dark);
 					getWindow().setStatusBarColor(Color.parseColor("#1A1A1A"));
 					getWindow().setNavigationBarColor(Color.parseColor("#1A1A1A"));
 				} else {
+					setTheme(R.style.Theme_ArchoMusic);
 					toolbar.setSystemUiVisibility(View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR);
 					getWindow().setStatusBarColor(Color.parseColor("#FFFFFF"));
 					getWindow().setNavigationBarColor(Color.parseColor("#FFFFFF"));
 				}
 			} else {
+				setTheme(R.style.Theme_ArchoMusic);
 				toolbar.setSystemUiVisibility(View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR);
 				getWindow().setStatusBarColor(Color.parseColor("#FFFFFF"));
 				getWindow().setNavigationBarColor(Color.parseColor("#FFFFFF"));

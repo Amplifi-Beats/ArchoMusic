@@ -1,13 +1,24 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-	<style	name="Theme.ArchoMusic"	parent="Theme.AppCompat.DayNight.NoActionBar">
+	<style	name="Theme.ArchoMusic"	parent="Theme.AppCompat.Light.NoActionBar">
 		<item name="colorPrimary">@color/colorPrimary</item>
 		<item name="colorPrimaryDark">@color/colorPrimaryDark</item>
 		<item name="colorAccent">@color/colorAccent</item>
 		<item name="colorControlHighlight">@color/colorControlHighlight</item>
 		<item name="colorControlNormal">@color/colorControlNormal</item>
 	</style>
+	<style name="Theme.ArchoMusic.Dark" parent="Theme.AppCompat.DayNight.NoActionBar">
+	    <item name="colorPrimary">@color/colorPrimary</item>
+	    <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
+	    <item name="colorAccent">@color/colorAccent</item>
+	    <item name="colorControlHighlight">@color/colorControlHighlight</item>
+	    <item name="colorControlNormal">@color/colorControlNormal</item>
+    </style>
 	<style name="Theme.ArchoMusic.FullScreen"	parent="Theme.ArchoMusic">
+		<item name="android:windowFullscreen">true</item>
+		<item name="android:windowContentOverlay">@null</item>
+	</style>
+	<style name="Theme.ArchoMusic.Dark.FullScreen" parent="Theme.ArchoMusic.Dark">
 		<item name="android:windowFullscreen">true</item>
 		<item name="android:windowContentOverlay">@null</item>
 	</style>

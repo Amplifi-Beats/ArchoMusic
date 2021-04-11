@@ -1708,14 +1708,17 @@ public class LocalStreamActivity extends  AppCompatActivity  {
 			miniplayerSkipNext.setColorFilter(ContextCompat.getColor(getApplicationContext(), R.color.colorPrimary), PorterDuff.Mode.SRC_IN);
 			if (profileData.containsKey("profileDarkMode")) {
 				if (!profileData.get("profileDarkMode").equals("true")) {
+					setTheme(R.style.Theme_ArchoMusic);
 					top.setSystemUiVisibility(View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR);
 					getWindow().setStatusBarColor(Color.parseColor("#FFFFFF"));
 					getWindow().setNavigationBarColor(Color.parseColor("#FFFFFF"));
 				} else {
+					setTheme(R.style.Theme_ArchoMusic_Dark);
 					getWindow().setStatusBarColor(Color.parseColor("#1A1A1A"));
 					getWindow().setNavigationBarColor(Color.parseColor("#1A1A1A"));
 				}
 			} else {
+				setTheme(R.style.Theme_ArchoMusic);
 				top.setSystemUiVisibility(View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR);
 				getWindow().setStatusBarColor(Color.parseColor("#FFFFFF"));
 				getWindow().setNavigationBarColor(Color.parseColor("#FFFFFF"));

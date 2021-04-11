@@ -77,6 +77,7 @@ public class SplashActivity extends AppCompatActivity {
 		}
 		if (profileData.containsKey("profileDarkMode")) {
 			if (profileData.get("profileDarkMode").equals("true")) {
+				setTheme(R.style.Theme_ArchoMusic_Dark);
 				mainLayout.setBackgroundColor(Color.parseColor("#1A1A1A"));
 				logo.setTextColor(Color.parseColor("#03A9F4"));
 			}
