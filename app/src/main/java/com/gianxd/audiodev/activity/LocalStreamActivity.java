@@ -1155,6 +1155,7 @@ public class LocalStreamActivity extends  AppCompatActivity  {
 						}
 						profileData.put("profileRepeatMode", "1");
 						savedData.edit().putString("savedProfileData", ListUtil.setHashMapToSharedJSON(profileData)).apply();
+						playbackSrv.updateOnCompletionListener();
 						if (profileData.get("profileShuffleMode").equals("1")) {
 							if (Build.VERSION.SDK_INT >= 23) {
 								shuffle.setColorFilter(ContextCompat.getColor(getApplicationContext(), R.color.colorControlHighlight), PorterDuff.Mode.SRC_IN);
@@ -1163,6 +1164,7 @@ public class LocalStreamActivity extends  AppCompatActivity  {
 							}
 							profileData.put("profileShuffleMode", "0");
 							savedData.edit().putString("savedProfileData", ListUtil.setHashMapToSharedJSON(profileData)).apply();
+							playbackSrv.updateOnCompletionListener();
 						}
 					} else if (profileData.get("profileRepeatMode").equals("1")) {
 						if (Build.VERSION.SDK_INT >= 23) {
@@ -1172,15 +1174,7 @@ public class LocalStreamActivity extends  AppCompatActivity  {
 						}
 						profileData.put("profileRepeatMode", "0");
 						savedData.edit().putString("savedProfileData", ListUtil.setHashMapToSharedJSON(profileData)).apply();
-						if (profileData.get("profileShuffleMode").equals("1")) {
-							if (Build.VERSION.SDK_INT >= 23) {
-								shuffle.setColorFilter(ContextCompat.getColor(getApplicationContext(), R.color.colorControlHighlight), PorterDuff.Mode.SRC_IN);
-							} else {
-								shuffle.setColorFilter(getResources().getColor(R.color.colorControlHighlight), PorterDuff.Mode.SRC_IN);
-							}
-							profileData.put("profileShuffleMode", "0");
-							savedData.edit().putString("savedProfileData", ListUtil.setHashMapToSharedJSON(profileData)).apply();
-						}
+						playbackSrv.updateOnCompletionListener();
 					}
 				} else {
 					if (Build.VERSION.SDK_INT >= 23) {
@@ -1190,6 +1184,7 @@ public class LocalStreamActivity extends  AppCompatActivity  {
 					}
 					profileData.put("profileRepeatMode", "1");
 					savedData.edit().putString("savedProfileData", ListUtil.setHashMapToSharedJSON(profileData)).apply();
+					playbackSrv.updateOnCompletionListener();
 				}
 			}
 		});
@@ -1263,9 +1258,9 @@ public class LocalStreamActivity extends  AppCompatActivity  {
 					    } else {
 					        shuffle.setColorFilter(getResources().getColor(R.color.colorPrimary), PorterDuff.Mode.SRC_IN);
 					    }
-
 						profileData.put("profileShuffleMode", "1");
 						savedData.edit().putString("savedProfileData", ListUtil.setHashMapToSharedJSON(profileData)).apply();
+						playbackSrv.updateOnCompletionListener();
                         if (profileData.get("profileRepeatMode").equals("1")) {
                             if (Build.VERSION.SDK_INT >= 23) {
                                 repeat.setColorFilter(ContextCompat.getColor(getApplicationContext(), R.color.colorControlHighlight), PorterDuff.Mode.SRC_IN);
@@ -1273,7 +1268,8 @@ public class LocalStreamActivity extends  AppCompatActivity  {
                                 repeat.setColorFilter(getResources().getColor(R.color.colorControlHighlight), PorterDuff.Mode.SRC_IN);
                             }
                             profileData.put("profileRepeatMode", "0");
-                            savedData.edit().putString("savedProfileData", ListUtil.setHashMapToSharedJSON(profileData)).apply();
+							savedData.edit().putString("savedProfileData", ListUtil.setHashMapToSharedJSON(profileData)).apply();
+							playbackSrv.updateOnCompletionListener();
                         }
 					} else if (profileData.get("profileShuffleMode").equals("1")) {
 					    if (Build.VERSION.SDK_INT >= 23) {
@@ -1283,6 +1279,7 @@ public class LocalStreamActivity extends  AppCompatActivity  {
 					    }
 						profileData.put("profileShuffleMode", "0");
 						savedData.edit().putString("savedProfileData", ListUtil.setHashMapToSharedJSON(profileData)).apply();
+						playbackSrv.updateOnCompletionListener();
 					}
 				} else {
 					if (Build.VERSION.SDK_INT >= 23) {
@@ -1292,6 +1289,7 @@ public class LocalStreamActivity extends  AppCompatActivity  {
 					}
 					profileData.put("profileShuffleMode", "0");
 					savedData.edit().putString("savedProfileData", ListUtil.setHashMapToSharedJSON(profileData)).apply();
+					playbackSrv.updateOnCompletionListener();
 				}
 			}
 		});
