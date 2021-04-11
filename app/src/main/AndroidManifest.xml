@@ -102,6 +102,13 @@
             android:name=".service.LocalPlaybackService"
             android:enabled="true"
             android:exported="true"
+            android:foregroundServiceType="mediaPlayback"
+            android:stopWithTask="false" />
+        <service
+            android:name=".service.LivePlaybackService"
+            android:enabled="true"
+            android:exported="true"
+            android:foregroundServiceType="mediaPlayback"
             android:stopWithTask="false" />
     </application>
 
