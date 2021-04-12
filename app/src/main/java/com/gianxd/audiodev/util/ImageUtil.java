@@ -33,7 +33,7 @@ public class ImageUtil {
             cropIntent.putExtra("return-data", false);
             activity.startActivityForResult(cropIntent, result);
         } catch (ActivityNotFoundException anfe) {
-            ApplicationUtil.toast(activity, "Device not supported.", Toast.LENGTH_LONG);
+            ApplicationUtil.toast("Device not supported.", Toast.LENGTH_LONG);
         }
     }
 
