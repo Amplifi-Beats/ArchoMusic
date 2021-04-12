@@ -4,6 +4,7 @@ import android.app.Application;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.res.Resources;
 import android.os.Handler;
 
 import com.gianxd.audiodev.activity.LauncherActivity;
@@ -15,6 +16,7 @@ import java.util.HashMap;
 public class AudioDev extends Application {
 
     public static Context applicationContext;
+    public static Resources applicationResources;
 	private Thread.UncaughtExceptionHandler uncaughtExceptionHandler;
 	private HashMap<String, Object> profileData;
 	public static volatile Handler applicationHandler;
@@ -23,6 +25,7 @@ public class AudioDev extends Application {
 	@Override
 	public void onCreate() {
         applicationContext = this;
+        applicationResources = getResources();
 		applicationHandler = new Handler(AudioDev.applicationContext.getMainLooper());
 		savedData = getSharedPreferences("savedData", Context.MODE_PRIVATE);
 		if (!savedData.contains("savedProfileData")) {

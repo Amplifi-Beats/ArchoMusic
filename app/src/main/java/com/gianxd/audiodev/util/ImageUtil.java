@@ -12,6 +12,7 @@ import android.media.MediaMetadataRetriever;
 import android.net.Uri;
 import android.widget.Toast;
 
+import com.gianxd.audiodev.AudioDev;
 import com.gianxd.audiodev.R;
 
 import java.io.File;
@@ -36,7 +37,7 @@ public class ImageUtil {
         }
     }
 
-    public static Bitmap getAlbumArt(String path, Resources resources) {
+    public static Bitmap getAlbumArt(String path) {
         Bitmap bitmapArt;
         MediaMetadataRetriever artRetriever = new MediaMetadataRetriever();
         if (path.startsWith("file://") || path.startsWith("/")) {
@@ -48,8 +49,9 @@ public class ImageUtil {
         if( album_art != null ){
             bitmapArt = BitmapFactory.decodeByteArray(album_art, 0, album_art.length);
         } else {
-            bitmapArt = ((BitmapDrawable)resources.getDrawable(R.drawable.ic_media_album_art)).getBitmap();
+            bitmapArt = ((BitmapDrawable)AudioDev.applicationResources.getDrawable(R.drawable.ic_media_album_art)).getBitmap();
         }
+        artRetriever.close();
         return bitmapArt;
     }
 
@@ -65,7 +67,7 @@ public class ImageUtil {
         if( album_art != null ){
             bitmapArt = BitmapFactory.decodeByteArray(album_art, 0, album_art.length);
         } else {
-            bitmapArt = ((BitmapDrawable)resources.getDrawable(R.drawable.ic_media_album_art)).getBitmap();
+            bitmapArt = ((BitmapDrawable)AudioDev.applicationResources.getDrawable(R.drawable.ic_media_album_art)).getBitmap();
         }
         return bitmapArt;
     }
