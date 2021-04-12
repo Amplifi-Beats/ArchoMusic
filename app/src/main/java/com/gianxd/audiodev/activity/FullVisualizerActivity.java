@@ -82,9 +82,9 @@ public class FullVisualizerActivity extends AppCompatActivity {
                         visualizer.setAudioSessionId(playbackSrv.mp.getAudioSessionId());
                     }
                 } else  if (playbackSrv.mp != null && !playbackSrv.isPlaying()){
-                    ApplicationUtil.toast(getApplicationContext(), "Visualizer not visible, please resume/play the song.", Toast.LENGTH_LONG);
+                    ApplicationUtil.toast("Visualizer not visible, please resume/play the song.", Toast.LENGTH_LONG);
                 } else if (playbackSrv.mp != null) {
-                    ApplicationUtil.toast(getApplicationContext(), "Failed to initialize Visualizer.", Toast.LENGTH_LONG);
+                    ApplicationUtil.toast("Failed to initialize Visualizer.", Toast.LENGTH_LONG);
                 }
             }
 

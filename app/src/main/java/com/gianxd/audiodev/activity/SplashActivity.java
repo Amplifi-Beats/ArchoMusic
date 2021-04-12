@@ -10,6 +10,8 @@ import android.graphics.Typeface;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
@@ -24,8 +26,10 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 
+import com.bumptech.glide.Glide;
 import com.gianxd.audiodev.R;
 import com.gianxd.audiodev.util.ApplicationUtil;
+import com.gianxd.audiodev.util.IntegerUtil;
 import com.gianxd.audiodev.util.ListUtil;
 import com.gianxd.audiodev.util.StringUtil;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
@@ -107,14 +111,13 @@ public class SplashActivity extends AppCompatActivity {
 					public void run() {
 						if (savedData.contains("savedProfileData")) {
 							if (savedData.contains("savedMusicData")) {
-								int randomizer = com.gianxd.audiodev.util.MusicDevUtil.getRandom((int)(0), (int)(1));
+								int randomizer = IntegerUtil.getRandom((int)(0), (int)(1));
 								if (randomizer == 0) {
 									intent.setClass(getApplicationContext(), LocalStreamActivity.class);
 									logo.setTransitionName("fade");
 									android.app.ActivityOptions optionsCompat = android.app.ActivityOptions.makeSceneTransitionAnimation(SplashActivity.this, logo, "fade");
 									startActivity(intent, optionsCompat.toBundle());
-								}
-								else {
+								} else {
 									if (randomizer == 1) {
 										if (ContextCompat.checkSelfPermission(getApplicationContext(), Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED && ContextCompat.checkSelfPermission(getApplicationContext(), Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED
 										&& ContextCompat.checkSelfPermission(getApplicationContext(), Manifest.permission.RECORD_AUDIO) == PackageManager.PERMISSION_GRANTED) {
@@ -230,7 +233,113 @@ public class SplashActivity extends AppCompatActivity {
 							profile_icon.setOnClickListener(new View.OnClickListener() {
 									@Override
 									public void onClick(View view) {
-											ApplicationUtil.toast(getApplicationContext(), "Profile picture under construction.", Toast.LENGTH_SHORT);
+										android.graphics.drawable.RippleDrawable rippleButton = new android.graphics.drawable.RippleDrawable(new android.content.res.ColorStateList(new int[][]{new int[]{}}, new int[]{Color.parseColor("#BDBDBD")}), null, null);
+										view.setBackground(rippleButton);
+										BottomSheetDialog pfpDialog = new BottomSheetDialog(SplashActivity.this);
+										View dialogLayout = getLayoutInflater().inflate(R.layout.dialog_create_a_profile_icon, null);
+										pfpDialog.setContentView(dialogLayout);
+										LinearLayout main = dialogLayout.findViewById(R.id.main);
+										TextView title = dialogLayout.findViewById(R.id.title);
+										ImageView profile_picture = dialogLayout.findViewById(R.id.profile_icon);
+										EditText url = dialogLayout.findViewById(R.id.url);
+										Button finish = dialogLayout.findViewById(R.id.finish);
+										Button cancel = dialogLayout.findViewById(R.id.cancel);
+										if (savedData.contains("savedProfileData")) {
+											if (profileData.containsKey("profilePicture")) {
+												Glide.with(getApplicationContext()).load(profileData.get("profilePicture").toString()).into(profile_picture);
+												url.setText(profileData.get("profilePicture").toString());
+											}
+										}
+										title.setTypeface(Typeface.createFromAsset(getAssets(),"fonts/roboto_medium.ttf"), Typeface.NORMAL);
+										url.addTextChangedListener(new TextWatcher() {
+											@Override
+											public void beforeTextChanged(CharSequence charSequence, int start, int count, int after) {
+												// DO NOTHING
+											}
+
+											@Override
+											public void onTextChanged(CharSequence charSequence, int start, int before, int count) {
+												if (!(url.getText().toString().length() == 0)) {
+													Glide.with(getApplicationContext()).load(url.getText().toString()).into(profile_picture);
+												} else {
+													Glide.with(getApplicationContext()).load(R.drawable.ic_profile_icon).into(profile_picture);
+												}
+											}
+
+											@Override
+											public void afterTextChanged(Editable editable) {
+												// DO NOTHING
+											}
+										});
+										finish.setOnClickListener(new View.OnClickListener() {
+											@Override
+											public void onClick(View view) {
+												if (url.getText().toString().length() > 0) {
+													if (url.getText().toString().equals(profileData.get("profileName").toString())) {
+														pfpDialog.dismiss();
+													} else {
+														String pfpUrl = url.getText().toString();
+														profileData.put("profilePicture", pfpUrl);
+														savedData.edit().putString("savedProfileData", ListUtil.setHashMapToSharedJSON(profileData)).apply();
+														ApplicationUtil.toast("Set profile picture successfully.", Toast.LENGTH_SHORT);
+														Glide.with(getApplicationContext()).load(url.getText().toString()).into(profile_icon);
+														pfpDialog.dismiss();
+													}
+												} else {
+													url.setError("Path/URI should not be blank.");
+												}
+											}
+										});
+										cancel.setOnClickListener(new View.OnClickListener() {
+											@Override
+											public void onClick(View view) {
+												if (!profileData.containsKey("profileDarkMode")) {
+													android.graphics.drawable.RippleDrawable rippleButton = new android.graphics.drawable.RippleDrawable(new android.content.res.ColorStateList(new int[][]{new int[]{}}, new int[]{ Color.parseColor("#BDBDBD") }), new android.graphics.drawable.ColorDrawable(Color.parseColor("#FFFFFF")), null);
+													view.setBackground(rippleButton);
+												} else {
+													if (profileData.get("profileDarkMode").equals("true")) {
+														android.graphics.drawable.RippleDrawable rippleButton = new android.graphics.drawable.RippleDrawable(new android.content.res.ColorStateList(new int[][]{new int[]{}}, new int[]{ Color.parseColor("#BDBDBD") }), new android.graphics.drawable.ColorDrawable(Color.parseColor("#1A1A1A")), null);
+														view.setBackground(rippleButton);
+													} else {
+														android.graphics.drawable.RippleDrawable rippleButton = new android.graphics.drawable.RippleDrawable(new android.content.res.ColorStateList(new int[][]{new int[]{}}, new int[]{ Color.parseColor("#BDBDBD") }), new android.graphics.drawable.ColorDrawable(Color.parseColor("#FFFFFF")), null);
+														view.setBackground(rippleButton);
+													}
+												}
+												pfpDialog.dismiss();
+											}
+										});
+										Double TopLeft = 20.0;
+										Double TopRight = 20.0;
+										Double BottomRight = 0.0;
+										Double BottomLeft = 0.0;
+										android.graphics.drawable.GradientDrawable roundedCorners = new android.graphics.drawable.GradientDrawable();
+										roundedCorners.setShape(android.graphics.drawable.GradientDrawable.RECTANGLE);
+										roundedCorners.setCornerRadii(new float[] {TopLeft.floatValue(),TopLeft.floatValue(), TopRight.floatValue(),TopRight.floatValue(), BottomRight.floatValue(),BottomRight.floatValue(), BottomLeft.floatValue(),BottomLeft.floatValue()});
+										android.graphics.drawable.GradientDrawable roundedCorners2 = new android.graphics.drawable.GradientDrawable();
+										roundedCorners2.setShape(android.graphics.drawable.GradientDrawable.RECTANGLE);
+										roundedCorners2.setCornerRadius(20);
+										if (!profileData.containsKey("profileDarkMode")) {
+											roundedCorners.setColor(Color.parseColor("#FFFFFF"));
+											roundedCorners2.setColor(Color.parseColor("#EEEEEE"));
+										} else {
+											if (profileData.get("profileDarkMode").equals("true")) {
+												roundedCorners.setColor(Color.parseColor("#1A1A1A"));
+												roundedCorners2.setColor(Color.parseColor("#212121"));
+												url.setTextColor(Color.parseColor("#FFFFFF"));
+												url.setHintTextColor(Color.parseColor("#BDBDBD"));
+											} else {
+												roundedCorners.setColor(Color.parseColor("#FFFFFF"));
+												roundedCorners2.setColor(Color.parseColor("#EEEEEE"));
+											}
+										}
+										((ViewGroup)dialogLayout.getParent()).setBackground(roundedCorners);
+										url.setBackground(roundedCorners2);
+										android.graphics.drawable.GradientDrawable gradientButton = new android.graphics.drawable.GradientDrawable();
+										gradientButton.setColor(Color.parseColor("#03A9F4"));
+										gradientButton.setCornerRadius(20);
+										finish.setBackground(gradientButton);
+										cancel.setBackground(gradientButton);
+										pfpDialog.show();
 									}
 							});
 							create.setOnClickListener(new View.OnClickListener() {

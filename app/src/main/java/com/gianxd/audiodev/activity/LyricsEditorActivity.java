@@ -92,7 +92,7 @@ public class LyricsEditorActivity extends  AppCompatActivity  {
 		
 		back.setOnClickListener(new View.OnClickListener() {
 			@Override
-			public void onClick(View _view) {
+			public void onClick(View view) {
 				android.graphics.drawable.RippleDrawable rippleButton = new android.graphics.drawable.RippleDrawable(new android.content.res.ColorStateList(new int[][]{new int[]{}}, new int[]{ Color.parseColor("#BDBDBD") }), null, null);
 				back.setBackground(rippleButton);
 				finish();
@@ -101,16 +101,16 @@ public class LyricsEditorActivity extends  AppCompatActivity  {
 		
 		save.setOnClickListener(new View.OnClickListener() {
 			@Override
-			public void onClick(View _view) {
+			public void onClick(View view) {
 				android.graphics.drawable.RippleDrawable rippleButton = new android.graphics.drawable.RippleDrawable(new android.content.res.ColorStateList(new int[][]{new int[]{}}, new int[]{ Color.parseColor("#BDBDBD") }), null, null);
 				save.setBackground(rippleButton);
 				try {
 					musicData.get(Integer.parseInt(getIntent().getStringExtra("songPosition"))).put("songLyrics", lyrics.getText().toString());
 					savedData.edit().putString("savedMusicData", ListUtil.setArrayListToSharedJSON(musicData)).apply();
-					ApplicationUtil.toast(getApplicationContext(), "Lyrics saved successfully.", Toast.LENGTH_SHORT);
+					ApplicationUtil.toast("Lyrics saved successfully.", Toast.LENGTH_SHORT);
 					finish();
 				} catch (Exception e) {
-					ApplicationUtil.toast(getApplicationContext(), "Error saving lyrics.", Toast.LENGTH_SHORT);
+					ApplicationUtil.toast("Error saving lyrics.", Toast.LENGTH_SHORT);
 				}
 			}
 		});
