@@ -77,7 +77,7 @@ public class ExternalBrowserActivity extends  AppCompatActivity  {
 					weburl.setText(url);
 				}
 				else {
-					if (url.equals("file:///android_asset/LICENSES.html")) {
+					if (url.equals("file:///android_asset/LICENSE.html")) {
 						weburl.setText("com.gianxd.audiodev/LICENSES");
 					}
 					if (url.equals("file:///android_asset/PRIVACY.html")) {

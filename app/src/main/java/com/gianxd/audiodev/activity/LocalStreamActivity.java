@@ -862,14 +862,14 @@ public class LocalStreamActivity extends  AppCompatActivity  {
 							    TextView twitter_name = dialogLayout.findViewById(R.id.twitter_name);
 							    TextView github_name = dialogLayout.findViewById(R.id.github_name);
 							    TextView discord_name = dialogLayout.findViewById(R.id.discord_name);
-							    TextView licenses_name = dialogLayout.findViewById(R.id.licenses_name);
+							    TextView licenses_name = dialogLayout.findViewById(R.id.license_name);
 							    TextView privacy_name = dialogLayout.findViewById(R.id.privacy_name);
 							    TextView version = dialogLayout.findViewById(R.id.version);
 								LinearLayout youtube = dialogLayout.findViewById(R.id.youtube);
 								LinearLayout twitter = dialogLayout.findViewById(R.id.twitter);
 						        LinearLayout github = dialogLayout.findViewById(R.id.github);
 								LinearLayout discord = dialogLayout.findViewById(R.id.discord);
-								LinearLayout licenses = dialogLayout.findViewById(R.id.licenses);
+								LinearLayout license = dialogLayout.findViewById(R.id.license);
 								LinearLayout privacy = dialogLayout.findViewById(R.id.privacy);
 						        title.setTypeface(Typeface.createFromAsset(getAssets(),"fonts/leixo.ttf"), Typeface.BOLD);
 						        int randomizer = IntegerUtil.getRandom((int)(0), (int)(9));
@@ -978,7 +978,7 @@ public class LocalStreamActivity extends  AppCompatActivity  {
 												startActivity(intent);
 										}
 								});
-								licenses.setOnClickListener(new View.OnClickListener() {
+								license.setOnClickListener(new View.OnClickListener() {
 										@Override
 										public void onClick(View view) {
 											    if (!profileData.containsKey("profileDarkMode")) {
@@ -994,7 +994,7 @@ public class LocalStreamActivity extends  AppCompatActivity  {
 												    }
 											    }
 												Intent intent = new Intent();
-												intent.putExtra("url", "file:///android_asset/LICENSES.html");
+												intent.putExtra("url", "file:///android_asset/LICENSE.html");
 												intent.setClass(getApplicationContext(), ExternalBrowserActivity.class);
 												startActivity(intent);
 										}
