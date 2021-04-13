@@ -490,6 +490,7 @@ public class SplashActivity extends AppCompatActivity {
 
 		@Override
 		protected void onPostExecute(Void param){
+			ListUtil.sortArrayList(musicData, "songTitle", false, true);
 			if (savedData.contains("savedMusicData")) {
 				ArrayList<HashMap<String, Object>> tempMusicData = ListUtil.getArrayListFromSharedJSON(savedData, "savedMusicData");
 				if (musicData.size() > tempMusicData.size()) {

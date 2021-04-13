@@ -20,16 +20,13 @@ public class ListUtil {
                     int count2 = Integer.parseInt(compareMap2.get(key).toString());
                     if (isAscending) {
                         return count1 < count2 ? -1 : count1 < count2 ? 1 : 0;
-                    }
-                    else {
+                    } else {
                         return count1 > count2 ? -1 : count1 > count2 ? 1 : 0;
                     }
-                }
-                else {
+                } else {
                     if (isAscending) {
                         return (compareMap1.get(key).toString()).compareTo(compareMap2.get(key).toString());
-                    }
-                    else {
+                    } else {
                         return (compareMap2.get(key).toString()).compareTo(compareMap1.get(key).toString());
                     }
                 }
