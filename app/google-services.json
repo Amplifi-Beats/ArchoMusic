@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "857510689263",
+    "firebase_url": "https://archo-music-default-rtdb.firebaseio.com",
+    "project_id": "archo-music",
+    "storage_bucket": "archo-music.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:857510689263:android:54bec3c215920a9a0fde1a",
+        "android_client_info": {
+          "package_name": "com.gianxd.audiodev"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "857510689263-h17arnnqfg3o9pu89t0f16g2ccn8icgb.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBwzZRzD1f8DyEcPSkGBgMt4z_Bx0dH-K4"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "857510689263-h17arnnqfg3o9pu89t0f16g2ccn8icgb.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
