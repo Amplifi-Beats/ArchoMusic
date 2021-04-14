@@ -37,6 +37,7 @@ public class LyricsEditorActivity extends  AppCompatActivity  {
 	private EditText lyrics;
 	private ImageView back;
 	private TextView bruh;
+	private ImageView autoedit;
 	private ImageView save;
 	
 	private SharedPreferences savedData;
@@ -55,6 +56,7 @@ public class LyricsEditorActivity extends  AppCompatActivity  {
 		lyrics = (EditText) findViewById(R.id.lyrics);
 		back = (ImageView) findViewById(R.id.back);
 		bruh = (TextView) findViewById(R.id.bruh);
+		autoedit = (ImageView) findViewById(R.id.autoedit);
 		save = (ImageView) findViewById(R.id.save);
 		savedData = applicationContext.getSharedPreferences("savedData", Activity.MODE_PRIVATE);
 		if (savedData.contains("savedMusicData")) {
@@ -98,6 +100,14 @@ public class LyricsEditorActivity extends  AppCompatActivity  {
 				finish();
 			}
 		});
+
+		autoedit.setOnClickListener(new View.OnClickListener() {
+			@Override
+			public void onClick(View view) {
+				android.graphics.drawable.RippleDrawable rippleButton = new android.graphics.drawable.RippleDrawable(new android.content.res.ColorStateList(new int[][]{new int[]{}}, new int[]{ Color.parseColor("#BDBDBD") }), null, null);
+				autoedit.setBackground(rippleButton);
+			}
+		});
 		
 		save.setOnClickListener(new View.OnClickListener() {
 			@Override
@@ -106,7 +116,7 @@ public class LyricsEditorActivity extends  AppCompatActivity  {
 				save.setBackground(rippleButton);
 				try {
 					musicData.get(Integer.parseInt(getIntent().getStringExtra("songPosition"))).put("songLyrics", lyrics.getText().toString());
-					savedData.edit().putString("savedMusicData", ListUtil.setArrayListToSharedJSON(musicData)).apply();
+					savedData.edit().putString("savedMusicData", ListUtil.setArrayListToSharedJSON(musicData)).commit();
 					ApplicationUtil.toast("Lyrics saved successfully.", Toast.LENGTH_SHORT);
 					finish();
 				} catch (Exception e) {
