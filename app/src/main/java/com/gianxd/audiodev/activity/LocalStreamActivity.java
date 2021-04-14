@@ -1840,8 +1840,8 @@ public class LocalStreamActivity extends  AppCompatActivity  {
 						LinearLayout remove = dialogLayout.findViewById(R.id.remove);
 						title.setTypeface(Typeface.createFromAsset(getAssets(), "fonts/roboto_medium.ttf"), Typeface.NORMAL);
 						Glide.with(getApplicationContext()).asBitmap().load(ImageUtil.getAlbumArt(StringUtil.decodeString(data.get(position).get("songData").toString()))).into(albumArt);
-						songTitle.setText(musicData.get(Integer.parseInt(profileData.get("profileSongPosition").toString())).get("songTitle").toString());
-						songArtist.setText(musicData.get(Integer.parseInt(profileData.get("profileSongPosition").toString())).get("songArtist").toString());
+						songTitle.setText(musicData.get(position).get("songTitle").toString());
+						songArtist.setText(musicData.get(position).get("songArtist").toString());
 						rename.setOnClickListener(new View.OnClickListener() {
 							@Override
 							public void onClick(View view) {
