@@ -393,9 +393,9 @@ public class LocalStreamActivity extends  AppCompatActivity  {
 									    view.setBackground(rippleButton);
 								    }
 							    }
-								BottomSheetDialog renameDialog = new BottomSheetDialog(LocalStreamActivity.this);
+								BottomSheetDialog renameProfileDialog = new BottomSheetDialog(LocalStreamActivity.this);
 						        View dialogLayout = getLayoutInflater().inflate(R.layout.dialog_create_a_profile, null);
-						        renameDialog.setContentView(dialogLayout);
+						        renameProfileDialog.setContentView(dialogLayout);
 						        LinearLayout main = dialogLayout.findViewById(R.id.main);
 						        TextView title = dialogLayout.findViewById(R.id.title);
 						        TextView desc = dialogLayout.findViewById(R.id.desc);
@@ -543,18 +543,30 @@ public class LocalStreamActivity extends  AppCompatActivity  {
 								        		    }
 								        	    }
 										        if (profile_name.getText().toString().length() > 0) {
-														if (profile_name.getText().toString().equals(profileData.get("profileName").toString())) {
-															    renameDialog.dismiss();
-														} else {
+														if (profileData.containsKey("profileName")) {
+															if (profile_name.getText().toString().equals(profileData.get("profileName").toString())) {
+															    renameProfileDialog.dismiss();
+															} else {
 													            String profileName = profile_name.getText().toString();
 													            profileData.put("profileName", profileName);
 															    savedData.edit().putString("savedProfileData", ListUtil.setHashMapToSharedJSON(profileData)).commit();
 														        ApplicationUtil.toast("Renamed profile sucessfully.", Toast.LENGTH_SHORT);
 														        tabNavigation.getTabAt(0).select();
-													            renameDialog.dismiss();
+													            renameProfileDialog.dismiss();
 														        menuDialog.dismiss();
 														        startActivity(new Intent(AudioDev.applicationContext, LauncherActivity.class));
 														        finish();
+															}
+														} else {
+															String profileName = profile_name.getText().toString();
+															profileData.put("profileName", profileName);
+															savedData.edit().putString("savedProfileData", ListUtil.setHashMapToSharedJSON(profileData)).commit();
+															ApplicationUtil.toast("Renamed profile sucessfully.", Toast.LENGTH_SHORT);
+															tabNavigation.getTabAt(0).select();
+															renameProfileDialog.dismiss();
+															menuDialog.dismiss();
+															startActivity(new Intent(AudioDev.applicationContext, LauncherActivity.class));
+															finish();
 														}
 											        } else {
 											           profile_name.setError("Profile name should not be blank.");
@@ -592,7 +604,7 @@ public class LocalStreamActivity extends  AppCompatActivity  {
 						        gradientButton.setColor(Color.parseColor("#03A9F4"));
 						        gradientButton.setCornerRadius(20);
 						        create.setBackground(gradientButton);
-						        renameDialog.show();
+						        renameProfileDialog.show();
 						}
 				});
 				live_streaming.setOnClickListener(new View.OnClickListener() {
