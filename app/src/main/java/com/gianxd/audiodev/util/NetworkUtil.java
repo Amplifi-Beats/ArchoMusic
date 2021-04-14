@@ -10,7 +10,7 @@ import com.google.firebase.database.FirebaseDatabase;
 
 import java.util.HashMap;
 
-public class FirebaseUtil {
+public class NetworkUtil {
 
 
     public static void sendMessageToDatabase(String path, String message) {
