@@ -55,11 +55,11 @@ public class ImageUtil {
         return bitmapArt;
     }
 
-    public static Bitmap getAlbumArt(Context context, Uri contentUri, Resources resources) {
+    public static Bitmap getAlbumArt(Uri contentUri) {
         Bitmap bitmapArt;
         MediaMetadataRetriever artRetriever = new MediaMetadataRetriever();
         if (contentUri.toString().startsWith("content://")) {
-            artRetriever.setDataSource(context, contentUri);
+            artRetriever.setDataSource(AudioDev.applicationContext, contentUri);
         } else if (contentUri.toString().startsWith("file://") || contentUri.toString().startsWith("/")) {
             throw new IllegalArgumentException("Filepaths cannot be set as URIs.");
         }
