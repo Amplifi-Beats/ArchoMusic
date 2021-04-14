@@ -1927,7 +1927,6 @@ public class LocalStreamActivity extends  AppCompatActivity  {
 								rename_title.setTextColor(Color.parseColor("#FFFFFF"));
 								share_title.setTextColor(Color.parseColor("#FFFFFF"));
 								moreInformation_title.setTextColor(Color.parseColor("#FFFFFF"));
-								remove_title.setTextColor(Color.parseColor("#FFFFFF"));
 							} else {
 								roundedCorners.setColor(Color.parseColor("#FFFFFF"));
 							}
