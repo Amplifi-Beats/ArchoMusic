@@ -27,6 +27,7 @@ import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 
 import com.bumptech.glide.Glide;
+import com.gianxd.audiodev.AudioDev;
 import com.gianxd.audiodev.R;
 import com.gianxd.audiodev.util.ApplicationUtil;
 import com.gianxd.audiodev.util.IntegerUtil;
@@ -35,7 +36,9 @@ import com.gianxd.audiodev.util.StringUtil;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
+import java.util.Objects;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -168,8 +171,7 @@ public class SplashActivity extends AppCompatActivity {
 										}
 									}
 								}
-							}
-							else {
+							} else {
 								if (ContextCompat.checkSelfPermission(getApplicationContext(), Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED && ContextCompat.checkSelfPermission(getApplicationContext(), Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED
 								&& ContextCompat.checkSelfPermission(getApplicationContext(), Manifest.permission.RECORD_AUDIO) == PackageManager.PERMISSION_GRANTED) {
 									scanMedia();
@@ -280,7 +282,7 @@ public class SplashActivity extends AppCompatActivity {
 													} else {
 														String pfpUrl = url.getText().toString();
 														profileData.put("profilePicture", pfpUrl);
-														savedData.edit().putString("savedProfileData", ListUtil.setHashMapToSharedJSON(profileData)).apply();
+														savedData.edit().putString("savedProfileData", ListUtil.setHashMapToSharedJSON(profileData)).commit();
 														ApplicationUtil.toast("Set profile picture successfully.", Toast.LENGTH_SHORT);
 														Glide.with(getApplicationContext()).load(url.getText().toString()).into(profile_icon);
 														pfpDialog.dismiss();
@@ -349,7 +351,7 @@ public class SplashActivity extends AppCompatActivity {
 													HashMap<String, Object> tempProfileData = new HashMap<>();
 													String profileName = profile_name.getText().toString();
 													tempProfileData.put("profileName", profileName);
-													savedData.edit().putString("savedProfileData", ListUtil.setHashMapToSharedJSON(tempProfileData)).apply();
+												    savedData.edit().putString("savedProfileData", ListUtil.setHashMapToSharedJSON(profileData)).commit();
 													createProfile.dismiss();
 													intent.setClass(getApplicationContext(), SplashActivity.class);
 													startActivity(intent);
@@ -493,12 +495,12 @@ public class SplashActivity extends AppCompatActivity {
 			ListUtil.sortArrayList(musicData, "songTitle", false, true);
 			if (savedData.contains("savedMusicData")) {
 				ArrayList<HashMap<String, Object>> tempMusicData = ListUtil.getArrayListFromSharedJSON(savedData, "savedMusicData");
-				if (musicData.size() > tempMusicData.size()) {
-					savedData.edit().putString("savedMusicData", ListUtil.setArrayListToSharedJSON(musicData)).apply();
+				if (!Objects.equals(musicData, tempMusicData)) {
+					savedData.edit().putString("savedMusicData", ListUtil.setArrayListToSharedJSON(musicData)).commit();
 				}
 				loadanim.setVisibility(View.GONE);
 			} else {
-				savedData.edit().putString("savedMusicData", ListUtil.setArrayListToSharedJSON(musicData)).apply();
+				savedData.edit().putString("savedMusicData", ListUtil.setArrayListToSharedJSON(musicData)).commit();
 			}
 			timerTask = new TimerTask() {
 				@Override
@@ -506,7 +508,7 @@ public class SplashActivity extends AppCompatActivity {
 					runOnUiThread(new Runnable() {
 						@Override
 						public void run() {
-							intent.setClass(getApplicationContext(), SplashActivity.class);
+							intent.setClass(AudioDev.applicationContext, SplashActivity.class);
 							startActivity(intent);
 							finish();
 						}

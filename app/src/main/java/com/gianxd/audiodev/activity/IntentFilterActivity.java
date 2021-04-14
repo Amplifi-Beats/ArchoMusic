@@ -93,8 +93,7 @@ public class IntentFilterActivity extends  AppCompatActivity  {
 						};
 						timer.scheduleAtFixedRate(timerTask, (int)(0), (int)(1000));
 						mp.start();
-					}
-					else {
+					} else {
 						miniplayerPlayPause.setImageResource(R.drawable.ic_media_play);
 						mp.pause();
 						if (timerTask != null) {
@@ -195,7 +194,7 @@ public class IntentFilterActivity extends  AppCompatActivity  {
 						}
 				}
 		};
-		Glide.with(getApplicationContext()).asBitmap().load(ImageUtil.getAlbumArt(getApplicationContext(), data, getResources())).into(miniplayerAlbumArt);
+		Glide.with(getApplicationContext()).asBitmap().load(ImageUtil.getAlbumArt(data)).into(miniplayerAlbumArt);
 		audioManager.requestAudioFocus(audioChangeListener, AudioManager.STREAM_MUSIC, AudioManager.AUDIOFOCUS_GAIN);
 		miniplayerSongTitle.setText(data.getLastPathSegment());
 		maxDuration.setText(String.valueOf((int)((mp.getDuration() / 1000) / 60)).concat(":".concat(new DecimalFormat("00").format((mp.getDuration() / 1000) % 60))));

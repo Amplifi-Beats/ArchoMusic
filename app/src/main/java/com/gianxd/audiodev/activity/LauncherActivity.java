@@ -5,6 +5,7 @@ import android.os.Bundle;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.gianxd.audiodev.AudioDev;
 import com.google.android.gms.ads.MobileAds;
 import com.google.android.gms.ads.initialization.InitializationStatus;
 import com.google.android.gms.ads.initialization.OnInitializationCompleteListener;
@@ -19,7 +20,7 @@ public class LauncherActivity extends AppCompatActivity {
             public void onInitializationComplete(InitializationStatus initializationStatus) {
             }
         });
-        startActivity(new Intent(getApplicationContext(), SplashActivity.class));
+        startActivity(new Intent(AudioDev.applicationContext, SplashActivity.class));
         finish();
     }
 }

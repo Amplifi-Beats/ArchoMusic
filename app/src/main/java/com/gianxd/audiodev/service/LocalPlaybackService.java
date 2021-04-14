@@ -14,12 +14,14 @@ import android.net.Uri;
 import android.os.Binder;
 import android.os.Build;
 import android.os.IBinder;
+import android.widget.Toast;
 
 import androidx.core.app.NotificationCompat;
 
 import com.bumptech.glide.Glide;
 import com.gianxd.audiodev.R;
 import com.gianxd.audiodev.activity.LocalStreamActivity;
+import com.gianxd.audiodev.util.ApplicationUtil;
 import com.gianxd.audiodev.util.ImageUtil;
 import com.gianxd.audiodev.util.IntegerUtil;
 import com.gianxd.audiodev.util.ListUtil;
@@ -199,14 +201,14 @@ public class LocalPlaybackService extends Service {
 					try {
 						if (Integer.parseInt(profileData.get("profileSongPosition").toString()) + 1< musicData.size()) {
 							profileData.put("profileSongPosition", String.valueOf(Integer.parseInt(profileData.get("profileSongPosition").toString()) + 1));
-							savedData.edit().putString("savedProfileData", ListUtil.setHashMapToSharedJSON(profileData)).apply();
+							savedData.edit().putString("savedProfileData", ListUtil.setHashMapToSharedJSON(profileData)).commit();
 							createLocalStream(Integer.parseInt(profileData.get("profileSongPosition").toString()));
 							playPause.performClick();
 						}
 					} catch (Exception exception) {
 						if (Integer.parseInt(profileData.get("profileSongPosition").toString()) + 1 < musicData.size()) {
 							profileData.put("profileSongPosition", String.valueOf(Integer.parseInt(profileData.get("profileSongPosition").toString()) + 1));
-							savedData.edit().putString("savedProfileData", ListUtil.setHashMapToSharedJSON(profileData)).apply();
+							savedData.edit().putString("savedProfileData", ListUtil.setHashMapToSharedJSON(profileData)).commit();
 							createLocalStream(Integer.parseInt(profileData.get("profileSongPosition").toString()));
 							playPause.performClick();
 						}
@@ -216,14 +218,14 @@ public class LocalPlaybackService extends Service {
 						try {
 							if (Integer.parseInt(profileData.get("profileSongPosition").toString()) + 1 < musicData.size()) {
 								profileData.put("profileSongPosition", String.valueOf(Integer.parseInt(profileData.get("profileSongPosition").toString()) + 1));
-								savedData.edit().putString("savedProfileData", ListUtil.setHashMapToSharedJSON(profileData)).apply();
+								savedData.edit().putString("savedProfileData", ListUtil.setHashMapToSharedJSON(profileData)).commit();
 								createLocalStream(Integer.parseInt(profileData.get("profileSongPosition").toString()));
 								playPause.performClick();
 							}
 						} catch (Exception exception) {
 							if (Integer.parseInt(profileData.get("profileSongPosition").toString()) + 1 < musicData.size()) {
 								profileData.put("profileSongPosition", String.valueOf(Integer.parseInt(profileData.get("profileSongPosition").toString()) + 1));
-								savedData.edit().putString("savedProfileData", ListUtil.setHashMapToSharedJSON(profileData)).apply();
+								savedData.edit().putString("savedProfileData", ListUtil.setHashMapToSharedJSON(profileData)).commit();
 								createLocalStream(Integer.parseInt(profileData.get("profileSongPosition").toString()));
 								playPause.performClick();
 							}
@@ -242,14 +244,14 @@ public class LocalPlaybackService extends Service {
 						try {
 							if (IntegerUtil.getRandom(Integer.parseInt(profileData.get("profileSongPosition").toString()), musicData.size()) < musicData.size()) {
 								profileData.put("profileSongPosition", String.valueOf(IntegerUtil.getRandom(Integer.parseInt(profileData.get("profileSongPosition").toString()), musicData.size())));
-								savedData.edit().putString("savedProfileData", ListUtil.setHashMapToSharedJSON(profileData)).apply();
+								savedData.edit().putString("savedProfileData", ListUtil.setHashMapToSharedJSON(profileData)).commit();
 								createLocalStream(Integer.parseInt(profileData.get("profileSongPosition").toString()));
 								playPause.performClick();
 							}
 						} catch (Exception exception) {
 							if (IntegerUtil.getRandom(Integer.parseInt(profileData.get("profileSongPosition").toString()), musicData.size()) < musicData.size()) {
 								profileData.put("profileSongPosition", String.valueOf(IntegerUtil.getRandom(Integer.parseInt(profileData.get("profileSongPosition").toString()), musicData.size())));
-								savedData.edit().putString("savedProfileData", ListUtil.setHashMapToSharedJSON(profileData)).apply();
+								savedData.edit().putString("savedProfileData", ListUtil.setHashMapToSharedJSON(profileData)).commit();
 								createLocalStream(Integer.parseInt(profileData.get("profileSongPosition").toString()));
 								playPause.performClick();
 							}
