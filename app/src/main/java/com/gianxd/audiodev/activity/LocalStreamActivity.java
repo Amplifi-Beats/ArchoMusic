@@ -458,17 +458,32 @@ public class LocalStreamActivity extends  AppCompatActivity  {
 												@Override
 												public void onClick(View view) {
 													if (url.getText().toString().length() > 0) {
-														if (url.getText().toString().equals(profileData.get("profileName").toString())) {
-															pfpDialog.dismiss();
+														if (profileData.containsKey("profilePicture")) {
+															if (url.getText().toString().equals(profileData.get("profileName").toString())) {
+																pfpDialog.dismiss();
+															} else {
+																String pfpUrl = url.getText().toString();
+																profileData.put("profilePicture", pfpUrl);
+																savedData.edit().putString("savedProfileData", ListUtil.setHashMapToSharedJSON(profileData)).commit();
+																ApplicationUtil.toast("Set profile picture successfully.", Toast.LENGTH_SHORT);
+																Glide.with(getApplicationContext()).load(url.getText().toString()).into(profile_icon);
+																Glide.with(getApplicationContext()).load(url.getText().toString()).into(menu);
+																tabNavigation.getTabAt(0).select();
+																pfpDialog.dismiss();
+															}
 														} else {
-															String pfpUrl = url.getText().toString();
-															profileData.put("profilePicture", pfpUrl);
-															savedData.edit().putString("savedProfileData", ListUtil.setHashMapToSharedJSON(profileData)).commit();
-															ApplicationUtil.toast("Set profile picture successfully.", Toast.LENGTH_SHORT);
-															Glide.with(getApplicationContext()).load(url.getText().toString()).into(profile_icon);
-															Glide.with(getApplicationContext()).load(url.getText().toString()).into(menu);
-															tabNavigation.getTabAt(0).select();
-															pfpDialog.dismiss();
+															if (url.getText().toString().equals(profileData.get("profileName").toString())) {
+																pfpDialog.dismiss();
+															} else {
+																String pfpUrl = url.getText().toString();
+																profileData.put("profilePicture", pfpUrl);
+																savedData.edit().putString("savedProfileData", ListUtil.setHashMapToSharedJSON(profileData)).commit();
+																ApplicationUtil.toast("Set profile picture successfully.", Toast.LENGTH_SHORT);
+																Glide.with(getApplicationContext()).load(url.getText().toString()).into(profile_icon);
+																Glide.with(getApplicationContext()).load(url.getText().toString()).into(menu);
+																tabNavigation.getTabAt(0).select();
+																pfpDialog.dismiss();
+															}
 														}
 													} else {
 														url.setError("Path/URI should not be blank.");
@@ -530,18 +545,6 @@ public class LocalStreamActivity extends  AppCompatActivity  {
 						        create.setOnClickListener(new View.OnClickListener() {
 								        @Override
 								        public void onClick(View view) {
-								        	    if (!profileData.containsKey("profileDarkMode")) {
-								        		    android.graphics.drawable.RippleDrawable rippleButton = new android.graphics.drawable.RippleDrawable(new android.content.res.ColorStateList(new int[][]{new int[]{}}, new int[]{ Color.parseColor("#BDBDBD") }), new android.graphics.drawable.ColorDrawable(Color.parseColor("#FFFFFF")), null);
-								        		    view.setBackground(rippleButton);
-								        	    } else {
-								        		    if (profileData.get("profileDarkMode").equals("true")) {
-								        			    android.graphics.drawable.RippleDrawable rippleButton = new android.graphics.drawable.RippleDrawable(new android.content.res.ColorStateList(new int[][]{new int[]{}}, new int[]{ Color.parseColor("#BDBDBD") }), new android.graphics.drawable.ColorDrawable(Color.parseColor("#1A1A1A")), null);
-								        			    view.setBackground(rippleButton);
-								        		    } else {
-								        		    	android.graphics.drawable.RippleDrawable rippleButton = new android.graphics.drawable.RippleDrawable(new android.content.res.ColorStateList(new int[][]{new int[]{}}, new int[]{ Color.parseColor("#BDBDBD") }), new android.graphics.drawable.ColorDrawable(Color.parseColor("#FFFFFF")), null);
-								        		    	view.setBackground(rippleButton);
-								        		    }
-								        	    }
 										        if (profile_name.getText().toString().length() > 0) {
 														if (profileData.containsKey("profileName")) {
 															if (profile_name.getText().toString().equals(profileData.get("profileName").toString())) {
