@@ -350,7 +350,7 @@ public class SplashActivity extends AppCompatActivity {
 											if (profile_name.getText().toString().length() > 0) {
 													HashMap<String, Object> tempProfileData = new HashMap<>();
 													String profileName = profile_name.getText().toString();
-													tempProfileData.put("profileName", profileName);
+													profileData.put("profileName", profileName);
 												    savedData.edit().putString("savedProfileData", ListUtil.setHashMapToSharedJSON(profileData)).commit();
 													createProfile.dismiss();
 													intent.setClass(getApplicationContext(), SplashActivity.class);
