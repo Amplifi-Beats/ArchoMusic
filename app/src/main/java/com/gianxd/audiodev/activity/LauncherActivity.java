@@ -2,6 +2,7 @@ package com.gianxd.audiodev.activity;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -18,6 +19,7 @@ public class LauncherActivity extends AppCompatActivity {
         MobileAds.initialize(this, new OnInitializationCompleteListener() {
             @Override
             public void onInitializationComplete(InitializationStatus initializationStatus) {
+                Log.i("MobileAds", initializationStatus.toString());
             }
         });
         startActivity(new Intent(AudioDev.applicationContext, SplashActivity.class));

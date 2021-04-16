@@ -12,6 +12,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
@@ -73,6 +74,7 @@ public class SplashActivity extends AppCompatActivity {
 	}
 	
 	private void initializeLogic() {
+		Log.i("SplashActivity", "Preparing for saved data init..");
 		logo.setTypeface(Typeface.createFromAsset(getAssets(),"fonts/leixo.ttf"), Typeface.BOLD);
 		loadanim.setVisibility(View.GONE);
 		loadanim.getIndeterminateDrawable().setColorFilter(0xFFFFFFFF, android.graphics.PorterDuff.Mode.MULTIPLY);
@@ -82,19 +84,16 @@ public class SplashActivity extends AppCompatActivity {
 		} else {
 			profileData = new HashMap<>();
 		}
-		if (profileData.containsKey("profileDarkMode")) {
-			if (profileData.get("profileDarkMode").equals("true")) {
-				setTheme(R.style.Theme_ArchoMusic_Dark);
-				mainLayout.setBackgroundColor(Color.parseColor("#1A1A1A"));
-				logo.setTextColor(Color.parseColor("#03A9F4"));
-			}
-		}
 		if (Build.VERSION.SDK_INT >= 23) {
 			if (profileData.containsKey("profileDarkMode")) {
 				if (!profileData.get("profileDarkMode").equals("true")) {
 					getWindow().setStatusBarColor(Color.parseColor("#03A9F4"));
 					getWindow().setNavigationBarColor(Color.parseColor("#03A9F4"));
 				} else {
+					setTheme(R.style.Theme_ArchoMusic_Dark);
+					mainLayout.setBackgroundColor(Color.parseColor("#1A1A1A"));
+					logo.setTextColor(Color.parseColor("#03A9F4"));
+					Log.i("SplashActivity", "Dark mode was enabled from a saved context, Making em GOOOOOD.");
 					getWindow().setStatusBarColor(Color.parseColor("#1A1A1A"));
 					getWindow().setNavigationBarColor(Color.parseColor("#1A1A1A"));
 				}
