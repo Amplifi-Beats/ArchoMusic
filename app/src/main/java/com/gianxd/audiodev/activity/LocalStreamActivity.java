@@ -482,9 +482,15 @@ public class LocalStreamActivity extends  AppCompatActivity  {
 															profileData.put("profilePicture", pfpUrl);
 															savedData.edit().putString("savedProfileData", ListUtil.setHashMapToSharedJSON(profileData)).commit();
 															ApplicationUtil.toast("Set profile picture successfully.", Toast.LENGTH_SHORT);
-															Glide.with(getApplicationContext()).load(url.getText().toString()).into(profile_icon);
-															Glide.with(getApplicationContext()).load(url.getText().toString()).into(menu);
+															if (!pfpUrl.equals("")) {
+																Glide.with(getApplicationContext()).load(pfpUrl).into(profile_icon);
+																Glide.with(getApplicationContext()).load(pfpUrl).into(menu);
+															} else {
+																Glide.with(getApplicationContext()).load(R.drawable.ic_profile_icon).into(profile_icon);
+																Glide.with(getApplicationContext()).load(R.drawable.ic_profile_icon).into(menu);
+															}
 															tabNavigation.getTabAt(0).select();
+															menuDialog.dismiss();
 															pfpDialog.dismiss();
 														}
 													} else {
@@ -495,9 +501,15 @@ public class LocalStreamActivity extends  AppCompatActivity  {
 															profileData.put("profilePicture", pfpUrl);
 															savedData.edit().putString("savedProfileData", ListUtil.setHashMapToSharedJSON(profileData)).commit();
 															ApplicationUtil.toast("Set profile picture successfully.", Toast.LENGTH_SHORT);
-															Glide.with(getApplicationContext()).load(url.getText().toString()).into(profile_icon);
-															Glide.with(getApplicationContext()).load(url.getText().toString()).into(menu);
+															if (!pfpUrl.equals("")) {
+																Glide.with(getApplicationContext()).load(pfpUrl).into(profile_icon);
+																Glide.with(getApplicationContext()).load(pfpUrl).into(menu);
+															} else {
+																Glide.with(getApplicationContext()).load(R.drawable.ic_profile_icon).into(profile_icon);
+																Glide.with(getApplicationContext()).load(R.drawable.ic_profile_icon).into(menu);
+															}
 															tabNavigation.getTabAt(0).select();
+															menuDialog.dismiss();
 															pfpDialog.dismiss();
 														}
 													}
