@@ -69,4 +69,6 @@
     <string name="create_a_profile_icon_input_hint">Ipasok dito ang tinukoy na landas o URL</string>
     <string name="create_a_profile_icon_btn_finish">Tapos na</string>
     <string name="create_a_profile_icon_btn_cancel">Kanselahin</string>
+    <string name="splash_startup_title">Welcome! Create your profile</string>
+    <string name="splash_startup_btn_finish">Create</string>
 </resources>
