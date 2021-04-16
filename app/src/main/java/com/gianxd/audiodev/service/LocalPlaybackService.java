@@ -61,6 +61,7 @@ public class LocalPlaybackService extends Service {
 	public void onCreate(){
 		super.onCreate();
 		initObjects();
+		loadAudioManager();
 	}
 	
 	public class MusicBinder extends Binder {
@@ -108,24 +109,9 @@ public class LocalPlaybackService extends Service {
 	        mp.reset();
 	        mp.release();
         }
-	    if (audioManager == null) {
-		    audioManager = ((AudioManager)getApplicationContext().getSystemService(Context.AUDIO_SERVICE));
-	    }
+	    loadAudioManager();
 		mp = MediaPlayer.create(getApplicationContext(), Uri.fromFile(new File(StringUtil.decodeString(musicData.get(position).get("songData").toString()))));
 		updateOnCompletionListener();
-		audioChangeListener = new AudioManager.OnAudioFocusChangeListener() {
-			@Override
-			public void onAudioFocusChange(int focusChange) {
-				switch (focusChange) {
-				case AudioManager.AUDIOFOCUS_LOSS:
-					if (isPlaying()) {
-						playPause.performClick();
-					}
-					break;
-				}
-			}
-		};
-		audioManager.requestAudioFocus(audioChangeListener, AudioManager.STREAM_MUSIC, AudioManager.AUDIOFOCUS_GAIN);
 		Glide.with(getApplicationContext()).asBitmap().load(ImageUtil.getAlbumArt(StringUtil.decodeString(musicData.get(position).get("songData").toString()))).into(albumArt);
 		Glide.with(getApplicationContext()).asBitmap().load(ImageUtil.getAlbumArt(StringUtil.decodeString(musicData.get(position).get("songData").toString()))).into(miniplayerAlbumArt);
 		songTitle.setText(musicData.get(position).get("songTitle").toString());
@@ -189,6 +175,32 @@ public class LocalPlaybackService extends Service {
 		} else {
 			profileData = new HashMap<>();
 		}
+	}
+
+	public void loadAudioManager() {
+		if (audioManager == null) {
+			audioManager = ((AudioManager)getApplicationContext().getSystemService(Context.AUDIO_SERVICE));
+			audioChangeListener = new AudioManager.OnAudioFocusChangeListener() {
+				@Override
+				public void onAudioFocusChange(int focusChange) {
+					switch (focusChange) {
+						case AudioManager.AUDIOFOCUS_LOSS:
+							if (isPlaying()) {
+								playPause.performClick();
+							}
+							break;
+					}
+				}
+			};
+		}
+	}
+
+	public void startAudioFocus() {
+		audioManager.requestAudioFocus(audioChangeListener, AudioManager.STREAM_MUSIC, AudioManager.AUDIOFOCUS_GAIN);
+	}
+
+	public void loseAudioFocus() {
+		audioManager.abandonAudioFocus(audioChangeListener);
 	}
 
 	public void updateOnCompletionListener() {
