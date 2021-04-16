@@ -60,6 +60,8 @@ import java.util.HashMap;
 import java.util.Timer;
 import java.util.TimerTask;
 
+import de.hdodenhof.circleimageview.CircleImageView;
+
 public class LocalStreamActivity extends  AppCompatActivity  {
 	
 	private Timer timer = new Timer();
@@ -118,7 +120,7 @@ public class LocalStreamActivity extends  AppCompatActivity  {
 		miniplayer = (LinearLayout) findViewById(R.id.miniplayer);
 		logoName = (TextView) findViewById(R.id.logoName);
 		tabNavigation = (TabLayout) findViewById(R.id.tabNavigation);
-		menu = (ImageView) findViewById(R.id.menu);
+		menu = (CircleImageView) findViewById(R.id.menu);
 		listRefresh = (SwipeRefreshLayout) findViewById(R.id.listRefresh);
 		songList = (RecyclerView) findViewById(R.id.songList);
 		player = (LinearLayout) findViewById(R.id.player);

@@ -34,13 +34,11 @@
 			android:layout_height="wrap_content"
 			android:padding="8dp"
 			android:orientation="horizontal">
-			<ImageView
+			<de.hdodenhof.circleimageview.CircleImageView
 				android:id="@+id/profile_icon"
-				android:focusable="false"
 				android:layout_width="30dp"
 				android:layout_height="30dp"
-				android:src="@drawable/ic_profile_icon"
-				android:scaleType="fitCenter"/>
+				android:src="@drawable/ic_profile_icon"/>
 			<EditText
 				android:id="@+id/profile_name"
 				android:layout_width="match_parent"

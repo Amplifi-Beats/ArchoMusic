@@ -37,12 +37,11 @@
 			app:tabMode="fixed"
 			app:tabUnboundedRipple="true" />
 
-		<ImageView
+		<de.hdodenhof.circleimageview.CircleImageView
 			android:id="@+id/menu"
 			android:layout_width="40dp"
 			android:layout_height="30dp"
 			android:layout_gravity="top"
-			android:scaleType="fitCenter"
 			android:src="@drawable/ic_profile_icon" />
 	</LinearLayout>
 
