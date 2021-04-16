@@ -1408,7 +1408,7 @@ public class LocalStreamActivity extends  AppCompatActivity  {
 									miniplayerSeekbar.setProgress((int)playbackSrv.getCurrentPosition());
 									currentDuration.setText(String.valueOf((int)((playbackSrv.getCurrentPosition() / 1000) / 60)).concat(":".concat(new DecimalFormat("00").format((playbackSrv.getCurrentPosition() / 1000) % 60))));
 									musicData.get(Integer.parseInt(profileData.get("profileSongPosition").toString())).put("songCurrentDuration", String.valueOf(playbackSrv.getCurrentPosition()));
-									savedData.edit().putString("savedProfileData", ListUtil.setHashMapToSharedJSON(profileData)).commit();
+									savedData.edit().putString("savedMusicData", ListUtil.setArrayListToSharedJSON(musicData)).commit();
 								} catch (Exception exception) {
 									Log.e("LocalPlaybackService", "Can't track current duration.");
 								}
