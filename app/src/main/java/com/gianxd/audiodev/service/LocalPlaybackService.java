@@ -7,6 +7,7 @@ import android.app.PendingIntent;
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
@@ -21,6 +22,7 @@ import androidx.core.app.NotificationCompat;
 import com.bumptech.glide.Glide;
 import com.gianxd.audiodev.R;
 import com.gianxd.audiodev.activity.LocalStreamActivity;
+import com.gianxd.audiodev.receiver.HeadphonesReceiver;
 import com.gianxd.audiodev.util.ApplicationUtil;
 import com.gianxd.audiodev.util.ImageUtil;
 import com.gianxd.audiodev.util.IntegerUtil;
@@ -49,6 +51,8 @@ public class LocalPlaybackService extends Service {
 
 	public MediaPlayer mp;
 	private final IBinder musicBind = new MusicBinder();
+	private IntentFilter intentFilter = new IntentFilter(AudioManager.ACTION_AUDIO_BECOMING_NOISY);
+	private HeadphonesReceiver headphonesReceiver = new HeadphonesReceiver();
 	private ArrayList<HashMap<String, Object>> musicData;
 	private HashMap<String, Object> profileData;
 	private static final int NOTIFY_ID = 1;
@@ -175,6 +179,14 @@ public class LocalPlaybackService extends Service {
 		} else {
 			profileData = new HashMap<>();
 		}
+	}
+
+	public void startHeadphoneReceiving() {
+		registerReceiver(headphonesReceiver, intentFilter);
+	}
+
+	public void stopHeadphoneReceiving() {
+		unregisterReceiver(headphonesReceiver);
 	}
 
 	public void loadAudioManager() {

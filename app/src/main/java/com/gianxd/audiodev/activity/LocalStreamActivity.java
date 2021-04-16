@@ -1395,6 +1395,7 @@ public class LocalStreamActivity extends  AppCompatActivity  {
 			if (!playbackSrv.isPlaying()) {
 				playbackSrv.play();
 				playbackSrv.startAudioFocus();
+				playbackSrv.startHeadphoneReceiving();
 				playPause.setImageResource(R.drawable.ic_media_pause);
 				miniplayerPlayPause.setImageResource(R.drawable.ic_media_pause);
 				timerTask = new TimerTask() {
@@ -1420,6 +1421,7 @@ public class LocalStreamActivity extends  AppCompatActivity  {
 			} else {
 				playbackSrv.pause();
 				playbackSrv.loseAudioFocus();
+				playbackSrv.stopHeadphoneReceiving();
 				playPause.setImageResource(R.drawable.ic_media_play);
 				miniplayerPlayPause.setImageResource(R.drawable.ic_media_play);
 				if (timerTask != null) {
