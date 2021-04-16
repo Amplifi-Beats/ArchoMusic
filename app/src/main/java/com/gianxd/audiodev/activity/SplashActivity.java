@@ -126,48 +126,7 @@ public class SplashActivity extends AppCompatActivity {
 										&& ContextCompat.checkSelfPermission(getApplicationContext(), Manifest.permission.RECORD_AUDIO) == PackageManager.PERMISSION_GRANTED) {
 											scanMedia();
 										} else {
-											BottomSheetDialog permRequest = new BottomSheetDialog(SplashActivity.this);
-											View dialogLayout = getLayoutInflater().inflate(R.layout.dialog_permissions, null);
-											permRequest.setContentView(dialogLayout);
-											TextView title = dialogLayout.findViewById(R.id.title);
-											TextView message = dialogLayout.findViewById(R.id.message);
-											TextView message2 = dialogLayout.findViewById(R.id.message2);
-											Button accept = dialogLayout.findViewById(R.id.accept);
-											title.setTypeface(Typeface.createFromAsset(getAssets(),"fonts/roboto_medium.ttf"), Typeface.NORMAL);
-											accept.setOnClickListener(new View.OnClickListener() {
-													@Override
-													public void onClick(View view) {
-															android.graphics.drawable.RippleDrawable rippleButton = new android.graphics.drawable.RippleDrawable(new android.content.res.ColorStateList(new int[][]{new int[]{}}, new int[]{ Color.parseColor("#BDBDBD") }), new android.graphics.drawable.ColorDrawable(Color.parseColor("#03A9F4")), null);
-													        view.setBackground(rippleButton);
-															ActivityCompat.requestPermissions(SplashActivity.this, new String[] { Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.RECORD_AUDIO }, 1);
-															permRequest.dismiss();
-													}
-											});
-											Double TopLeft = 20.0;
-											Double TopRight = 20.0;
-											Double BottomRight = 0.0;
-											Double BottomLeft = 0.0;
-											android.graphics.drawable.GradientDrawable roundedCorners = new android.graphics.drawable.GradientDrawable();
-											roundedCorners.setShape(android.graphics.drawable.GradientDrawable.RECTANGLE);
-											roundedCorners.setCornerRadii(new float[] {TopLeft.floatValue(),TopLeft.floatValue(), TopRight.floatValue(),TopRight.floatValue(), BottomRight.floatValue(),BottomRight.floatValue(), BottomLeft.floatValue(),BottomLeft.floatValue()});
-											if (!profileData.containsKey("profileDarkMode")) {
-												roundedCorners.setColor(Color.parseColor("#FFFFFF"));
-											} else {
-												if (profileData.get("profileDarkMode").equals("true")) {
-													roundedCorners.setColor(Color.parseColor("#1A1A1A"));
-													message.setTextColor(Color.parseColor("#FFFFFF"));
-													message2.setTextColor(Color.parseColor("#FFFFFF"));
-												} else {
-													roundedCorners.setColor(Color.parseColor("#FFFFFF"));
-												}
-											}
-											android.graphics.drawable.GradientDrawable gradientButton = new android.graphics.drawable.GradientDrawable();
-											gradientButton.setColor(Color.parseColor("#03A9F4"));
-											gradientButton.setCornerRadius(20);
-											accept.setBackground(gradientButton);
-											((ViewGroup)dialogLayout.getParent()).setBackground(roundedCorners);
-											permRequest.setCancelable(false);
-											permRequest.show();
+											ActivityCompat.requestPermissions(SplashActivity.this, new String[] { Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.RECORD_AUDIO }, 1);
 										}
 									}
 								}
@@ -176,49 +135,7 @@ public class SplashActivity extends AppCompatActivity {
 								&& ContextCompat.checkSelfPermission(getApplicationContext(), Manifest.permission.RECORD_AUDIO) == PackageManager.PERMISSION_GRANTED) {
 									scanMedia();
 								} else {
-									BottomSheetDialog permRequest = new BottomSheetDialog(SplashActivity.this);
-									View dialogLayout = getLayoutInflater().inflate(R.layout.dialog_permissions, null);
-									permRequest.setContentView(dialogLayout);
-									LinearLayout main = dialogLayout.findViewById(R.id.main);
-									TextView title = dialogLayout.findViewById(R.id.title);
-									TextView message = dialogLayout.findViewById(R.id.message);
-									TextView message2 = dialogLayout.findViewById(R.id.message2);
-									Button accept = dialogLayout.findViewById(R.id.accept);
-									title.setTypeface(Typeface.createFromAsset(getAssets(),"fonts/roboto_medium.ttf"), Typeface.NORMAL);
-									accept.setOnClickListener(new View.OnClickListener() {
-											@Override
-											public void onClick(View view) {
-													android.graphics.drawable.RippleDrawable rippleButton = new android.graphics.drawable.RippleDrawable(new android.content.res.ColorStateList(new int[][]{new int[]{}}, new int[]{ Color.parseColor("#BDBDBD") }), new android.graphics.drawable.ColorDrawable(Color.parseColor("#03A9F4")), null);
-											        view.setBackground(rippleButton);
-													ActivityCompat.requestPermissions(SplashActivity.this, new String[] { Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.RECORD_AUDIO }, 1);
-													permRequest.dismiss();
-											}
-									});
-									Double TopLeft = 20.0;
-									Double TopRight = 20.0;
-									Double BottomRight = 0.0;
-									Double BottomLeft = 0.0;
-									android.graphics.drawable.GradientDrawable roundedCorners = new android.graphics.drawable.GradientDrawable();
-									roundedCorners.setShape(android.graphics.drawable.GradientDrawable.RECTANGLE);
-									roundedCorners.setCornerRadii(new float[] {TopLeft.floatValue(),TopLeft.floatValue(), TopRight.floatValue(),TopRight.floatValue(), BottomRight.floatValue(),BottomRight.floatValue(), BottomLeft.floatValue(),BottomLeft.floatValue()});
-									if (!profileData.containsKey("profileDarkMode")) {
-										roundedCorners.setColor(Color.parseColor("#FFFFFF"));
-									} else {
-										if (profileData.get("profileDarkMode").equals("true")) {
-											roundedCorners.setColor(Color.parseColor("#1A1A1A"));
-											message.setTextColor(Color.parseColor("#FFFFFF"));
-											message2.setTextColor(Color.parseColor("#FFFFFF"));
-										} else {
-											roundedCorners.setColor(Color.parseColor("#FFFFFF"));
-										}
-									}
-									android.graphics.drawable.GradientDrawable gradientButton = new android.graphics.drawable.GradientDrawable();
-									gradientButton.setColor(Color.parseColor("#03A9F4"));
-									gradientButton.setCornerRadius(20);
-									accept.setBackground(gradientButton);
-									((ViewGroup)dialogLayout.getParent()).setBackground(roundedCorners);
-									permRequest.setCancelable(false);
-									permRequest.show();
+									ActivityCompat.requestPermissions(SplashActivity.this, new String[] { Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.RECORD_AUDIO }, 1);
 								}
 							}
 						} else {
@@ -353,7 +270,7 @@ public class SplashActivity extends AppCompatActivity {
 													profileData.put("profileName", profileName);
 												    savedData.edit().putString("savedProfileData", ListUtil.setHashMapToSharedJSON(profileData)).commit();
 													createProfile.dismiss();
-													intent.setClass(getApplicationContext(), SplashActivity.class);
+													intent.setClass(AudioDev.applicationContext, SplashActivity.class);
 													startActivity(intent);
 													finish();
 											} else {
@@ -417,9 +334,9 @@ public class SplashActivity extends AppCompatActivity {
 	}
 	
 	@Override
-	protected void onActivityResult(int _requestCode, int _resultCode, Intent _data) {
-		super.onActivityResult(_requestCode, _resultCode, _data);
-		switch (_requestCode) {
+	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+		super.onActivityResult(requestCode, resultCode, data);
+		switch (requestCode) {
 			default:
 			break;
 		}

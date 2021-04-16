@@ -16,10 +16,6 @@
     <string name="about_description10">I prefer Linux than Windows!</string>
     <string name="about_title">ARcho</string>
     <string name="splash_title">ARcho</string>
-    <string name="create_a_profile_title">Create a profile</string>
-    <string name="create_a_profile_input_hint">Enter your name</string>
-    <string name="create_a_profile_description">Your profile is used for live streaming and sending messages in live chat.\n\nNote: You cannot access livestreams without a profile.</string>
-    <string name="create_a_profile_btn_finish">Create profile</string>
     <string name="about_youtube_title">YouTube</string>
     <string name="about_twitter_title">Twitter</string>
     <string name="about_discord_title">Discord</string>
@@ -41,10 +37,6 @@
     <string name="menu_visualizer_title">Visualizer</string>
     <string name="menu_lyrics_title">Lyrics</string>
     <string name="menu_settings_title">Settings</string>
-    <string name="permissions_title">Allow Permissions</string>
-    <string name="permissions_description">Permissions can be used for playing local audio files in your device, recording audio and accessing the Internet.</string>
-    <string name="permissions_description2">Archo Music wants to grant permissions by following:\n\nStorage\nMicrophone\n\nAlthough, Internet permission is not needed to be granted as it is allowed by Android OS in default.</string>
-    <string name="permissions_btn_grant">Grant</string>
     <string name="settings_title">Settings</string>
     <string name="song_opts_title">Song Options</string>
     <string name="song_opts_rename_title">Rename</string>
@@ -70,4 +62,5 @@
     <string name="create_a_profile_icon_btn_cancel">Cancel</string>
     <string name="splash_startup_title">Welcome! Create your profile</string>
     <string name="splash_startup_btn_finish">Create</string>
+    <string name="splash_startup_input_hint">Enter your name here...</string>
 </resources>
