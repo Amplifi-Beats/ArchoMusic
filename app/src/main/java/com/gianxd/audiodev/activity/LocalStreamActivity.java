@@ -299,6 +299,13 @@ public class LocalStreamActivity extends  AppCompatActivity  {
 			miniplayer.setVisibility(View.VISIBLE);
 			miniplayerSeekbar.setVisibility(View.VISIBLE);
         }
+		if (profileData.containsKey("profilePicture")) {
+			if (!profileData.get("profilePicture").toString().equals("")) {
+				Glide.with(getApplicationContext()).load(profileData.get("profilePicture").toString()).into(menu);
+			} else {
+				Glide.with(getApplicationContext()).load(R.drawable.ic_profile_icon).into(menu);
+			}
+		}
 		if (profileData.containsKey("profileRepeatMode")) {
 			if (profileData.get("profileRepeatMode").equals("0")) {
 				if (Build.VERSION.SDK_INT >= 23) {
@@ -377,7 +384,11 @@ public class LocalStreamActivity extends  AppCompatActivity  {
 								profile_name.setText(profileData.get("profileName").toString());
 						}
 						if (profileData.containsKey("profilePicture")) {
-							Glide.with(getApplicationContext()).load(profileData.get("profilePicture").toString()).into(profile_icon);
+							if (!profileData.get("profilePicture").toString().equals("")) {
+								Glide.with(getApplicationContext()).load(profileData.get("profilePicture").toString()).into(profile_icon);
+							} else {
+								Glide.with(getApplicationContext()).load(R.drawable.ic_profile_icon).into(profile_icon);
+							}
 						}
 				}
 				profile.setOnClickListener(new View.OnClickListener() {
@@ -411,7 +422,11 @@ public class LocalStreamActivity extends  AppCompatActivity  {
 										        profile_name.setText(profileData.get("profileName").toString());
 										}
 									    if (profileData.containsKey("profilePicture")) {
-										        Glide.with(getApplicationContext()).load(profileData.get("profilePicture").toString()).into(profile_icon);
+									    	if (!profileData.get("profilePicture").toString().equals("")) {
+									    		Glide.with(getApplicationContext()).load(profileData.get("profilePicture").toString()).into(profile_icon);
+									    	} else {
+									    		Glide.with(getApplicationContext()).load(R.drawable.ic_profile_icon).into(profile_icon);
+									    	}
 									    }
 								}
 						        title.setTypeface(Typeface.createFromAsset(getAssets(),"fonts/roboto_medium.ttf"), Typeface.NORMAL);
@@ -459,36 +474,32 @@ public class LocalStreamActivity extends  AppCompatActivity  {
 								        	finish.setOnClickListener(new View.OnClickListener() {
 												@Override
 												public void onClick(View view) {
-													if (url.getText().toString().length() > 0) {
-														if (profileData.containsKey("profilePicture")) {
-															if (url.getText().toString().equals(profileData.get("profileName").toString())) {
-																pfpDialog.dismiss();
-															} else {
-																String pfpUrl = url.getText().toString();
-																profileData.put("profilePicture", pfpUrl);
-																savedData.edit().putString("savedProfileData", ListUtil.setHashMapToSharedJSON(profileData)).commit();
-																ApplicationUtil.toast("Set profile picture successfully.", Toast.LENGTH_SHORT);
-																Glide.with(getApplicationContext()).load(url.getText().toString()).into(profile_icon);
-																Glide.with(getApplicationContext()).load(url.getText().toString()).into(menu);
-																tabNavigation.getTabAt(0).select();
-																pfpDialog.dismiss();
-															}
+													if (profileData.containsKey("profilePicture")) {
+														if (url.getText().toString().equals(profileData.get("profileName").toString())) {
+															pfpDialog.dismiss();
 														} else {
-															if (url.getText().toString().equals(profileData.get("profileName").toString())) {
-																pfpDialog.dismiss();
-															} else {
-																String pfpUrl = url.getText().toString();
-																profileData.put("profilePicture", pfpUrl);
-																savedData.edit().putString("savedProfileData", ListUtil.setHashMapToSharedJSON(profileData)).commit();
-																ApplicationUtil.toast("Set profile picture successfully.", Toast.LENGTH_SHORT);
-																Glide.with(getApplicationContext()).load(url.getText().toString()).into(profile_icon);
-																Glide.with(getApplicationContext()).load(url.getText().toString()).into(menu);
-																tabNavigation.getTabAt(0).select();
-																pfpDialog.dismiss();
-															}
+															String pfpUrl = url.getText().toString();
+															profileData.put("profilePicture", pfpUrl);
+															savedData.edit().putString("savedProfileData", ListUtil.setHashMapToSharedJSON(profileData)).commit();
+															ApplicationUtil.toast("Set profile picture successfully.", Toast.LENGTH_SHORT);
+															Glide.with(getApplicationContext()).load(url.getText().toString()).into(profile_icon);
+															Glide.with(getApplicationContext()).load(url.getText().toString()).into(menu);
+															tabNavigation.getTabAt(0).select();
+															pfpDialog.dismiss();
 														}
 													} else {
-														url.setError("Path/URI should not be blank.");
+														if (url.getText().toString().equals(profileData.get("profileName").toString())) {
+															pfpDialog.dismiss();
+														} else {
+															String pfpUrl = url.getText().toString();
+															profileData.put("profilePicture", pfpUrl);
+															savedData.edit().putString("savedProfileData", ListUtil.setHashMapToSharedJSON(profileData)).commit();
+															ApplicationUtil.toast("Set profile picture successfully.", Toast.LENGTH_SHORT);
+															Glide.with(getApplicationContext()).load(url.getText().toString()).into(profile_icon);
+															Glide.with(getApplicationContext()).load(url.getText().toString()).into(menu);
+															tabNavigation.getTabAt(0).select();
+															pfpDialog.dismiss();
+														}
 													}
 												}
 											});
