@@ -19,7 +19,6 @@
     <string name="splash_title">ARcho</string>
     <string name="create_a_profile_title">Lumikha ng isang profile</string>
     <string name="create_a_profile_input_hint">Ipasok ang iyong pangalan</string>
-    <string name="create_a_profile_description">Ginamit ang iyong profile para sa live streaming at pagpapadala ng mga mensahe sa live chat.\n\nTala: Hindi mo ma-access ang mga livestream nang walang profile.</string>
     <string name="create_a_profile_btn_finish">Gumawa ng profile</string>
     <string name="about_youtube_title">YouTube</string>
     <string name="about_twitter_title">Twitter</string>
@@ -42,10 +41,6 @@
     <string name="menu_visualizer_title">Visualizer</string>
     <string name="menu_lyrics_title">Lyrics</string>
     <string name="menu_settings_title">Settings</string>
-    <string name="permissions_title">Allow Permissions</string>
-    <string name="permissions_description">Maaaring magamit ang mga pahintulot para sa pag-play ng mga lokal na audio file sa iyong aparato, pagrekord ng audio at pag-access sa Internet.</string>
-    <string name="permissions_description2">Nais ng Archo Music na magbigay ng mga pahintulot sa pamamagitan ng pagsunod sa:\n\nStorage\nMroprophone\n\nBagaman, ang pahintulot sa Internet ay hindi kinakailangan upang bigyan dahil pinapayagan ito ng Android OS bilang default.</string>
-    <string name="permissions_btn_grant">Pagbigyan</string>
     <string name="settings_title">Settings</string>
     <string name="song_opts_title">Song Options</string>
     <string name="song_opts_rename_title">Rename</string>
