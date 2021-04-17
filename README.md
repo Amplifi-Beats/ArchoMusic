@@ -9,23 +9,25 @@ Archo Music is an open-sourced Android music player application written in Java,
 
 ## Libraries used
 
-[audio-visualizer-android](https://github.com/gauravk95/audio-visualizer-android)
+[audio-visualizer-android](https://github.com/gauravk95/audio-visualizer-android) by gauravk95
 
-[Gson](https://github.com/google/gson)
+[CircleImageView](https://github.com/hdodenhof/CircleImageView) by hdodenhof
 
-[Glide](https://github.com/bumptech/glide)
+[Firebase APIs](https://firebase.google.com) & [Google Play APIs](https://play.google.com) by Google
+
+[Gson](https://github.com/google/gson) by Google
+
+[Glide](https://github.com/bumptech/glide) by Bumptech
 
 
 ## Branches
-
-Archo Music has no beta source-code due to lazyiness, but you might like to join our [Discord server](https://discord.gg/x5t9n9fWCV) for beta testing.
 
 master - Main branch, stable development of Archo Music
 
 
 ## Download
 
-Currently, the old Archo Music Github repository was deleted. 5.18 update might come soon. :(
+i'm lazy to edit this page.
 
 ## License
 ```
