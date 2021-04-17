@@ -188,9 +188,27 @@ public class LocalPlaybackService extends Service {
 				@Override
 				public void onAudioFocusChange(int focusChange) {
 					switch (focusChange) {
+						case AudioManager.AUDIOFOCUS_GAIN:
+							if (!isPlaying()) {
+								playPause.performClick();
+							}
+							mp.setVolume(1.0f, 1.0f);
+							break;
 						case AudioManager.AUDIOFOCUS_LOSS:
 							if (isPlaying()) {
 								playPause.performClick();
+							}
+							mp.reset();
+							mp.release();
+							break;
+						case AudioManager.AUDIOFOCUS_LOSS_TRANSIENT:
+							if (isPlaying()) {
+								playPause.performClick();
+							}
+							break;
+						case AudioManager.AUDIOFOCUS_LOSS_TRANSIENT_CAN_DUCK:
+							if (isPlaying()) {
+								mp.setVolume(0.1f, 0.1f);
 							}
 							break;
 					}
