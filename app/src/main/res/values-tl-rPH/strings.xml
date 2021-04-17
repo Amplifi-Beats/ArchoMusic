@@ -64,7 +64,7 @@
     <string name="create_a_profile_icon_input_hint">Ipasok dito ang tinukoy na landas o URL</string>
     <string name="create_a_profile_icon_btn_finish">Tapos na</string>
     <string name="create_a_profile_icon_btn_cancel">Kanselahin</string>
-    <string name="splash_startup_title">Welcome! Create your profile</string>
-    <string name="splash_startup_btn_finish">Create</string>
     <string name="introduction_title">Welcome to Archo Music!</string>
+    <string name="introduction_quote">Fast. Optimized. Open-source.</string>
+    <string name="introduction_description">Pagbati po! Maligayang pagdating sa Archo Music. Makinig sa iyong mga paboritong kanta sa loob ng iyong telepono at pakiramdam ang matalo anumang oras!</string>
 </resources>

@@ -9,6 +9,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:padding="8dp"
+        android:background="@android:color/transparent"
         android:orientation="vertical">
 
         <TextView
@@ -29,6 +30,52 @@
             android:background="#03A9F4"
             android:orientation="horizontal"/>
 
-    </LinearLayout>
+        <ImageView
+            android:id="@+id/logo"
+            android:focusable="false"
+            android:layout_width="150dp"
+            android:layout_height="80dp"
+            android:src="@drawable/ic_introduction_logo"
+            android:scaleType="fitCenter"/>
 
+        <TextView
+            android:id="@+id/quote"
+            android:focusable="false"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:padding="8dp"
+            android:text="@string/introduction_quote"
+            android:textSize="16sp"
+            android:textColor="#03A9F4" />
+
+        <TextView
+            android:id="@+id/description"
+            android:focusable="false"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:padding="8dp"
+            android:text="@string/introduction_description"
+            android:textSize="12sp"
+            android:textColor="#000000" />
+
+        <LinearLayout
+            android:id="@+id/freefunk"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="8dp"
+            android:orientation="horizontal">
+
+            <Button
+                android:id="@+id/close"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="#03A9F4"
+                android:focusable="false"
+                android:padding="8dp"
+                android:text="Close"
+                android:textColor="#FFFFFF"
+                android:textSize="12sp" />
+
+        </LinearLayout>
+    </LinearLayout>
 </LinearLayout>

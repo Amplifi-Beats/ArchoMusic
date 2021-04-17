@@ -60,10 +60,10 @@
     <string name="create_a_profile_icon_input_hint">Enter specified path or URL here</string>
     <string name="create_a_profile_icon_btn_finish">Finish</string>
     <string name="create_a_profile_icon_btn_cancel">Cancel</string>
-    <string name="splash_startup_title">Welcome! Create your profile</string>
-    <string name="splash_startup_btn_finish">Create</string>
     <string name="create_a_profile_title">Create profile</string>
     <string name="create_a_profile_input_hint">Enter your name here...</string>
     <string name="create_a_profile_btn_finish">Finish</string>
     <string name="introduction_title">Welcome to Archo Music!</string>
+    <string name="introduction_quote">Fast. Optimized. Open-source.</string>
+    <string name="introduction_description">Greetings! Welcome to Archo Music. Listen to your favorite songs inside your phone and feel the beat anytime!</string>
 </resources>
