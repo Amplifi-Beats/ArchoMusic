@@ -268,6 +268,9 @@ public class LocalPlaybackService extends Service {
 							seekbarDuration.setProgress(0);
 						}
 						currentDuration.setText("0:00");
+						if (!isPlaying()) {
+							playPause.performClick();
+						}
 					} else if (profileData.get("profileShuffleMode").equals("1")) {
 						int randomizer = IntegerUtil.getRandom(Integer.parseInt(profileData.get("profileSongPosition").toString()), musicData.size());
 						try {
