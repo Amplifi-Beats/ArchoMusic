@@ -31,7 +31,7 @@
     <string name="intent_filter_title">ARcho</string>
     <string name="lyrics_title">Lyrics</string>
     <string name="lyrics_null">Nothing to show lyrics.</string>
-    <string name="menu_title">Archo Music</string>
+    <string name="menu_title">Menu</string>
     <string name="profile_name_null">User</string>
     <string name="menu_live_stream_title">Live streaming</string>
     <string name="menu_visualizer_title">Visualizer</string>
@@ -65,4 +65,5 @@
     <string name="create_a_profile_title">Create profile</string>
     <string name="create_a_profile_input_hint">Enter your name here...</string>
     <string name="create_a_profile_btn_finish">Finish</string>
+    <string name="introduction_title">Welcome to Archo Music!</string>
 </resources>

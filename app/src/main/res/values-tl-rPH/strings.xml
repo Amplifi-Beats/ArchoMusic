@@ -66,4 +66,5 @@
     <string name="create_a_profile_icon_btn_cancel">Kanselahin</string>
     <string name="splash_startup_title">Welcome! Create your profile</string>
     <string name="splash_startup_btn_finish">Create</string>
+    <string name="introduction_title">Welcome to Archo Music!</string>
 </resources>
