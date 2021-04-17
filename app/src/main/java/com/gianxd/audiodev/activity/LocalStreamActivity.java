@@ -1423,6 +1423,62 @@ public class LocalStreamActivity extends  AppCompatActivity  {
 
 	private void initializeLogic() {
 		startupUI();
+		if (!profileData.containsKey("profileToggleIntro")) {
+			BottomSheetDialog introDialog = new BottomSheetDialog(LocalStreamActivity.this);
+			View dialogLayout = getLayoutInflater().inflate(R.layout.dialog_introduction, null);
+			introDialog.setContentView(dialogLayout);
+			LinearLayout main = dialogLayout.findViewById(R.id.main);
+			TextView title = dialogLayout.findViewById(R.id.title);
+			ImageView logo = dialogLayout.findViewById(R.id.logo);
+			TextView quote = dialogLayout.findViewById(R.id.quote);
+			TextView description = dialogLayout.findViewById(R.id.description);
+			Button close = dialogLayout.findViewById(R.id.close);
+			title.setTypeface(Typeface.createFromAsset(getAssets(), "fonts/roboto_medium.ttf"), Typeface.NORMAL);
+			close.setOnClickListener(new View.OnClickListener() {
+				@Override
+				public void onClick(View view) {
+					if (!profileData.containsKey("profileDarkMode")) {
+						android.graphics.drawable.RippleDrawable rippleButton = new android.graphics.drawable.RippleDrawable(new android.content.res.ColorStateList(new int[][]{new int[]{}}, new int[]{ Color.parseColor("#BDBDBD") }), new android.graphics.drawable.ColorDrawable(Color.parseColor("#FFFFFF")), null);
+						view.setBackground(rippleButton);
+					} else {
+						if (profileData.get("profileDarkMode").equals("true")) {
+							android.graphics.drawable.RippleDrawable rippleButton = new android.graphics.drawable.RippleDrawable(new android.content.res.ColorStateList(new int[][]{new int[]{}}, new int[]{ Color.parseColor("#BDBDBD") }), new android.graphics.drawable.ColorDrawable(Color.parseColor("#1A1A1A")), null);
+							view.setBackground(rippleButton);
+						} else {
+							android.graphics.drawable.RippleDrawable rippleButton = new android.graphics.drawable.RippleDrawable(new android.content.res.ColorStateList(new int[][]{new int[]{}}, new int[]{ Color.parseColor("#BDBDBD") }), new android.graphics.drawable.ColorDrawable(Color.parseColor("#FFFFFF")), null);
+							view.setBackground(rippleButton);
+						}
+					}
+					profileData.put("profileToggleIntro", "0");
+					savedData.edit().putString("savedProfileData", ListUtil.setHashMapToSharedJSON(profileData)).commit();
+					introDialog.dismiss();
+				}
+			});
+			Double TopLeft = 20.0;
+			Double TopRight = 20.0;
+			Double BottomRight = 0.0;
+			Double BottomLeft = 0.0;
+			android.graphics.drawable.GradientDrawable roundedCorners = new android.graphics.drawable.GradientDrawable();
+			roundedCorners.setShape(android.graphics.drawable.GradientDrawable.RECTANGLE);
+			roundedCorners.setCornerRadii(new float[] {TopLeft.floatValue(),TopLeft.floatValue(), TopRight.floatValue(),TopRight.floatValue(), BottomRight.floatValue(),BottomRight.floatValue(), BottomLeft.floatValue(),BottomLeft.floatValue()});
+			if (!profileData.containsKey("profileDarkMode")) {
+				roundedCorners.setColor(Color.parseColor("#FFFFFF"));
+			} else {
+				if (profileData.get("profileDarkMode").equals("true")) {
+					roundedCorners.setColor(Color.parseColor("#1A1A1A"));
+					description.setTextColor(Color.parseColor("#FFFFFF"));
+				} else {
+					roundedCorners.setColor(Color.parseColor("#FFFFFF"));
+				}
+			}
+			((ViewGroup)dialogLayout.getParent()).setBackground(roundedCorners);;
+			android.graphics.drawable.GradientDrawable gradientButton = new android.graphics.drawable.GradientDrawable();
+			gradientButton.setColor(Color.parseColor("#03A9F4"));
+			gradientButton.setCornerRadius(20);
+			close.setBackground(gradientButton);
+			introDialog.setCancelable(false);
+			introDialog.show();
+		}
 		if (profileData.containsKey("profileErrorTrace")) {
 			Snackbar.make(miniplayer, "An error occurred.", Snackbar.LENGTH_SHORT).setAction("Show", new View.OnClickListener(){
 				@Override
@@ -1439,11 +1495,20 @@ public class LocalStreamActivity extends  AppCompatActivity  {
 					close.setOnClickListener(new View.OnClickListener() {
 						@Override
 						public void onClick(View view) {
-							android.graphics.drawable.RippleDrawable rippleButton = new android.graphics.drawable.RippleDrawable(new android.content.res.ColorStateList(new int[][]{new int[]{}}, new int[]{ Color.parseColor("#BDBDBD") }), new android.graphics.drawable.ColorDrawable(Color.parseColor("#03A9F4")), null);
-							view.setBackground(rippleButton);
-							HashMap<String, Object> profileData = ListUtil.getHashMapFromSharedJSON(savedData, "savedProfileData");
+							if (!profileData.containsKey("profileDarkMode")) {
+								android.graphics.drawable.RippleDrawable rippleButton = new android.graphics.drawable.RippleDrawable(new android.content.res.ColorStateList(new int[][]{new int[]{}}, new int[]{ Color.parseColor("#BDBDBD") }), new android.graphics.drawable.ColorDrawable(Color.parseColor("#FFFFFF")), null);
+								view.setBackground(rippleButton);
+							} else {
+								if (profileData.get("profileDarkMode").equals("true")) {
+									android.graphics.drawable.RippleDrawable rippleButton = new android.graphics.drawable.RippleDrawable(new android.content.res.ColorStateList(new int[][]{new int[]{}}, new int[]{ Color.parseColor("#BDBDBD") }), new android.graphics.drawable.ColorDrawable(Color.parseColor("#1A1A1A")), null);
+									view.setBackground(rippleButton);
+								} else {
+									android.graphics.drawable.RippleDrawable rippleButton = new android.graphics.drawable.RippleDrawable(new android.content.res.ColorStateList(new int[][]{new int[]{}}, new int[]{ Color.parseColor("#BDBDBD") }), new android.graphics.drawable.ColorDrawable(Color.parseColor("#FFFFFF")), null);
+									view.setBackground(rippleButton);
+								}
+							}
 							profileData.remove("profileErrorTrace");
-							savedData.edit().putString("savedProfileData", ListUtil.setHashMapToSharedJSON(profileData)).apply();
+							savedData.edit().putString("savedProfileData", ListUtil.setHashMapToSharedJSON(profileData)).commit();
 							errorDialog.dismiss();
 						}
 					});
@@ -1454,17 +1519,30 @@ public class LocalStreamActivity extends  AppCompatActivity  {
 					android.graphics.drawable.GradientDrawable roundedCorners = new android.graphics.drawable.GradientDrawable();
 					roundedCorners.setShape(android.graphics.drawable.GradientDrawable.RECTANGLE);
 					roundedCorners.setCornerRadii(new float[] {TopLeft.floatValue(),TopLeft.floatValue(), TopRight.floatValue(),TopRight.floatValue(), BottomRight.floatValue(),BottomRight.floatValue(), BottomLeft.floatValue(),BottomLeft.floatValue()});
-					roundedCorners.setColor(Color.parseColor("#FFFFFF"));
-					((ViewGroup)dialogLayout.getParent()).setBackground(roundedCorners);
 					android.graphics.drawable.GradientDrawable roundedCorners2 = new android.graphics.drawable.GradientDrawable();
 					roundedCorners2.setShape(android.graphics.drawable.GradientDrawable.RECTANGLE);
 					roundedCorners2.setCornerRadius(20);
-					roundedCorners2.setColor(Color.parseColor("#EEEEEE"));
+					if (!profileData.containsKey("profileDarkMode")) {
+						roundedCorners.setColor(Color.parseColor("#FFFFFF"));
+						roundedCorners2.setColor(Color.parseColor("#EEEEEE"));
+					} else {
+						if (profileData.get("profileDarkMode").equals("true")) {
+							roundedCorners.setColor(Color.parseColor("#1A1A1A"));
+							roundedCorners2.setColor(Color.parseColor("#212121"));
+							log.setTextColor(Color.parseColor("#FFFFFF"));
+							log.setHintTextColor(Color.parseColor("#BDBDBD"));
+						} else {
+							roundedCorners.setColor(Color.parseColor("#FFFFFF"));
+							roundedCorners2.setColor(Color.parseColor("#EEEEEE"));
+						}
+					}
+					((ViewGroup)dialogLayout.getParent()).setBackground(roundedCorners);
 					log.setBackground(roundedCorners2);
 					android.graphics.drawable.GradientDrawable gradientButton = new android.graphics.drawable.GradientDrawable();
 					gradientButton.setColor(Color.parseColor("#03A9F4"));
 					gradientButton.setCornerRadius(20);
 					close.setBackground(gradientButton);
+					errorDialog.setCancelable(false);
 					errorDialog.show();
 				}
 			}).show();
@@ -1853,11 +1931,11 @@ public class LocalStreamActivity extends  AppCompatActivity  {
 								TextView title = dialogLayout.findViewById(R.id.title);
 								TextView lyrics = dialogLayout.findViewById(R.id.lyrics);
 								title.setTypeface(Typeface.createFromAsset(getAssets(),"fonts/roboto_medium.ttf"), Typeface.NORMAL);
-								if (musicData.get(Integer.parseInt(profileData.get("profileSongPosition").toString())).containsKey("songLyrics")) {
-									if (musicData.get(Integer.parseInt(profileData.get("profileSongPosition").toString())).get("songLyrics").toString().length() == 0) {
+								if (musicData.get(position).containsKey("songLyrics")) {
+									if (musicData.get(position).get("songLyrics").toString().length() == 0) {
 										// Lyrics added with 0 letters
 									} else {
-										lyrics.setText(musicData.get(Integer.parseInt(profileData.get("profileSongPosition").toString())).get("songLyrics").toString());
+										lyrics.setText(musicData.get(position).get("songLyrics").toString());
 									}
 								} else {
 									// No Lyrics was found.

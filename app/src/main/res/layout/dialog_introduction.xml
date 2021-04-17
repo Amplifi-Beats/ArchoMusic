@@ -72,7 +72,7 @@
                 android:background="#03A9F4"
                 android:focusable="false"
                 android:padding="8dp"
-                android:text="Close"
+                android:text="@string/introduction_btn_close"
                 android:textColor="#FFFFFF"
                 android:textSize="12sp" />
 
