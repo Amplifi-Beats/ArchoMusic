@@ -47,7 +47,7 @@
     <string name="song_opts_share_title">Share</string>
     <string name="song_opts_more_info_title">More information</string>
     <string name="song_opts_remove_title">Remove from library</string>
-    <string name="song_opts_title_description">Nais mo bang alisin ang {poggers} mula sa iyong silid-aklatan?</string>
+    <string name="song_opts_title_description">Nais mo bang alisin ang kanta mula sa iyong silid-aklatan?</string>
     <string name="song_opts_remove_permanent">Tanggalin din mula sa aparato</string>
     <string name="song_opts_remove_btn_remove">Tanggalin</string>
     <string name="song_opts_remove_btn_cancel">Kanselahin</string>

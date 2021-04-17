@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.Resources;
 import android.os.Handler;
+import android.util.Log;
 
 import com.gianxd.audiodev.activity.LauncherActivity;
 import com.gianxd.audiodev.util.ApplicationUtil;
@@ -37,8 +38,9 @@ public class AudioDev extends Application {
 		Thread.setDefaultUncaughtExceptionHandler(new Thread.UncaughtExceptionHandler() {
 			@Override
 			public void uncaughtException(Thread thread, Throwable ex) {
+				Log.e("AudioDev", ApplicationUtil.getStackTrace(ex));
 				profileData.put("profileErrorTrace", ApplicationUtil.getStackTrace(ex));
-				savedData.edit().putString("savedProfileData", ListUtil.setHashMapToSharedJSON(profileData)).apply();
+				savedData.edit().putString("savedProfileData", ListUtil.setHashMapToSharedJSON(profileData)).commit();
 				startActivity(new Intent(getApplicationContext(), LauncherActivity.class));
 				uncaughtExceptionHandler.uncaughtException(thread, ex);
 			}

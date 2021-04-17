@@ -43,7 +43,7 @@
     <string name="song_opts_share_title">Share</string>
     <string name="song_opts_more_info_title">More information</string>
     <string name="song_opts_remove_title">Remove from library</string>
-    <string name="song_opts_title_description">Do you want to remove { poggers } from your library?</string>
+    <string name="song_opts_title_description">Do you want to remove song from your library?</string>
     <string name="song_opts_remove_permanent">Also delete from device</string>
     <string name="song_opts_remove_btn_remove">Remove</string>
     <string name="song_opts_remove_btn_cancel">Cancel</string>
