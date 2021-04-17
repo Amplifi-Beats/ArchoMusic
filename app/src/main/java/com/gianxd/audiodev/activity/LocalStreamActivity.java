@@ -411,7 +411,6 @@ public class LocalStreamActivity extends  AppCompatActivity  {
 						        renameProfileDialog.setContentView(dialogLayout);
 						        LinearLayout main = dialogLayout.findViewById(R.id.main);
 						        TextView title = dialogLayout.findViewById(R.id.title);
-						        TextView desc = dialogLayout.findViewById(R.id.desc);
 						        ImageView profile_icon = dialogLayout.findViewById(R.id.profile_icon);
 						        EditText profile_name = dialogLayout.findViewById(R.id.profile_name);
 						        Button create = dialogLayout.findViewById(R.id.create);
@@ -619,7 +618,6 @@ public class LocalStreamActivity extends  AppCompatActivity  {
 						        		roundedCorners.setColor(Color.parseColor("#1A1A1A"));
 										roundedCorners2.setColor(Color.parseColor("#212121"));
 										profile_name.setTextColor(Color.parseColor("#FFFFFF"));
-										desc.setTextColor(Color.parseColor("#FFFFFF"));
 										profile_name.setHintTextColor(Color.parseColor("#BDBDBD"));
 						        	} else {
 										roundedCorners2.setColor(Color.parseColor("#EEEEEE"));

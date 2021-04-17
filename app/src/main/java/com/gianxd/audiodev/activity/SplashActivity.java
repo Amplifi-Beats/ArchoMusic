@@ -143,7 +143,6 @@ public class SplashActivity extends AppCompatActivity {
 							createProfile.setContentView(dialogLayout);
 							LinearLayout main = dialogLayout.findViewById(R.id.main);
 							TextView title = dialogLayout.findViewById(R.id.title);
-							TextView desc = dialogLayout.findViewById(R.id.desc);
 							ImageView profile_icon = dialogLayout.findViewById(R.id.profile_icon);
 							EditText profile_name = dialogLayout.findViewById(R.id.profile_name);
 							Button create = dialogLayout.findViewById(R.id.create);
@@ -284,20 +283,24 @@ public class SplashActivity extends AppCompatActivity {
 							android.graphics.drawable.GradientDrawable roundedCorners = new android.graphics.drawable.GradientDrawable();
 							roundedCorners.setShape(android.graphics.drawable.GradientDrawable.RECTANGLE);
 							roundedCorners.setCornerRadii(new float[] {TopLeft.floatValue(),TopLeft.floatValue(), TopRight.floatValue(),TopRight.floatValue(), BottomRight.floatValue(),BottomRight.floatValue(), BottomLeft.floatValue(),BottomLeft.floatValue()});
+							android.graphics.drawable.GradientDrawable roundedCorners2 = new android.graphics.drawable.GradientDrawable();
+							roundedCorners2.setShape(android.graphics.drawable.GradientDrawable.RECTANGLE);
+							roundedCorners2.setCornerRadius(20);
 							if (!profileData.containsKey("profileDarkMode")) {
 								roundedCorners.setColor(Color.parseColor("#FFFFFF"));
+								roundedCorners2.setColor(Color.parseColor("#EEEEEE"));
 							} else {
 								if (profileData.get("profileDarkMode").equals("true")) {
 									roundedCorners.setColor(Color.parseColor("#1A1A1A"));
+									roundedCorners2.setColor(Color.parseColor("#212121"));
+									profile_name.setTextColor(Color.parseColor("#FFFFFF"));
+									profile_name.setHintTextColor(Color.parseColor("#BDBDBD"));
 								} else {
+									roundedCorners2.setColor(Color.parseColor("#EEEEEE"));
 									roundedCorners.setColor(Color.parseColor("#FFFFFF"));
 								}
 							}
 							((ViewGroup)dialogLayout.getParent()).setBackground(roundedCorners);
-							android.graphics.drawable.GradientDrawable roundedCorners2 = new android.graphics.drawable.GradientDrawable();
-							roundedCorners2.setShape(android.graphics.drawable.GradientDrawable.RECTANGLE);
-							roundedCorners2.setCornerRadius(20);
-							roundedCorners2.setColor(Color.parseColor("#EEEEEE"));
 							profile_name.setBackground(roundedCorners2);
 							android.graphics.drawable.GradientDrawable gradientButton = new android.graphics.drawable.GradientDrawable();
 							gradientButton.setColor(Color.parseColor("#03A9F4"));
