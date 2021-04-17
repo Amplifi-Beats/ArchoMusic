@@ -1368,21 +1368,23 @@ public class LocalStreamActivity extends  AppCompatActivity  {
                     	playPause();
 					}
                 } else if (profileData.get("profileShuffleMode").equals("1")) {
-                    try {
-                        if (IntegerUtil.getRandom(0, Integer.parseInt(profileData.get("profileSongPosition").toString())) < musicData.size()) {
-							profileData.put("profileSongPosition", String.valueOf(IntegerUtil.getRandom(0, Integer.parseInt(profileData.get("profileSongPosition").toString()))));
+					int randomizer = IntegerUtil.getRandom(Integer.parseInt(profileData.get("profileSongPosition").toString()), musicData.size());
+					try {
+						if (randomizer < musicData.size()) {
+							profileData.put("profileSongPosition", String.valueOf(randomizer));
 							savedData.edit().putString("savedProfileData", ListUtil.setHashMapToSharedJSON(profileData)).commit();
-                            playbackSrv.createLocalStream(Integer.parseInt(profileData.get("profileSongPosition").toString()));
-                            playPause.performClick();
-                        }
-                    } catch (Exception exception) {
-                        if (Integer.parseInt(profileData.get("profileSongPosition").toString()) - 1 < musicData.size()) {
-							profileData.put("profileSongPosition", String.valueOf(IntegerUtil.getRandom(0, Integer.parseInt(profileData.get("profileSongPosition").toString()))));
+							playbackSrv.createLocalStream(randomizer);
+							playPause.performClick();
+						}
+					} catch (Exception exception) {
+						ApplicationUtil.toast("Error loading audio file.", Toast.LENGTH_SHORT);
+						if (randomizer < musicData.size()) {
+							profileData.put("profileSongPosition", String.valueOf(randomizer));
 							savedData.edit().putString("savedProfileData", ListUtil.setHashMapToSharedJSON(profileData)).commit();
-                            playbackSrv.createLocalStream(Integer.parseInt(profileData.get("profileSongPosition").toString()));
-                            playPause.performClick();
-                        }
-                    }
+							playbackSrv.createLocalStream(randomizer);
+							playPause.performClick();
+						}
+					}
                 }
             }
 		}
@@ -1431,15 +1433,16 @@ public class LocalStreamActivity extends  AppCompatActivity  {
 
 	private void skipNext() {
 		if (playbackSrv != null) {
-		    if (!profileData.containsKey("profileRepeatMode") || !profileData.containsKey("profileShuffleMode")) {
+			if (!profileData.containsKey("profileRepeatMode") || !profileData.containsKey("profileShuffleMode")) {
 				try {
-					if (Integer.parseInt(profileData.get("profileSongPosition").toString()) + 1< musicData.size()) {
+					if (Integer.parseInt(profileData.get("profileSongPosition").toString()) + 1 < musicData.size()) {
 						profileData.put("profileSongPosition", String.valueOf(Integer.parseInt(profileData.get("profileSongPosition").toString()) + 1));
 						savedData.edit().putString("savedProfileData", ListUtil.setHashMapToSharedJSON(profileData)).commit();
 						playbackSrv.createLocalStream(Integer.parseInt(profileData.get("profileSongPosition").toString()));
 						playPause.performClick();
 					}
 				} catch (Exception exception) {
+					ApplicationUtil.toast("Error loading audio file.", Toast.LENGTH_SHORT);
 					if (Integer.parseInt(profileData.get("profileSongPosition").toString()) + 1 < musicData.size()) {
 						profileData.put("profileSongPosition", String.valueOf(Integer.parseInt(profileData.get("profileSongPosition").toString()) + 1));
 						savedData.edit().putString("savedProfileData", ListUtil.setHashMapToSharedJSON(profileData)).commit();
@@ -1447,16 +1450,17 @@ public class LocalStreamActivity extends  AppCompatActivity  {
 						playPause.performClick();
 					}
 				}
-            } else {
-		        if (profileData.get("profileRepeatMode").equals("0") && profileData.get("profileShuffleMode").equals("0")) {
-		        	try {
-		        		if (Integer.parseInt(profileData.get("profileSongPosition").toString()) + 1 < musicData.size()) {
+			} else {
+				if (profileData.get("profileRepeatMode").equals("0") && profileData.get("profileShuffleMode").equals("0")) {
+					try {
+						if (Integer.parseInt(profileData.get("profileSongPosition").toString()) + 1 < musicData.size()) {
 							profileData.put("profileSongPosition", String.valueOf(Integer.parseInt(profileData.get("profileSongPosition").toString()) + 1));
 							savedData.edit().putString("savedProfileData", ListUtil.setHashMapToSharedJSON(profileData)).commit();
 							playbackSrv.createLocalStream(Integer.parseInt(profileData.get("profileSongPosition").toString()));
 							playPause.performClick();
 						}
 					} catch (Exception exception) {
+						ApplicationUtil.toast("Error loading audio file.", Toast.LENGTH_SHORT);
 						if (Integer.parseInt(profileData.get("profileSongPosition").toString()) + 1 < musicData.size()) {
 							profileData.put("profileSongPosition", String.valueOf(Integer.parseInt(profileData.get("profileSongPosition").toString()) + 1));
 							savedData.edit().putString("savedProfileData", ListUtil.setHashMapToSharedJSON(profileData)).commit();
@@ -1464,34 +1468,36 @@ public class LocalStreamActivity extends  AppCompatActivity  {
 							playPause.performClick();
 						}
 					}
-                } else if (profileData.get("profileRepeatMode").equals("1")) {
-                    playbackSrv.seek(0);
-                    if (Build.VERSION.SDK_INT >= 24) {
-                        miniplayerSeekbar.setProgress(0, true);
-                        seekbarDuration.setProgress(0, true);
-                    } else {
-                        miniplayerSeekbar.setProgress(0);
-                        seekbarDuration.setProgress(0);
-                    }
-                    currentDuration.setText("0:00");
-                } else if (profileData.get("profileShuffleMode").equals("1")) {
-		            try {
-		        		if (IntegerUtil.getRandom(Integer.parseInt(profileData.get("profileSongPosition").toString()), musicData.size()) < musicData.size()) {
-							profileData.put("profileSongPosition", String.valueOf(IntegerUtil.getRandom(Integer.parseInt(profileData.get("profileSongPosition").toString()), musicData.size())));
+				} else if (profileData.get("profileRepeatMode").equals("1")) {
+					playbackSrv.seek(0);
+					if (Build.VERSION.SDK_INT >= 24) {
+						miniplayerSeekbar.setProgress(0, true);
+						seekbarDuration.setProgress(0, true);
+					} else {
+						miniplayerSeekbar.setProgress(0);
+						seekbarDuration.setProgress(0);
+					}
+					currentDuration.setText("0:00");
+				} else if (profileData.get("profileShuffleMode").equals("1")) {
+					int randomizer = IntegerUtil.getRandom(Integer.parseInt(profileData.get("profileSongPosition").toString()), musicData.size());
+					try {
+						if (randomizer < musicData.size()) {
+							profileData.put("profileSongPosition", String.valueOf(randomizer));
 							savedData.edit().putString("savedProfileData", ListUtil.setHashMapToSharedJSON(profileData)).commit();
-							playbackSrv.createLocalStream(Integer.parseInt(profileData.get("profileSongPosition").toString()));
+							playbackSrv.createLocalStream(randomizer);
 							playPause.performClick();
 						}
 					} catch (Exception exception) {
-						if (IntegerUtil.getRandom(Integer.parseInt(profileData.get("profileSongPosition").toString()), musicData.size()) < musicData.size()) {
-							profileData.put("profileSongPosition", String.valueOf(IntegerUtil.getRandom(Integer.parseInt(profileData.get("profileSongPosition").toString()), musicData.size())));
+						ApplicationUtil.toast("Error loading audio file.", Toast.LENGTH_SHORT);
+						if (randomizer < musicData.size()) {
+							profileData.put("profileSongPosition", String.valueOf(randomizer));
 							savedData.edit().putString("savedProfileData", ListUtil.setHashMapToSharedJSON(profileData)).commit();
-							playbackSrv.createLocalStream(Integer.parseInt(profileData.get("profileSongPosition").toString()));
+							playbackSrv.createLocalStream(randomizer);
 							playPause.performClick();
 						}
 					}
-                }
-            }
+				}
+			}
 		}
 	}
 

@@ -181,14 +181,6 @@ public class LocalPlaybackService extends Service {
 		}
 	}
 
-	public void startHeadphoneReceiving() {
-		registerReceiver(headphonesReceiver, intentFilter);
-	}
-
-	public void stopHeadphoneReceiving() {
-		unregisterReceiver(headphonesReceiver);
-	}
-
 	public void loadAudioManager() {
 		if (audioManager == null) {
 			audioManager = ((AudioManager)getApplicationContext().getSystemService(Context.AUDIO_SERVICE));
@@ -207,14 +199,6 @@ public class LocalPlaybackService extends Service {
 		}
 	}
 
-	public void startAudioFocus() {
-		audioManager.requestAudioFocus(audioChangeListener, AudioManager.STREAM_MUSIC, AudioManager.AUDIOFOCUS_GAIN);
-	}
-
-	public void loseAudioFocus() {
-		audioManager.abandonAudioFocus(audioChangeListener);
-	}
-
 	public void updateOnCompletionListener() {
 		mp.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
 			@Override
@@ -223,13 +207,14 @@ public class LocalPlaybackService extends Service {
 				miniplayerPlayPause.setImageResource(R.drawable.ic_media_play);
 				if (!profileData.containsKey("profileRepeatMode") || !profileData.containsKey("profileShuffleMode")) {
 					try {
-						if (Integer.parseInt(profileData.get("profileSongPosition").toString()) + 1< musicData.size()) {
+						if (Integer.parseInt(profileData.get("profileSongPosition").toString()) + 1 < musicData.size()) {
 							profileData.put("profileSongPosition", String.valueOf(Integer.parseInt(profileData.get("profileSongPosition").toString()) + 1));
 							savedData.edit().putString("savedProfileData", ListUtil.setHashMapToSharedJSON(profileData)).commit();
 							createLocalStream(Integer.parseInt(profileData.get("profileSongPosition").toString()));
 							playPause.performClick();
 						}
 					} catch (Exception exception) {
+						ApplicationUtil.toast("Error loading audio file.", Toast.LENGTH_SHORT);
 						if (Integer.parseInt(profileData.get("profileSongPosition").toString()) + 1 < musicData.size()) {
 							profileData.put("profileSongPosition", String.valueOf(Integer.parseInt(profileData.get("profileSongPosition").toString()) + 1));
 							savedData.edit().putString("savedProfileData", ListUtil.setHashMapToSharedJSON(profileData)).commit();
@@ -247,6 +232,7 @@ public class LocalPlaybackService extends Service {
 								playPause.performClick();
 							}
 						} catch (Exception exception) {
+							ApplicationUtil.toast("Error loading audio file.", Toast.LENGTH_SHORT);
 							if (Integer.parseInt(profileData.get("profileSongPosition").toString()) + 1 < musicData.size()) {
 								profileData.put("profileSongPosition", String.valueOf(Integer.parseInt(profileData.get("profileSongPosition").toString()) + 1));
 								savedData.edit().putString("savedProfileData", ListUtil.setHashMapToSharedJSON(profileData)).commit();
@@ -265,18 +251,20 @@ public class LocalPlaybackService extends Service {
 						}
 						currentDuration.setText("0:00");
 					} else if (profileData.get("profileShuffleMode").equals("1")) {
+						int randomizer = IntegerUtil.getRandom(Integer.parseInt(profileData.get("profileSongPosition").toString()), musicData.size());
 						try {
-							if (IntegerUtil.getRandom(Integer.parseInt(profileData.get("profileSongPosition").toString()), musicData.size()) < musicData.size()) {
-								profileData.put("profileSongPosition", String.valueOf(IntegerUtil.getRandom(Integer.parseInt(profileData.get("profileSongPosition").toString()), musicData.size())));
+							if (randomizer < musicData.size()) {
+								profileData.put("profileSongPosition", String.valueOf(randomizer));
 								savedData.edit().putString("savedProfileData", ListUtil.setHashMapToSharedJSON(profileData)).commit();
-								createLocalStream(Integer.parseInt(profileData.get("profileSongPosition").toString()));
+								createLocalStream(randomizer);
 								playPause.performClick();
 							}
 						} catch (Exception exception) {
-							if (IntegerUtil.getRandom(Integer.parseInt(profileData.get("profileSongPosition").toString()), musicData.size()) < musicData.size()) {
-								profileData.put("profileSongPosition", String.valueOf(IntegerUtil.getRandom(Integer.parseInt(profileData.get("profileSongPosition").toString()), musicData.size())));
+							ApplicationUtil.toast("Error loading audio file.", Toast.LENGTH_SHORT);
+							if (randomizer < musicData.size()) {
+								profileData.put("profileSongPosition", String.valueOf(randomizer));
 								savedData.edit().putString("savedProfileData", ListUtil.setHashMapToSharedJSON(profileData)).commit();
-								createLocalStream(Integer.parseInt(profileData.get("profileSongPosition").toString()));
+								createLocalStream(randomizer);
 								playPause.performClick();
 							}
 						}
@@ -284,6 +272,22 @@ public class LocalPlaybackService extends Service {
 				}
 			}
 		});
+	}
+
+	public void startAudioFocus() {
+		audioManager.requestAudioFocus(audioChangeListener, AudioManager.STREAM_MUSIC, AudioManager.AUDIOFOCUS_GAIN);
+	}
+
+	public void loseAudioFocus() {
+		audioManager.abandonAudioFocus(audioChangeListener);
+	}
+
+	public void startHeadphoneReceiving() {
+		registerReceiver(headphonesReceiver, intentFilter);
+	}
+
+	public void stopHeadphoneReceiving() {
+		unregisterReceiver(headphonesReceiver);
 	}
 	
 	public int getCurrentPosition(){
