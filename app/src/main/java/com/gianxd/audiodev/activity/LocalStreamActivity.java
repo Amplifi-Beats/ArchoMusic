@@ -1163,7 +1163,7 @@ public class LocalStreamActivity extends  AppCompatActivity  {
 					miniplayerSeekbar.setProgress((int)seekbarDuration.getProgress());
 					currentDuration.setText(String.valueOf((int)((seekbarDuration.getProgress() / 1000) / 60)).concat(":".concat(new DecimalFormat("00").format((seekbarDuration.getProgress() / 1000) % 60))));
 					musicData.get(Integer.parseInt(profileData.get("profileSongPosition").toString())).put("songCurrentDuration", String.valueOf((int)(seekbarDuration.getProgress())));
-					savedData.edit().putString("savedMusicData", ListUtil.setArrayListToSharedJSON(musicData)).apply();
+					savedData.edit().putString("savedMusicData", ListUtil.setArrayListToSharedJSON(musicData)).commit();
 				}
 			}
 		});
@@ -1181,8 +1181,7 @@ public class LocalStreamActivity extends  AppCompatActivity  {
 							repeat.setColorFilter(getResources().getColor(R.color.colorPrimary), PorterDuff.Mode.SRC_IN);
 						}
 						profileData.put("profileRepeatMode", "1");
-						savedData.edit().putString("savedProfileData", ListUtil.setHashMapToSharedJSON(profileData)).apply();
-						playbackSrv.updateOnCompletionListener();
+						savedData.edit().putString("savedProfileData", ListUtil.setHashMapToSharedJSON(profileData)).commit();
 						if (profileData.get("profileShuffleMode").equals("1")) {
 							if (Build.VERSION.SDK_INT >= 23) {
 								shuffle.setColorFilter(ContextCompat.getColor(getApplicationContext(), R.color.colorControlHighlight), PorterDuff.Mode.SRC_IN);
@@ -1190,9 +1189,9 @@ public class LocalStreamActivity extends  AppCompatActivity  {
 								shuffle.setColorFilter(getResources().getColor(R.color.colorControlHighlight), PorterDuff.Mode.SRC_IN);
 							}
 							profileData.put("profileShuffleMode", "0");
-							savedData.edit().putString("savedProfileData", ListUtil.setHashMapToSharedJSON(profileData)).apply();
-							playbackSrv.updateOnCompletionListener();
+							savedData.edit().putString("savedProfileData", ListUtil.setHashMapToSharedJSON(profileData)).commit();
 						}
+						playbackSrv.updateOnCompletionListener();
 					} else if (profileData.get("profileRepeatMode").equals("1")) {
 						if (Build.VERSION.SDK_INT >= 23) {
 							repeat.setColorFilter(ContextCompat.getColor(getApplicationContext(), R.color.colorControlHighlight), PorterDuff.Mode.SRC_IN);
@@ -1200,9 +1199,9 @@ public class LocalStreamActivity extends  AppCompatActivity  {
 							repeat.setColorFilter(getResources().getColor(R.color.colorControlHighlight), PorterDuff.Mode.SRC_IN);
 						}
 						profileData.put("profileRepeatMode", "0");
-						savedData.edit().putString("savedProfileData", ListUtil.setHashMapToSharedJSON(profileData)).apply();
-						playbackSrv.updateOnCompletionListener();
+						savedData.edit().putString("savedProfileData", ListUtil.setHashMapToSharedJSON(profileData)).commit();
 					}
+					playbackSrv.updateOnCompletionListener();
 				} else {
 					if (Build.VERSION.SDK_INT >= 23) {
 						repeat.setColorFilter(ContextCompat.getColor(getApplicationContext(), R.color.colorPrimary), PorterDuff.Mode.SRC_IN);
@@ -1210,7 +1209,7 @@ public class LocalStreamActivity extends  AppCompatActivity  {
 						repeat.setColorFilter(getResources().getColor(R.color.colorPrimary), PorterDuff.Mode.SRC_IN);
 					}
 					profileData.put("profileRepeatMode", "1");
-					savedData.edit().putString("savedProfileData", ListUtil.setHashMapToSharedJSON(profileData)).apply();
+					savedData.edit().putString("savedProfileData", ListUtil.setHashMapToSharedJSON(profileData)).commit();
 					playbackSrv.updateOnCompletionListener();
 				}
 			}
@@ -1284,7 +1283,6 @@ public class LocalStreamActivity extends  AppCompatActivity  {
 					    }
 						profileData.put("profileShuffleMode", "1");
 						savedData.edit().putString("savedProfileData", ListUtil.setHashMapToSharedJSON(profileData)).commit();
-						playbackSrv.updateOnCompletionListener();
                         if (profileData.get("profileRepeatMode").equals("1")) {
                             if (Build.VERSION.SDK_INT >= 23) {
                                 repeat.setColorFilter(ContextCompat.getColor(getApplicationContext(), R.color.colorControlHighlight), PorterDuff.Mode.SRC_IN);
@@ -1293,8 +1291,8 @@ public class LocalStreamActivity extends  AppCompatActivity  {
                             }
                             profileData.put("profileRepeatMode", "0");
 							savedData.edit().putString("savedProfileData", ListUtil.setHashMapToSharedJSON(profileData)).commit();
-							playbackSrv.updateOnCompletionListener();
                         }
+						playbackSrv.updateOnCompletionListener();
 					} else if (profileData.get("profileShuffleMode").equals("1")) {
 					    if (Build.VERSION.SDK_INT >= 23) {
 					        shuffle.setColorFilter(ContextCompat.getColor(getApplicationContext(), R.color.colorControlHighlight), PorterDuff.Mode.SRC_IN);
