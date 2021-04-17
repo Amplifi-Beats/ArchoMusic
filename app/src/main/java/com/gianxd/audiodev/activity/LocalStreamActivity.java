@@ -372,10 +372,8 @@ public class LocalStreamActivity extends  AppCompatActivity  {
 				TextView profile_name = dialogLayout.findViewById(R.id.profile_name);
 				TextView live_stream_name = dialogLayout.findViewById(R.id.live_stream_name);
 				TextView visualizer_name = dialogLayout.findViewById(R.id.visualizer_name);
-				TextView lyrics_name = dialogLayout.findViewById(R.id.lyrics_name);
 				TextView settings_name = dialogLayout.findViewById(R.id.settings_name);
 				LinearLayout live_streaming = dialogLayout.findViewById(R.id.live_streaming);
-				LinearLayout lyrics = dialogLayout.findViewById(R.id.lyrics);
 				LinearLayout settings = dialogLayout.findViewById(R.id.settings);
 				LinearLayout visualizer = dialogLayout.findViewById(R.id.visualizer);
 				title.setTypeface(Typeface.createFromAsset(getAssets(),"fonts/roboto_medium.ttf"), Typeface.NORMAL);
@@ -649,81 +647,6 @@ public class LocalStreamActivity extends  AppCompatActivity  {
                                     }
                                 }
 								ApplicationUtil.toast("Feature under construction.", Toast.LENGTH_SHORT);
-						}
-				});
-				lyrics.setOnClickListener(new View.OnClickListener() {
-						@Override
-						public void onClick(View view) {
-							    if (!profileData.containsKey("profileDarkMode")) {
-								     android.graphics.drawable.RippleDrawable rippleButton = new android.graphics.drawable.RippleDrawable(new android.content.res.ColorStateList(new int[][]{new int[]{}}, new int[]{ Color.parseColor("#BDBDBD") }), new android.graphics.drawable.ColorDrawable(Color.parseColor("#FFFFFF")), null);
-								     view.setBackground(rippleButton);
-							    } else {
-							    	if (profileData.get("profileDarkMode").equals("true")) {
-									     android.graphics.drawable.RippleDrawable rippleButton = new android.graphics.drawable.RippleDrawable(new android.content.res.ColorStateList(new int[][]{new int[]{}}, new int[]{ Color.parseColor("#BDBDBD") }), new android.graphics.drawable.ColorDrawable(Color.parseColor("#1A1A1A")), null);
-									     view.setBackground(rippleButton);
-								    } else {
-							    		 android.graphics.drawable.RippleDrawable rippleButton = new android.graphics.drawable.RippleDrawable(new android.content.res.ColorStateList(new int[][]{new int[]{}}, new int[]{ Color.parseColor("#BDBDBD") }), new android.graphics.drawable.ColorDrawable(Color.parseColor("#FFFFFF")), null);
-									     view.setBackground(rippleButton);
-								    }
-							    }
-								BottomSheetDialog lyricsDialog = new BottomSheetDialog(LocalStreamActivity.this);
-						        View dialogLayout = getLayoutInflater().inflate(R.layout.dialog_lyrics, null);
-						        lyricsDialog.setContentView(dialogLayout);
-						        LinearLayout main = dialogLayout.findViewById(R.id.main);
-						        ImageView back = dialogLayout.findViewById(R.id.back);
-								ImageView lyrics_edit = dialogLayout.findViewById(R.id.lyrics_edit);
-						        TextView title = dialogLayout.findViewById(R.id.title);
-						        TextView lyrics = dialogLayout.findViewById(R.id.lyrics);
-						        title.setTypeface(Typeface.createFromAsset(getAssets(),"fonts/roboto_medium.ttf"), Typeface.NORMAL);
-								if (musicData.get(Integer.parseInt(profileData.get("profileSongPosition").toString())).containsKey("songLyrics")) {
-										if (musicData.get(Integer.parseInt(profileData.get("profileSongPosition").toString())).get("songLyrics").toString().length() == 0) {
-												// Lyrics added with 0 letters
-										} else {
-											    lyrics.setText(musicData.get(Integer.parseInt(profileData.get("profileSongPosition").toString())).get("songLyrics").toString());
-										}
-								} else {
-									    // No Lyrics was found.
-								}
-								back.setOnClickListener(new View.OnClickListener() {
-									@Override
-									public void onClick(View view) {
-										android.graphics.drawable.RippleDrawable rippleButton = new android.graphics.drawable.RippleDrawable(new android.content.res.ColorStateList(new int[][]{new int[]{}}, new int[]{ Color.parseColor("#BDBDBD") }), null, null);
-										view.setBackground(rippleButton);
-										lyricsDialog.dismiss();
-									}
-								});
-								lyrics_edit.setOnClickListener(new View.OnClickListener() {
-										@Override
-										public void onClick(View view) {
-												android.graphics.drawable.RippleDrawable rippleButton = new android.graphics.drawable.RippleDrawable(new android.content.res.ColorStateList(new int[][]{new int[]{}}, new int[]{ Color.parseColor("#BDBDBD") }), null, null);
-								                view.setBackground(rippleButton);
-												Intent intent = new Intent(AudioDev.applicationContext, LyricsEditorActivity.class);
-												intent.putExtra("songPosition", String.valueOf((int)(Integer.parseInt(profileData.get("profileSongPosition").toString()))));
-												startActivity(intent);
-												lyricsDialog.dismiss();
-												menuDialog.dismiss();
-										}
-								});
-						        Double TopLeft = 20.0;
-						        Double TopRight = 20.0;
-						        Double BottomRight = 0.0;
-						        Double BottomLeft = 0.0;
-						        android.graphics.drawable.GradientDrawable roundedCorners = new android.graphics.drawable.GradientDrawable();
-						        roundedCorners.setShape(android.graphics.drawable.GradientDrawable.RECTANGLE);
-						        roundedCorners.setCornerRadii(new float[] {TopLeft.floatValue(),TopLeft.floatValue(), TopRight.floatValue(),TopRight.floatValue(), BottomRight.floatValue(),BottomRight.floatValue(), BottomLeft.floatValue(),BottomLeft.floatValue()});
-						        if (!profileData.containsKey("profileDarkMode")) {
-						        	roundedCorners.setColor(Color.parseColor("#FFFFFF"));
-						        } else {
-						        	if (profileData.get("profileDarkMode").equals("true")) {
-						        		roundedCorners.setColor(Color.parseColor("#1A1A1A"));
-										lyrics.setTextColor(Color.parseColor("#FFFFFF"));
-										lyrics.setHintTextColor(Color.parseColor("#BDBDBD"));
-						        	} else {
-						        		roundedCorners.setColor(Color.parseColor("#FFFFFF"));
-						        	}
-						        }
-						        ((ViewGroup)dialogLayout.getParent()).setBackground(roundedCorners);
-						        lyricsDialog.show();
 						}
 				});
 				settings.setOnClickListener(new View.OnClickListener() {
@@ -1101,7 +1024,6 @@ public class LocalStreamActivity extends  AppCompatActivity  {
 						profile_name.setTextColor(Color.parseColor("#FFFFFF"));
 						live_stream_name.setTextColor(Color.parseColor("#FFFFFF"));
 						visualizer_name.setTextColor(Color.parseColor("#FFFFFF"));
-						lyrics_name.setTextColor(Color.parseColor("#FFFFFF"));
 						settings_name.setTextColor(Color.parseColor("#FFFFFF"));
 					} else {
 						roundedCorners.setColor(Color.parseColor("#FFFFFF"));
@@ -1877,10 +1799,12 @@ public class LocalStreamActivity extends  AppCompatActivity  {
 						TextView songTitle = dialogLayout.findViewById(R.id.songTitle);
 						TextView songArtist = dialogLayout.findViewById(R.id.songArtist);
 						TextView rename_title = dialogLayout.findViewById(R.id.rename_title);
+						TextView lyrics_title = dialogLayout.findViewById(R.id.lyrics_title);
 						TextView share_title = dialogLayout.findViewById(R.id.share_title);
 						TextView moreInformation_title = dialogLayout.findViewById(R.id.moreInformation_title);
 						TextView remove_title = dialogLayout.findViewById(R.id.remove_title);
 						LinearLayout rename = dialogLayout.findViewById(R.id.rename);
+						LinearLayout lyrics = dialogLayout.findViewById(R.id.lyrics);
 						LinearLayout share = dialogLayout.findViewById(R.id.share);
 						LinearLayout moreInformation = dialogLayout.findViewById(R.id.moreInformation);
 						LinearLayout remove = dialogLayout.findViewById(R.id.remove);
@@ -1903,6 +1827,81 @@ public class LocalStreamActivity extends  AppCompatActivity  {
 										view.setBackground(rippleButton);
 									}
 								}
+							}
+						});
+						lyrics.setOnClickListener(new View.OnClickListener() {
+							@Override
+							public void onClick(View view) {
+								if (!profileData.containsKey("profileDarkMode")) {
+									android.graphics.drawable.RippleDrawable rippleButton = new android.graphics.drawable.RippleDrawable(new android.content.res.ColorStateList(new int[][]{new int[]{}}, new int[]{ Color.parseColor("#BDBDBD") }), new android.graphics.drawable.ColorDrawable(Color.parseColor("#FFFFFF")), null);
+									view.setBackground(rippleButton);
+								} else {
+									if (profileData.get("profileDarkMode").equals("true")) {
+										android.graphics.drawable.RippleDrawable rippleButton = new android.graphics.drawable.RippleDrawable(new android.content.res.ColorStateList(new int[][]{new int[]{}}, new int[]{ Color.parseColor("#BDBDBD") }), new android.graphics.drawable.ColorDrawable(Color.parseColor("#1A1A1A")), null);
+										view.setBackground(rippleButton);
+									} else {
+										android.graphics.drawable.RippleDrawable rippleButton = new android.graphics.drawable.RippleDrawable(new android.content.res.ColorStateList(new int[][]{new int[]{}}, new int[]{ Color.parseColor("#BDBDBD") }), new android.graphics.drawable.ColorDrawable(Color.parseColor("#FFFFFF")), null);
+										view.setBackground(rippleButton);
+									}
+								}
+								BottomSheetDialog lyricsDialog = new BottomSheetDialog(LocalStreamActivity.this);
+								View dialogLayout = getLayoutInflater().inflate(R.layout.dialog_lyrics, null);
+								lyricsDialog.setContentView(dialogLayout);
+								LinearLayout main = dialogLayout.findViewById(R.id.main);
+								ImageView back = dialogLayout.findViewById(R.id.back);
+								ImageView lyrics_edit = dialogLayout.findViewById(R.id.lyrics_edit);
+								TextView title = dialogLayout.findViewById(R.id.title);
+								TextView lyrics = dialogLayout.findViewById(R.id.lyrics);
+								title.setTypeface(Typeface.createFromAsset(getAssets(),"fonts/roboto_medium.ttf"), Typeface.NORMAL);
+								if (musicData.get(Integer.parseInt(profileData.get("profileSongPosition").toString())).containsKey("songLyrics")) {
+									if (musicData.get(Integer.parseInt(profileData.get("profileSongPosition").toString())).get("songLyrics").toString().length() == 0) {
+										// Lyrics added with 0 letters
+									} else {
+										lyrics.setText(musicData.get(Integer.parseInt(profileData.get("profileSongPosition").toString())).get("songLyrics").toString());
+									}
+								} else {
+									// No Lyrics was found.
+								}
+								back.setOnClickListener(new View.OnClickListener() {
+									@Override
+									public void onClick(View view) {
+										android.graphics.drawable.RippleDrawable rippleButton = new android.graphics.drawable.RippleDrawable(new android.content.res.ColorStateList(new int[][]{new int[]{}}, new int[]{ Color.parseColor("#BDBDBD") }), null, null);
+										view.setBackground(rippleButton);
+										lyricsDialog.dismiss();
+									}
+								});
+								lyrics_edit.setOnClickListener(new View.OnClickListener() {
+									@Override
+									public void onClick(View view) {
+										android.graphics.drawable.RippleDrawable rippleButton = new android.graphics.drawable.RippleDrawable(new android.content.res.ColorStateList(new int[][]{new int[]{}}, new int[]{ Color.parseColor("#BDBDBD") }), null, null);
+										view.setBackground(rippleButton);
+										Intent intent = new Intent(AudioDev.applicationContext, LyricsEditorActivity.class);
+										intent.putExtra("songPosition", String.valueOf((int)(Integer.parseInt(profileData.get("profileSongPosition").toString()))));
+										startActivity(intent);
+										lyricsDialog.dismiss();
+										songOptsDialog.dismiss();
+									}
+								});
+								Double TopLeft = 20.0;
+								Double TopRight = 20.0;
+								Double BottomRight = 0.0;
+								Double BottomLeft = 0.0;
+								android.graphics.drawable.GradientDrawable roundedCorners = new android.graphics.drawable.GradientDrawable();
+								roundedCorners.setShape(android.graphics.drawable.GradientDrawable.RECTANGLE);
+								roundedCorners.setCornerRadii(new float[] {TopLeft.floatValue(),TopLeft.floatValue(), TopRight.floatValue(),TopRight.floatValue(), BottomRight.floatValue(),BottomRight.floatValue(), BottomLeft.floatValue(),BottomLeft.floatValue()});
+								if (!profileData.containsKey("profileDarkMode")) {
+									roundedCorners.setColor(Color.parseColor("#FFFFFF"));
+								} else {
+									if (profileData.get("profileDarkMode").equals("true")) {
+										roundedCorners.setColor(Color.parseColor("#1A1A1A"));
+										lyrics.setTextColor(Color.parseColor("#FFFFFF"));
+										lyrics.setHintTextColor(Color.parseColor("#BDBDBD"));
+									} else {
+										roundedCorners.setColor(Color.parseColor("#FFFFFF"));
+									}
+								}
+								((ViewGroup)dialogLayout.getParent()).setBackground(roundedCorners);
+								lyricsDialog.show();
 							}
 						});
 						share.setOnClickListener(new View.OnClickListener() {
@@ -1971,6 +1970,7 @@ public class LocalStreamActivity extends  AppCompatActivity  {
 								songTitle.setTextColor(Color.parseColor("#FFFFFF"));
 								songArtist.setTextColor(Color.parseColor("#FFFFFF"));
 								rename_title.setTextColor(Color.parseColor("#FFFFFF"));
+								lyrics_title.setTextColor(Color.parseColor("#FFFFFF"));
 								share_title.setTextColor(Color.parseColor("#FFFFFF"));
 								moreInformation_title.setTextColor(Color.parseColor("#FFFFFF"));
 							} else {

@@ -35,11 +35,11 @@
     <string name="profile_name_null">User</string>
     <string name="menu_live_stream_title">Live streaming</string>
     <string name="menu_visualizer_title">Visualizer</string>
-    <string name="menu_lyrics_title">Lyrics</string>
     <string name="menu_settings_title">Settings</string>
     <string name="settings_title">Settings</string>
     <string name="song_opts_title">Song Options</string>
     <string name="song_opts_rename_title">Rename</string>
+    <string name="song_opts_lyrics_title">Lyrics</string>
     <string name="song_opts_share_title">Share</string>
     <string name="song_opts_more_info_title">More information</string>
     <string name="song_opts_remove_title">Remove from library</string>
