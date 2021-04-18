@@ -27,7 +27,7 @@ public class AudioDev extends Application {
 	public void onCreate() {
         applicationContext = this;
         applicationResources = getResources();
-		applicationHandler = new Handler(AudioDev.applicationContext.getMainLooper());
+		applicationHandler = new Handler(ApplicationUtil.getAppContext().getMainLooper());
 		savedData = getSharedPreferences("savedData", Context.MODE_PRIVATE);
 		if (!savedData.contains("savedProfileData")) {
 			profileData = new HashMap<>();

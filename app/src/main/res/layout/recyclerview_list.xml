@@ -67,16 +67,4 @@
 			android:scaleType="fitCenter"
 			android:layout_gravity="center_vertical"/>
 	</LinearLayout>
-	<TextView
-		android:id="@+id/emptyMsg"
-		android:focusable="false"
-		android:layout_width="match_parent"
-		android:layout_height="wrap_content"
-		android:padding="8dp"
-		android:background="#FFFFFF"
-		android:gravity="center_horizontal"
-		android:text="@string/recyclerview_list_empty_msg"
-		android:textSize="12sp"
-		android:textColor="#000000"
-		android:alpha="0.7"/>
 </LinearLayout>

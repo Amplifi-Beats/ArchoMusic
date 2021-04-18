@@ -65,6 +65,26 @@
 				android:layout_width="match_parent"
 				android:layout_height="match_parent"
 				android:layout_weight="1" />
+
+			<ProgressBar
+				android:id="@+id/listLoadBar"
+				android:layout_width="match_parent"
+				android:layout_height="40dp"
+				android:padding="8dp"
+				android:indeterminate="true" />
+
+			<TextView
+				android:id="@+id/listEmptyMsg"
+				android:focusable="false"
+				android:layout_width="match_parent"
+				android:layout_height="wrap_content"
+				android:padding="8dp"
+				android:gravity="center_horizontal"
+				android:text="@string/recyclerview_list_empty_msg"
+				android:textSize="12sp"
+				android:textColor="#000000"
+				android:alpha="0.7"/>
+
 		</androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 
 		<LinearLayout

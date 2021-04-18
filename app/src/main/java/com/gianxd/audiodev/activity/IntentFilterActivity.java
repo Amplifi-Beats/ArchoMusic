@@ -136,9 +136,9 @@ public class IntentFilterActivity extends  AppCompatActivity  {
 	}
 	
 	@Override
-	protected void onActivityResult(int _requestCode, int _resultCode, Intent _data) {
-		super.onActivityResult(_requestCode, _resultCode, _data);
-		switch (_requestCode) {
+	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+		super.onActivityResult(requestCode, resultCode, data);
+		switch (requestCode) {
 			default:
 			break;
 		}

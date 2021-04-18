@@ -17,9 +17,9 @@
     <string name="about_description10">P*ta, may Layla sa gitna!</string>
     <string name="about_title">ARcho</string>
     <string name="splash_title">ARcho</string>
-    <string name="create_a_profile_title">Lumikha ng isang profile</string>
+    <string name="create_a_profile_title">Ibahin ang profile</string>
     <string name="create_a_profile_input_hint">Ipasok ang iyong pangalan</string>
-    <string name="create_a_profile_btn_finish">Gumawa ng profile</string>
+    <string name="create_a_profile_btn_finish">Tapos na</string>
     <string name="about_youtube_title">YouTube</string>
     <string name="about_twitter_title">Twitter</string>
     <string name="about_discord_title">Discord</string>

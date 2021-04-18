@@ -72,7 +72,7 @@ public class LiveStreamActivity extends  AppCompatActivity  {
 		}
 	}
 	
-	public void _startupUI () {
+	public void startupUI () {
 		
 	}
 	

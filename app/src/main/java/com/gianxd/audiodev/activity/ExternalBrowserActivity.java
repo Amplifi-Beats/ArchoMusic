@@ -3,9 +3,11 @@ package com.gianxd.audiodev.activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.res.ColorStateList;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.Typeface;
+import android.graphics.drawable.RippleDrawable;
 import android.os.Build;
 import android.os.Bundle;
 import android.view.View;
@@ -57,7 +59,7 @@ public class ExternalBrowserActivity extends  AppCompatActivity  {
 		web.getSettings().setSupportZoom(true);
 		webtitle = (TextView) findViewById(R.id.webtitle);
 		weburl = (TextView) findViewById(R.id.weburl);
-		savedData = applicationContext.getSharedPreferences("savedData", Context.MODE_PRIVATE);
+		savedData = getSharedPreferences("savedData", Context.MODE_PRIVATE);
 		if (savedData.contains("savedProfileData")) {
 			profileData = ListUtil.getHashMapFromSharedJSON(savedData, "savedProfileData");
 		} else {
@@ -90,7 +92,7 @@ public class ExternalBrowserActivity extends  AppCompatActivity  {
 		back.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View view) {
-				android.graphics.drawable.RippleDrawable rippleButton = new android.graphics.drawable.RippleDrawable(new android.content.res.ColorStateList(new int[][]{new int[]{}}, new int[]{ Color.parseColor("#BDBDBD") }), null, null);
+				RippleDrawable rippleButton = new RippleDrawable(new ColorStateList(new int[][]{new int[]{}}, new int[]{ Color.parseColor("#BDBDBD") }), null, null);
 				back.setBackground(rippleButton);
 				if (web != null) {
 					web.destroy();
@@ -143,9 +145,9 @@ public class ExternalBrowserActivity extends  AppCompatActivity  {
 	}
 	
 	@Override
-	protected void onActivityResult(int _requestCode, int _resultCode, Intent _data) {
-		super.onActivityResult(_requestCode, _resultCode, _data);
-		switch (_requestCode) {
+	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+		super.onActivityResult(requestCode, resultCode, data);
+		switch (requestCode) {
 			default:
 			break;
 		}

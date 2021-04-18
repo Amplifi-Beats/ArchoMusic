@@ -1,10 +1,13 @@
 package com.gianxd.audiodev.activity;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.res.ColorStateList;
 import android.graphics.Color;
 import android.graphics.Typeface;
+import android.graphics.drawable.RippleDrawable;
 import android.os.Build;
 import android.os.Bundle;
 import android.text.Editable;
@@ -24,8 +27,6 @@ import com.gianxd.audiodev.util.ListUtil;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-
-import static com.gianxd.audiodev.AudioDev.applicationContext;
 
 
 public class LyricsEditorActivity extends  AppCompatActivity  { 
@@ -58,7 +59,7 @@ public class LyricsEditorActivity extends  AppCompatActivity  {
 		bruh = (TextView) findViewById(R.id.bruh);
 		autoedit = (ImageView) findViewById(R.id.autoedit);
 		save = (ImageView) findViewById(R.id.save);
-		savedData = applicationContext.getSharedPreferences("savedData", Activity.MODE_PRIVATE);
+		savedData = getSharedPreferences("savedData", Context.MODE_PRIVATE);
 		if (savedData.contains("savedMusicData")) {
 			musicData = ListUtil.getArrayListFromSharedJSON(savedData, "savedMusicData");
 		} else {
@@ -71,7 +72,12 @@ public class LyricsEditorActivity extends  AppCompatActivity  {
 		}
 		lyrics.addTextChangedListener(new TextWatcher() {
 			@Override
-			public void onTextChanged(CharSequence charSequence, int _param2, int _param3, int _param4) {
+			public void beforeTextChanged(CharSequence charSequence, int start, int count, int after) {
+				
+			}
+			
+			@Override
+			public void onTextChanged(CharSequence charSequence, int start, int before, int count) {
 				if (lyrics.getText().toString().length() < 1) {
 					save.setEnabled(false);
 					save.setAlpha((float)(0.5d));
@@ -79,11 +85,6 @@ public class LyricsEditorActivity extends  AppCompatActivity  {
 					save.setEnabled(true);
 					save.setAlpha((float)(1.0d));
 				}
-			}
-			
-			@Override
-			public void beforeTextChanged(CharSequence charSequence, int _param2, int _param3, int _param4) {
-				
 			}
 			
 			@Override
@@ -95,7 +96,7 @@ public class LyricsEditorActivity extends  AppCompatActivity  {
 		back.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View view) {
-				android.graphics.drawable.RippleDrawable rippleButton = new android.graphics.drawable.RippleDrawable(new android.content.res.ColorStateList(new int[][]{new int[]{}}, new int[]{ Color.parseColor("#BDBDBD") }), null, null);
+				RippleDrawable rippleButton = new RippleDrawable(new ColorStateList(new int[][]{new int[]{}}, new int[]{ Color.parseColor("#BDBDBD") }), null, null);
 				back.setBackground(rippleButton);
 				finish();
 			}
@@ -104,7 +105,7 @@ public class LyricsEditorActivity extends  AppCompatActivity  {
 		autoedit.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View view) {
-				android.graphics.drawable.RippleDrawable rippleButton = new android.graphics.drawable.RippleDrawable(new android.content.res.ColorStateList(new int[][]{new int[]{}}, new int[]{ Color.parseColor("#BDBDBD") }), null, null);
+				RippleDrawable rippleButton = new RippleDrawable(new ColorStateList(new int[][]{new int[]{}}, new int[]{ Color.parseColor("#BDBDBD") }), null, null);
 				autoedit.setBackground(rippleButton);
 			}
 		});
@@ -112,7 +113,7 @@ public class LyricsEditorActivity extends  AppCompatActivity  {
 		save.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View view) {
-				android.graphics.drawable.RippleDrawable rippleButton = new android.graphics.drawable.RippleDrawable(new android.content.res.ColorStateList(new int[][]{new int[]{}}, new int[]{ Color.parseColor("#BDBDBD") }), null, null);
+				RippleDrawable rippleButton = new RippleDrawable(new ColorStateList(new int[][]{new int[]{}}, new int[]{ Color.parseColor("#BDBDBD") }), null, null);
 				save.setBackground(rippleButton);
 				try {
 					musicData.get(Integer.parseInt(getIntent().getStringExtra("songPosition"))).put("songLyrics", lyrics.getText().toString());

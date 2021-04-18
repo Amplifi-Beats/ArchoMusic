@@ -1,6 +1,8 @@
 package com.gianxd.audiodev.util;
 
 import android.content.Context;
+import android.content.res.Resources;
+import android.os.Handler;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Toast;
 
@@ -11,6 +13,17 @@ import java.io.StringWriter;
 import java.io.Writer;
 
 public class ApplicationUtil {
+
+    public static Context getAppContext() {
+        return AudioDev.applicationContext;
+    }
+
+    public static Resources getAppResources() {
+        return AudioDev.applicationResources;
+    }
+    public static Handler getAppHandler() {
+        return AudioDev.applicationHandler;
+    }
 
     public static String getStackTrace(Throwable throwable) {
         final Writer result = new StringWriter();

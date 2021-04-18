@@ -114,10 +114,10 @@ public class LocalPlaybackService extends Service {
 	        mp.release();
         }
 	    loadAudioManager();
-		mp = MediaPlayer.create(getApplicationContext(), Uri.fromFile(new File(StringUtil.decodeString(musicData.get(position).get("songData").toString()))));
+		mp = MediaPlayer.create(ApplicationUtil.getAppContext(), Uri.fromFile(new File(StringUtil.decodeString(musicData.get(position).get("songData").toString()))));
 		updateOnCompletionListener();
-		Glide.with(getApplicationContext()).asBitmap().load(ImageUtil.getAlbumArt(StringUtil.decodeString(musicData.get(position).get("songData").toString()))).into(albumArt);
-		Glide.with(getApplicationContext()).asBitmap().load(ImageUtil.getAlbumArt(StringUtil.decodeString(musicData.get(position).get("songData").toString()))).into(miniplayerAlbumArt);
+		Glide.with(ApplicationUtil.getAppContext()).asBitmap().load(ImageUtil.getAlbumArt(StringUtil.decodeString(musicData.get(position).get("songData").toString()))).into(albumArt);
+		Glide.with(ApplicationUtil.getAppContext()).asBitmap().load(ImageUtil.getAlbumArt(StringUtil.decodeString(musicData.get(position).get("songData").toString()))).into(miniplayerAlbumArt);
 		songTitle.setText(musicData.get(position).get("songTitle").toString());
 		songArtist.setText(musicData.get(position).get("songArtist").toString());
 		miniplayerSongTitle.setText(musicData.get(position).get("songTitle").toString());
@@ -137,7 +137,7 @@ public class LocalPlaybackService extends Service {
 	    notIntent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
 	    PendingIntent pendInt = PendingIntent.getActivity(this, 0, notIntent, PendingIntent.FLAG_UPDATE_CURRENT);
 	    if (Build.VERSION.SDK_INT < 28 ) {
-		    Notification notification = new Notification.Builder(getApplicationContext())
+		    Notification notification = new Notification.Builder(ApplicationUtil.getAppContext())
 				 .setContentTitle(musicData.get(position).get("songTitle").toString())
 				 .setContentText("by ".concat(musicData.get(position).get("songArtist").toString()))
 			     .setSmallIcon(R.drawable.ic_media_notification)
@@ -145,7 +145,7 @@ public class LocalPlaybackService extends Service {
 				. build();
 		    startForeground(NOTIFY_ID, notification);
 	    } else {
-	        NotificationCompat.Builder notificationBuilder = new NotificationCompat.Builder(getApplicationContext(), "libaudiodev");
+	        NotificationCompat.Builder notificationBuilder = new NotificationCompat.Builder(ApplicationUtil.getAppContext(), "libaudiodev");
 		    notificationChannel = new NotificationChannel("libaudiodev", "Music Player", NotificationManager.IMPORTANCE_LOW);
 		    notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
             assert notificationManager != null;
@@ -183,7 +183,7 @@ public class LocalPlaybackService extends Service {
 
 	public void loadAudioManager() {
 		if (audioManager == null) {
-			audioManager = ((AudioManager)getApplicationContext().getSystemService(Context.AUDIO_SERVICE));
+			audioManager = ((AudioManager)ApplicationUtil.getAppContext().getSystemService(Context.AUDIO_SERVICE));
 			audioChangeListener = new AudioManager.OnAudioFocusChangeListener() {
 				@Override
 				public void onAudioFocusChange(int focusChange) {
