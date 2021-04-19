@@ -537,7 +537,7 @@ public class LocalStreamActivity extends  AppCompatActivity  {
 											tabNavigation.getTabAt(0).select();
 											createProfileDialog.dismiss();
 											menuDialog.dismiss();
-											startActivity(new Intent(ApplicationUtil.getAppContext(), LauncherActivity.class));
+											startActivity(new Intent(ApplicationUtil.getAppContext(), SplashActivity.class));
 											finish();
 										}
 									} else {
@@ -548,7 +548,7 @@ public class LocalStreamActivity extends  AppCompatActivity  {
 										tabNavigation.getTabAt(0).select();
 										createProfileDialog.dismiss();
 										menuDialog.dismiss();
-										startActivity(new Intent(ApplicationUtil.getAppContext(), LauncherActivity.class));
+										startActivity(new Intent(ApplicationUtil.getAppContext(), SplashActivity.class));
 										finish();
 									}
 								} else {
