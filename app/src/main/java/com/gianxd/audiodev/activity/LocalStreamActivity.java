@@ -53,6 +53,7 @@ import com.gianxd.audiodev.R;
 import com.gianxd.audiodev.service.LocalPlaybackService;
 import com.gianxd.audiodev.service.LocalPlaybackService.MusicBinder;
 import com.gianxd.audiodev.util.ApplicationUtil;
+import com.gianxd.audiodev.util.FileUtil;
 import com.gianxd.audiodev.util.ImageUtil;
 import com.gianxd.audiodev.util.IntegerUtil;
 import com.gianxd.audiodev.util.ListUtil;
@@ -74,6 +75,8 @@ public class LocalStreamActivity extends  AppCompatActivity  {
 	private Timer timer = new Timer();
 	private ArrayList<HashMap<String, Object>> musicData;
 	private HashMap<String, Object> profileData;
+	private HashMap<String, Object> sessionData;
+	private HashMap<String, Object> settingsData;
 
 	private ServiceConnection musicConnection;
 	private LocalPlaybackService playbackSrv;
@@ -110,7 +113,6 @@ public class LocalStreamActivity extends  AppCompatActivity  {
     public static TextView miniplayerSongTitle;
     public static TextView miniplayerSongArtist;
 
-	private SharedPreferences savedData;
 	private TimerTask timerTask;
 
 	@Override
@@ -151,49 +153,41 @@ public class LocalStreamActivity extends  AppCompatActivity  {
 		miniplayerSongArtist = (TextView) findViewById(R.id.miniplayerSongArtist);
 		repeat = (ImageView) findViewById(R.id.repeat);
 		shuffle = (ImageView) findViewById(R.id.shuffle);
-		savedData = getSharedPreferences("savedData", Context.MODE_PRIVATE);
 		tabNavigation.addTab(tabNavigation.newTab().setIcon(R.drawable.ic_tabnav_library));
 		tabNavigation.addTab(tabNavigation.newTab().setIcon(R.drawable.ic_tabnav_nowplaying));
 		listLoadBar.setVisibility(View.GONE);
-		if (savedData.contains("savedProfileData")) {
-			profileData = ListUtil.getHashMapFromSharedJSON(savedData, "savedProfileData");
+		if (FileUtil.doesExists(FileUtil.getPackageDir().concat("/song.json")) && FileUtil.isFile(FileUtil.getPackageDir().concat("/song.json"))) {
+			musicData = ListUtil.getArrayListFromFile(FileUtil.getPackageDir().concat("/song.json"));
+			songList.setAdapter(new SongListAdapter(musicData));
+			if (!musicData.isEmpty()) {
+				listEmptyMsg.setVisibility(View.GONE);
+				songList.setVisibility(View.VISIBLE);
+			} else {
+				listEmptyMsg.setVisibility(View.VISIBLE);
+				songList.setVisibility(View.GONE);
+			}
+			connectToLocalPlaybackService();
+		}
+		if (FileUtil.doesExists(FileUtil.getPackageDir().concat("/user/profile.pref")) && FileUtil.isFile(FileUtil.getPackageDir().concat("/user/profile.pref"))) {
+			profileData = ListUtil.getHashMapFromFile(FileUtil.getPackageDir().concat("/user/profile.pref"));
 		} else {
 			profileData = new HashMap<>();
 		}
-		if (profileData.containsKey("profileToggleIntro")) {
-			int randomizer = IntegerUtil.getRandom(0, 1);
-			if (randomizer == 0) {
-				if (savedData.contains("savedMusicData")) {
-					musicData = ListUtil.getArrayListFromSharedJSON(savedData, "savedMusicData");
-					songList.setAdapter(new SongListAdapter(musicData));
-					if (!musicData.isEmpty()) {
-						listEmptyMsg.setVisibility(View.GONE);
-						songList.setVisibility(View.VISIBLE);
-					} else {
-						listEmptyMsg.setVisibility(View.VISIBLE);
-						songList.setVisibility(View.GONE);
-					}
-					connectToLocalPlaybackService();
-				} else {
-					musicData = new ArrayList<>();
-					savedData.edit().putString("savedMusicData", ListUtil.setArrayListToSharedJSON(musicData)).commit();
-					if (ContextCompat.checkSelfPermission(ApplicationUtil.getAppContext(), Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED && ContextCompat.checkSelfPermission(ApplicationUtil.getAppContext(), Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED) {
-						(new MediaScanningTask()).execute();
-					}
-				}
-			} else if (randomizer == 1) {
-				if (ContextCompat.checkSelfPermission(ApplicationUtil.getAppContext(), Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_DENIED && ContextCompat.checkSelfPermission(ApplicationUtil.getAppContext(), Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_DENIED) {
-					ActivityCompat.requestPermissions(LocalStreamActivity.this, new String[]{"android.permission.READ_EXTERNAL_STORAGE", "android.permission.WRITE_EXTERNAL_STORAGE"}, 1);
-				} else {
-					(new MediaScanningTask()).execute();
-				}
-			}
+		if (FileUtil.doesExists(FileUtil.getPackageDir().concat("/user/session.pref")) && FileUtil.isFile(FileUtil.getPackageDir().concat("/user/session.pref"))) {
+			sessionData = ListUtil.getHashMapFromFile(FileUtil.getPackageDir().concat("/user/session.pref"));
+		} else {
+			sessionData = new HashMap<>();
 		}
-		if (!profileData.containsKey("profileDarkMode")) {
-			profileData.put("profileDarkMode", "false");
-			savedData.edit().putString("savedProfileData", ListUtil.setHashMapToSharedJSON(profileData)).commit();
+		if (FileUtil.doesExists(FileUtil.getPackageDir().concat("/user/settings.pref")) && FileUtil.isFile(FileUtil.getPackageDir().concat("/user/settings.pref"))) {
+			settingsData = ListUtil.getHashMapFromFile(FileUtil.getPackageDir().concat("/user/settings.pref"));
+		} else {
+			settingsData = new HashMap<>();
 		}
-		if (!profileData.containsKey("profileToggleIntro")) {
+		if (!settingsData.containsKey("settingsDarkMode")) {
+			settingsData.put("settingsDarkMode", "false");
+			FileUtil.writeStringToFile(FileUtil.getPackageDir().concat("/user/settings.pref"), ListUtil.setHashMapToSharedJSON(settingsData));
+		}
+		if (!sessionData.containsKey("sessionToggleIntro")) {
 			BottomSheetDialog introDialog = new BottomSheetDialog(LocalStreamActivity.this);
 			View dialogLayout = getLayoutInflater().inflate(R.layout.dialog_introduction, null);
 			introDialog.setContentView(dialogLayout);
@@ -207,11 +201,11 @@ public class LocalStreamActivity extends  AppCompatActivity  {
 			close.setOnClickListener(new View.OnClickListener() {
 				@Override
 				public void onClick(View view) {
-					if (!profileData.containsKey("profileDarkMode")) {
+					if (!settingsData.containsKey("settingsDarkMode")) {
 						RippleDrawable rippleButton = new RippleDrawable(new ColorStateList(new int[][]{new int[]{}}, new int[]{ Color.parseColor("#BDBDBD") }), new ColorDrawable(Color.parseColor("#FFFFFF")), null);
 						view.setBackground(rippleButton);
 					} else {
-						if (profileData.get("profileDarkMode").equals("true")) {
+						if (settingsData.get("settingsDarkMode").equals("true")) {
 							RippleDrawable rippleButton = new RippleDrawable(new ColorStateList(new int[][]{new int[]{}}, new int[]{ Color.parseColor("#BDBDBD") }), new ColorDrawable(Color.parseColor("#1A1A1A")), null);
 							view.setBackground(rippleButton);
 						} else {
@@ -219,14 +213,9 @@ public class LocalStreamActivity extends  AppCompatActivity  {
 							view.setBackground(rippleButton);
 						}
 					}
-					profileData.put("profileToggleIntro", "0");
-					savedData.edit().putString("savedProfileData", ListUtil.setHashMapToSharedJSON(profileData)).commit();
+					sessionData.put("sessionToggleIntro", "0");
+					FileUtil.writeStringToFile(FileUtil.getPackageDir().concat("/user/session.pref"), ListUtil.setHashMapToSharedJSON(sessionData));
 					introDialog.dismiss();
-					if (ContextCompat.checkSelfPermission(ApplicationUtil.getAppContext(), Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_DENIED && ContextCompat.checkSelfPermission(ApplicationUtil.getAppContext(), Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_DENIED) {
-						ActivityCompat.requestPermissions(LocalStreamActivity.this, new String[]{"android.permission.READ_EXTERNAL_STORAGE", "android.permission.WRITE_EXTERNAL_STORAGE"}, 1);
-					} else {
-						(new MediaScanningTask()).execute();
-					}
 				}
 			});
 			Double TopLeft = 20.0;
@@ -236,10 +225,10 @@ public class LocalStreamActivity extends  AppCompatActivity  {
 			GradientDrawable roundedCorners = new GradientDrawable();
 			roundedCorners.setShape(GradientDrawable.RECTANGLE);
 			roundedCorners.setCornerRadii(new float[] {TopLeft.floatValue(),TopLeft.floatValue(), TopRight.floatValue(),TopRight.floatValue(), BottomRight.floatValue(),BottomRight.floatValue(), BottomLeft.floatValue(),BottomLeft.floatValue()});
-			if (!profileData.containsKey("profileDarkMode")) {
+			if (!settingsData.containsKey("settingsDarkMode")) {
 				roundedCorners.setColor(Color.parseColor("#FFFFFF"));
 			} else {
-				if (profileData.get("profileDarkMode").equals("true")) {
+				if (settingsData.get("settingsDarkMode").equals("true")) {
 					roundedCorners.setColor(Color.parseColor("#1A1A1A"));
 					description.setTextColor(Color.parseColor("#FFFFFF"));
 				} else {
@@ -254,14 +243,14 @@ public class LocalStreamActivity extends  AppCompatActivity  {
 			introDialog.setCancelable(false);
 			introDialog.show();
 		}
-		if (profileData.containsKey("profileNavigationIndex")) {
-			if (profileData.get("profileNavigationIndex").equals("0")) {
+		if (sessionData.containsKey("sessionNavigationIndex")) {
+			if (sessionData.get("sessionNavigationIndex").equals("0")) {
 				tabNavigation.getTabAt(0).select();
 				listRefresh.setVisibility(View.VISIBLE);
 				miniplayer.setVisibility(View.VISIBLE);
 				player.setVisibility(View.GONE);
 				miniplayerSeekbar.setVisibility(View.VISIBLE);
-			} else if (profileData.get("profileNavigationIndex").equals("1")) {
+			} else if (sessionData.get("sessionNavigationIndex").equals("1")) {
 				tabNavigation.getTabAt(1).select();
 				listRefresh.setVisibility(View.GONE);
 				player.setVisibility(View.VISIBLE);
@@ -269,8 +258,8 @@ public class LocalStreamActivity extends  AppCompatActivity  {
 				miniplayerSeekbar.setVisibility(View.GONE);
 			}
 		} else {
-			profileData.put("profileNavigationIndex", "0");
-			savedData.edit().putString("savedProfileData", ListUtil.setHashMapToSharedJSON(profileData)).commit();
+			profileData.put("sessionNavigationIndex", "0");
+			FileUtil.writeStringToFile(FileUtil.getPackageDir().concat("/user/session.pref"), ListUtil.setHashMapToSharedJSON(sessionData));
 			tabNavigation.getTabAt(0).select();
 			listRefresh.setVisibility(View.VISIBLE);
 			player.setVisibility(View.GONE);
@@ -284,14 +273,14 @@ public class LocalStreamActivity extends  AppCompatActivity  {
 				Glide.with(ApplicationUtil.getAppContext()).load(R.drawable.ic_profile_icon).into(menu);
 			}
 		}
-		if (profileData.containsKey("profileRepeatMode")) {
-			if (profileData.get("profileRepeatMode").equals("0")) {
+		if (sessionData.containsKey("sessionRepeatMode")) {
+			if (sessionData.get("sessionRepeatMode").equals("0")) {
 				if (Build.VERSION.SDK_INT >= 23) {
 					repeat.setColorFilter(ContextCompat.getColor(ApplicationUtil.getAppContext(), R.color.colorControlHighlight), PorterDuff.Mode.SRC_IN);
 				} else {
 					repeat.setColorFilter(ApplicationUtil.getAppResources().getColor(R.color.colorControlHighlight), PorterDuff.Mode.SRC_IN);
 				}
-			} else if (profileData.get("profileRepeatMode").equals("1")) {
+			} else if (sessionData.get("sessionRepeatMode").equals("1")) {
 				if (Build.VERSION.SDK_INT >= 23) {
 					repeat.setColorFilter(ContextCompat.getColor(ApplicationUtil.getAppContext(), R.color.colorPrimary), PorterDuff.Mode.SRC_IN);
 				} else {
@@ -304,17 +293,17 @@ public class LocalStreamActivity extends  AppCompatActivity  {
 			} else {
 				repeat.setColorFilter(ApplicationUtil.getAppResources().getColor(R.color.colorControlHighlight), PorterDuff.Mode.SRC_IN);
 			}
-			profileData.put("profileRepeatMode", "0");
-			savedData.edit().putString("savedProfileData", ListUtil.setHashMapToSharedJSON(profileData)).commit();
+			sessionData.put("sessionRepeatMode", "0");
+			FileUtil.writeStringToFile(FileUtil.getPackageDir().concat("/user/session.pref"), ListUtil.setHashMapToSharedJSON(sessionData));
 		}
-		if (profileData.containsKey("profileShuffleMode")) {
-			if (profileData.get("profileShuffleMode").equals("0")) {
+		if (sessionData.containsKey("sessionShuffleMode")) {
+			if (sessionData.get("sessionShuffleMode").equals("0")) {
 				if (Build.VERSION.SDK_INT >= 23) {
 					shuffle.setColorFilter(ContextCompat.getColor(ApplicationUtil.getAppContext(), R.color.colorControlHighlight), PorterDuff.Mode.SRC_IN);
 				} else {
 					shuffle.setColorFilter(ApplicationUtil.getAppResources().getColor(R.color.colorControlHighlight), PorterDuff.Mode.SRC_IN);
 				}
-			} else if (profileData.get("profileShuffleMode").equals("1")) {
+			} else if (sessionData.get("sessionShuffleMode").equals("1")) {
 				if (Build.VERSION.SDK_INT >= 23) {
 					shuffle.setColorFilter(ContextCompat.getColor(ApplicationUtil.getAppContext(), R.color.colorPrimary), PorterDuff.Mode.SRC_IN);
 				} else {
@@ -327,8 +316,8 @@ public class LocalStreamActivity extends  AppCompatActivity  {
 			} else {
 				shuffle.setColorFilter(ApplicationUtil.getAppResources().getColor(R.color.colorControlHighlight), PorterDuff.Mode.SRC_IN);
 			}
-			profileData.put("profileShuffleMode", "0");
-			savedData.edit().putString("savedProfileData", ListUtil.setHashMapToSharedJSON(profileData)).commit();
+			sessionData.put("sessionShuffleMode", "0");
+			FileUtil.writeStringToFile(FileUtil.getPackageDir().concat("/user/session.pref"), ListUtil.setHashMapToSharedJSON(sessionData));
 		}
 		registerListeners();
 		startupUI();
@@ -356,26 +345,24 @@ public class LocalStreamActivity extends  AppCompatActivity  {
 				LinearLayout settings = dialogLayout.findViewById(R.id.settings);
 				LinearLayout visualizer = dialogLayout.findViewById(R.id.visualizer);
 				title.setTypeface(Typeface.createFromAsset(getAssets(),"fonts/roboto_medium.ttf"), Typeface.NORMAL);
-				if (savedData.contains("savedProfileData")) {
-					if (profileData.containsKey("profileName")) {
-						profile_name.setText(profileData.get("profileName").toString());
-					}
-					if (profileData.containsKey("profilePicture")) {
-						if (!profileData.get("profilePicture").toString().equals("")) {
-							Glide.with(ApplicationUtil.getAppContext()).load(profileData.get("profilePicture").toString()).into(profile_icon);
-						} else {
-							Glide.with(ApplicationUtil.getAppContext()).load(R.drawable.ic_profile_icon).into(profile_icon);
-						}
+				if (profileData.containsKey("profileName")) {
+					profile_name.setText(profileData.get("profileName").toString());
+				}
+				if (profileData.containsKey("profilePicture")) {
+					if (!profileData.get("profilePicture").toString().equals("")) {
+						Glide.with(ApplicationUtil.getAppContext()).load(profileData.get("profilePicture").toString()).into(profile_icon);
+					} else {
+						Glide.with(ApplicationUtil.getAppContext()).load(R.drawable.ic_profile_icon).into(profile_icon);
 					}
 				}
 				profile.setOnClickListener(new View.OnClickListener() {
 					@Override
 					public void onClick(View view) {
-						if (!profileData.containsKey("profileDarkMode")) {
+						if (!settingsData.containsKey("settingsDarkMode")) {
 							RippleDrawable rippleButton = new RippleDrawable(new ColorStateList(new int[][]{new int[]{}}, new int[]{ Color.parseColor("#BDBDBD") }), new ColorDrawable(Color.parseColor("#FFFFFF")), null);
 							view.setBackground(rippleButton);
 						} else {
-							if (profileData.get("profileDarkMode").equals("true")) {
+							if (settingsData.get("settingsDarkMode").equals("true")) {
 								RippleDrawable rippleButton = new RippleDrawable(new ColorStateList(new int[][]{new int[]{}}, new int[]{ Color.parseColor("#BDBDBD") }), new ColorDrawable(Color.parseColor("#1A1A1A")), null);
 								view.setBackground(rippleButton);
 							} else {
@@ -383,24 +370,22 @@ public class LocalStreamActivity extends  AppCompatActivity  {
 								view.setBackground(rippleButton);
 							}
 						}
-						BottomSheetDialog renameProfileDialog = new BottomSheetDialog(LocalStreamActivity.this);
+						BottomSheetDialog createProfileDialog = new BottomSheetDialog(LocalStreamActivity.this);
 						View dialogLayout = getLayoutInflater().inflate(R.layout.dialog_create_a_profile, null);
-						renameProfileDialog.setContentView(dialogLayout);
+						createProfileDialog.setContentView(dialogLayout);
 						LinearLayout main = dialogLayout.findViewById(R.id.main);
 						TextView title = dialogLayout.findViewById(R.id.title);
 						ImageView profile_icon = dialogLayout.findViewById(R.id.profile_icon);
 						EditText profile_name = dialogLayout.findViewById(R.id.profile_name);
 						Button create = dialogLayout.findViewById(R.id.create);
-						if (savedData.contains("savedProfileData")) {
-							if (profileData.containsKey("profileName")) {
-								profile_name.setText(profileData.get("profileName").toString());
-							}
-							if (profileData.containsKey("profilePicture")) {
-								if (!profileData.get("profilePicture").toString().equals("")) {
-									Glide.with(ApplicationUtil.getAppContext()).load(profileData.get("profilePicture").toString()).into(profile_icon);
-								} else {
-									Glide.with(ApplicationUtil.getAppContext()).load(R.drawable.ic_profile_icon).into(profile_icon);
-								}
+						if (profileData.containsKey("profileName")) {
+							profile_name.setText(profileData.get("profileName").toString());
+						}
+						if (profileData.containsKey("profilePicture")) {
+							if (!profileData.get("profilePicture").toString().equals("")) {
+								Glide.with(ApplicationUtil.getAppContext()).load(profileData.get("profilePicture").toString()).into(profile_icon);
+							} else {
+								Glide.with(ApplicationUtil.getAppContext()).load(R.drawable.ic_profile_icon).into(profile_icon);
 							}
 						}
 						title.setTypeface(Typeface.createFromAsset(getAssets(),"fonts/roboto_medium.ttf"), Typeface.NORMAL);
@@ -418,11 +403,9 @@ public class LocalStreamActivity extends  AppCompatActivity  {
 								EditText url = dialogLayout.findViewById(R.id.url);
 								Button finish = dialogLayout.findViewById(R.id.finish);
 								Button cancel = dialogLayout.findViewById(R.id.cancel);
-								if (savedData.contains("savedProfileData")) {
-									if (profileData.containsKey("profilePicture")) {
-										Glide.with(ApplicationUtil.getAppContext()).load(profileData.get("profilePicture").toString()).into(profile_picture);
-										url.setText(profileData.get("profilePicture").toString());
-									}
+								if (profileData.containsKey("profilePicture")) {
+									Glide.with(ApplicationUtil.getAppContext()).load(profileData.get("profilePicture").toString()).into(profile_picture);
+									url.setText(profileData.get("profilePicture").toString());
 								}
 								title.setTypeface(Typeface.createFromAsset(getAssets(),"fonts/roboto_medium.ttf"), Typeface.NORMAL);
 								url.addTextChangedListener(new TextWatcher() {
@@ -454,7 +437,7 @@ public class LocalStreamActivity extends  AppCompatActivity  {
 											} else {
 												String pfpUrl = url.getText().toString();
 												profileData.put("profilePicture", pfpUrl);
-												savedData.edit().putString("savedProfileData", ListUtil.setHashMapToSharedJSON(profileData)).commit();
+												FileUtil.writeStringToFile(FileUtil.getPackageDir().concat("/user/profile.pref"), ListUtil.setHashMapToSharedJSON(profileData));
 												if (!pfpUrl.equals("")) {
 													Glide.with(ApplicationUtil.getAppContext()).load(pfpUrl).into(profile_icon);
 													Glide.with(ApplicationUtil.getAppContext()).load(pfpUrl).into(menu);
@@ -472,7 +455,7 @@ public class LocalStreamActivity extends  AppCompatActivity  {
 											} else {
 												String pfpUrl = url.getText().toString();
 												profileData.put("profilePicture", pfpUrl);
-												savedData.edit().putString("savedProfileData", ListUtil.setHashMapToSharedJSON(profileData)).commit();
+												FileUtil.writeStringToFile(FileUtil.getPackageDir().concat("/user/profile.pref"), ListUtil.setHashMapToSharedJSON(profileData));
 												if (!pfpUrl.equals("")) {
 													Glide.with(ApplicationUtil.getAppContext()).load(pfpUrl).into(profile_icon);
 													Glide.with(ApplicationUtil.getAppContext()).load(pfpUrl).into(menu);
@@ -490,11 +473,11 @@ public class LocalStreamActivity extends  AppCompatActivity  {
 								cancel.setOnClickListener(new View.OnClickListener() {
 									@Override
 									public void onClick(View view) {
-										if (!profileData.containsKey("profileDarkMode")) {
+										if (!settingsData.containsKey("settingsDarkMode")) {
 											RippleDrawable rippleButton = new RippleDrawable(new ColorStateList(new int[][]{new int[]{}}, new int[]{ Color.parseColor("#BDBDBD") }), new ColorDrawable(Color.parseColor("#FFFFFF")), null);
 											view.setBackground(rippleButton);
 										} else {
-											if (profileData.get("profileDarkMode").equals("true")) {
+											if (settingsData.get("settingsDarkMode").equals("true")) {
 												RippleDrawable rippleButton = new RippleDrawable(new ColorStateList(new int[][]{new int[]{}}, new int[]{ Color.parseColor("#BDBDBD") }), new ColorDrawable(Color.parseColor("#1A1A1A")), null);
 												view.setBackground(rippleButton);
 											} else {
@@ -515,11 +498,11 @@ public class LocalStreamActivity extends  AppCompatActivity  {
 								GradientDrawable roundedCorners2 = new GradientDrawable();
 								roundedCorners2.setShape(GradientDrawable.RECTANGLE);
 								roundedCorners2.setCornerRadius(20);
-								if (!profileData.containsKey("profileDarkMode")) {
+								if (!settingsData.containsKey("settingsDarkMode")) {
 									roundedCorners.setColor(Color.parseColor("#FFFFFF"));
 									roundedCorners2.setColor(Color.parseColor("#EEEEEE"));
 								} else {
-									if (profileData.get("profileDarkMode").equals("true")) {
+									if (settingsData.get("settingsDarkMode").equals("true")) {
 										roundedCorners.setColor(Color.parseColor("#1A1A1A"));
 										roundedCorners2.setColor(Color.parseColor("#212121"));
 										url.setTextColor(Color.parseColor("#FFFFFF"));
@@ -545,14 +528,14 @@ public class LocalStreamActivity extends  AppCompatActivity  {
 								if (profile_name.getText().toString().length() > 0) {
 									if (profileData.containsKey("profileName")) {
 										if (profile_name.getText().toString().equals(profileData.get("profileName").toString())) {
-											renameProfileDialog.dismiss();
+											createProfileDialog.dismiss();
 										} else {
 											String profileName = profile_name.getText().toString();
 											profileData.put("profileName", profileName);
-											savedData.edit().putString("savedProfileData", ListUtil.setHashMapToSharedJSON(profileData)).commit();
+											FileUtil.writeStringToFile(FileUtil.getPackageDir().concat("/user/profile.pref"), ListUtil.setHashMapToSharedJSON(profileData));
 											ApplicationUtil.toast("Renamed profile sucessfully.", Toast.LENGTH_SHORT);
 											tabNavigation.getTabAt(0).select();
-											renameProfileDialog.dismiss();
+											createProfileDialog.dismiss();
 											menuDialog.dismiss();
 											startActivity(new Intent(ApplicationUtil.getAppContext(), LauncherActivity.class));
 											finish();
@@ -560,10 +543,10 @@ public class LocalStreamActivity extends  AppCompatActivity  {
 									} else {
 										String profileName = profile_name.getText().toString();
 										profileData.put("profileName", profileName);
-										savedData.edit().putString("savedProfileData", ListUtil.setHashMapToSharedJSON(profileData)).commit();
+										FileUtil.writeStringToFile(FileUtil.getPackageDir().concat("/user/profile.pref"), ListUtil.setHashMapToSharedJSON(profileData));
 										ApplicationUtil.toast("Renamed profile sucessfully.", Toast.LENGTH_SHORT);
 										tabNavigation.getTabAt(0).select();
-										renameProfileDialog.dismiss();
+										createProfileDialog.dismiss();
 										menuDialog.dismiss();
 										startActivity(new Intent(ApplicationUtil.getAppContext(), LauncherActivity.class));
 										finish();
@@ -583,11 +566,11 @@ public class LocalStreamActivity extends  AppCompatActivity  {
 						GradientDrawable roundedCorners2 = new GradientDrawable();
 						roundedCorners2.setShape(GradientDrawable.RECTANGLE);
 						roundedCorners2.setCornerRadius(20);
-						if (!profileData.containsKey("profileDarkMode")) {
+						if (!settingsData.containsKey("settingsDarkMode")) {
 							roundedCorners.setColor(Color.parseColor("#FFFFFF"));
 							roundedCorners2.setColor(Color.parseColor("#EEEEEE"));
 						} else {
-							if (profileData.get("profileDarkMode").equals("true")) {
+							if (settingsData.get("settingsDarkMode").equals("true")) {
 								roundedCorners.setColor(Color.parseColor("#1A1A1A"));
 								roundedCorners2.setColor(Color.parseColor("#212121"));
 								profile_name.setTextColor(Color.parseColor("#FFFFFF"));
@@ -603,17 +586,17 @@ public class LocalStreamActivity extends  AppCompatActivity  {
 						gradientButton.setColor(Color.parseColor("#03A9F4"));
 						gradientButton.setCornerRadius(20);
 						create.setBackground(gradientButton);
-						renameProfileDialog.show();
+						createProfileDialog.show();
 					}
 				});
 				live_streaming.setOnClickListener(new View.OnClickListener() {
 					@Override
 					public void onClick(View view) {
-						if (!profileData.containsKey("profileDarkMode")) {
+						if (!settingsData.containsKey("settingsDarkMode")) {
 							RippleDrawable rippleButton = new RippleDrawable(new ColorStateList(new int[][]{new int[]{}}, new int[]{ Color.parseColor("#BDBDBD") }), new ColorDrawable(Color.parseColor("#FFFFFF")), null);
 							view.setBackground(rippleButton);
 						} else {
-							if (profileData.get("profileDarkMode").equals("true")) {
+							if (settingsData.get("settingsDarkMode").equals("true")) {
 								RippleDrawable rippleButton = new RippleDrawable(new ColorStateList(new int[][]{new int[]{}}, new int[]{ Color.parseColor("#BDBDBD") }), new ColorDrawable(Color.parseColor("#1A1A1A")), null);
 								view.setBackground(rippleButton);
 							} else {
@@ -627,11 +610,11 @@ public class LocalStreamActivity extends  AppCompatActivity  {
 				settings.setOnClickListener(new View.OnClickListener() {
 					@Override
 					public void onClick(View view) {
-						if (!profileData.containsKey("profileDarkMode")) {
+						if (!settingsData.containsKey("settingsDarkMode")) {
 							RippleDrawable rippleButton = new RippleDrawable(new ColorStateList(new int[][]{new int[]{}}, new int[]{ Color.parseColor("#BDBDBD") }), new ColorDrawable(Color.parseColor("#FFFFFF")), null);
 							view.setBackground(rippleButton);
 						} else {
-							if (profileData.get("profileDarkMode").equals("true")) {
+							if (settingsData.get("settingsDarkMode").equals("true")) {
 								RippleDrawable rippleButton = new RippleDrawable(new ColorStateList(new int[][]{new int[]{}}, new int[]{ Color.parseColor("#BDBDBD") }), new ColorDrawable(Color.parseColor("#1A1A1A")), null);
 								view.setBackground(rippleButton);
 							} else {
@@ -651,8 +634,8 @@ public class LocalStreamActivity extends  AppCompatActivity  {
 						CheckBox disable_ads = dialogLayout.findViewById(R.id.disable_ads);
 						title.setTypeface(Typeface.createFromAsset(getAssets(),"fonts/roboto_medium.ttf"), Typeface.NORMAL);
 						general_title.setTypeface(Typeface.createFromAsset(getAssets(),"fonts/roboto_medium.ttf"), Typeface.NORMAL);
-						if (profileData.containsKey("profileDarkMode")) {
-							if (profileData.get("profileDarkMode").equals("true")) {
+						if (settingsData.containsKey("settingsDarkMode")) {
+							if (settingsData.get("settingsDarkMode").equals("true")) {
 								dark_mode.setChecked(true);
 							}
 						}
@@ -668,14 +651,14 @@ public class LocalStreamActivity extends  AppCompatActivity  {
 							@Override
 							public void onCheckedChanged(CompoundButton view, boolean isChecked) {
 								if (isChecked) {
-									profileData.put("profileDarkMode", "true");
-									savedData.edit().putString("savedProfileData", ListUtil.setHashMapToSharedJSON(profileData)).commit();
+									sessionData.put("sessionDarkMode", "true");
+									FileUtil.writeStringToFile(FileUtil.getPackageDir().concat("/user/session.pref"), ListUtil.setHashMapToSharedJSON(sessionData));
 									startActivity(new Intent(ApplicationUtil.getAppContext(), SplashActivity.class));
 									finish();
 									ApplicationUtil.toast("Dark mode enabled.", Toast.LENGTH_SHORT);
 								} else {
-									profileData.put("profileDarkMode", "false");
-									savedData.edit().putString("savedProfileData", ListUtil.setHashMapToSharedJSON(profileData)).commit();
+									sessionData.put("sessionDarkMode", "false");
+									FileUtil.writeStringToFile(FileUtil.getPackageDir().concat("/user/session.pref"), ListUtil.setHashMapToSharedJSON(sessionData));
 									startActivity(new Intent(ApplicationUtil.getAppContext(), SplashActivity.class));
 									finish();
 									ApplicationUtil.toast("Dark mode disabled.", Toast.LENGTH_SHORT);
@@ -686,10 +669,10 @@ public class LocalStreamActivity extends  AppCompatActivity  {
 							@Override
 							public void onCheckedChanged(CompoundButton view, boolean isChecked) {
 								if (isChecked) {
-									profileData.put("profileAds", "enabled");
+									sessionData.put("sessionAds", "true");
 									ApplicationUtil.toast("Ads enabled.", Toast.LENGTH_SHORT);
 								} else {
-									profileData.put("profileAds", "disabled");
+									sessionData.put("sessionAds", "false");
 									ApplicationUtil.toast("Ads disabled.", Toast.LENGTH_SHORT);
 								}
 							}
@@ -701,10 +684,10 @@ public class LocalStreamActivity extends  AppCompatActivity  {
 						GradientDrawable roundedCorners = new GradientDrawable();
 						roundedCorners.setShape(GradientDrawable.RECTANGLE);
 						roundedCorners.setCornerRadii(new float[] {TopLeft.floatValue(),TopLeft.floatValue(), TopRight.floatValue(),TopRight.floatValue(), BottomRight.floatValue(),BottomRight.floatValue(), BottomLeft.floatValue(),BottomLeft.floatValue()});
-						if (!profileData.containsKey("profileDarkMode")) {
+						if (!settingsData.containsKey("settingsDarkMode")) {
 							roundedCorners.setColor(Color.parseColor("#FFFFFF"));
 						} else {
-							if (profileData.get("profileDarkMode").equals("true")) {
+							if (settingsData.get("settingsDarkMode").equals("true")) {
 								roundedCorners.setColor(Color.parseColor("#1A1A1A"));
 								dark_mode.setTextColor(Color.parseColor("#FFFFFF"));
 								disable_ads.setTextColor(Color.parseColor("#FFFFFF"));
@@ -720,11 +703,11 @@ public class LocalStreamActivity extends  AppCompatActivity  {
 				visualizer.setOnClickListener(new View.OnClickListener() {
 					@Override
 					public void onClick(View view) {
-						if (!profileData.containsKey("profileDarkMode")) {
+						if (!settingsData.containsKey("settingsDarkMode")) {
 							RippleDrawable rippleButton = new RippleDrawable(new ColorStateList(new int[][]{new int[]{}}, new int[]{ Color.parseColor("#BDBDBD") }), new ColorDrawable(Color.parseColor("#FFFFFF")), null);
 							view.setBackground(rippleButton);
 						} else {
-							if (profileData.get("profileDarkMode").equals("true")) {
+							if (settingsData.get("settingsDarkMode").equals("true")) {
 								RippleDrawable rippleButton = new RippleDrawable(new ColorStateList(new int[][]{new int[]{}}, new int[]{ Color.parseColor("#BDBDBD") }), new ColorDrawable(Color.parseColor("#1A1A1A")), null);
 								view.setBackground(rippleButton);
 							} else {
@@ -733,7 +716,7 @@ public class LocalStreamActivity extends  AppCompatActivity  {
 							}
 						}
 						if (ContextCompat.checkSelfPermission(ApplicationUtil.getAppContext(), Manifest.permission.RECORD_AUDIO) == PackageManager.PERMISSION_DENIED) {
-							ActivityCompat.requestPermissions(LocalStreamActivity.this, new String[]{"android.permission.RECORD_AUDIO"}, 2);
+							ActivityCompat.requestPermissions(LocalStreamActivity.this, new String[]{"android.permission.RECORD_AUDIO"}, 1);
 						} else {
 							BottomSheetDialog visualizerDialog = new BottomSheetDialog(LocalStreamActivity.this);
 							View dialogLayout = getLayoutInflater().inflate(R.layout.dialog_visualizer, null);
@@ -836,11 +819,11 @@ public class LocalStreamActivity extends  AppCompatActivity  {
 						youtube.setOnClickListener(new View.OnClickListener() {
 							@Override
 							public void onClick(View view) {
-								if (!profileData.containsKey("profileDarkMode")) {
+								if (!settingsData.containsKey("settingsDarkMode")) {
 									RippleDrawable rippleButton = new RippleDrawable(new ColorStateList(new int[][]{new int[]{}}, new int[]{ Color.parseColor("#BDBDBD") }), new ColorDrawable(Color.parseColor("#FFFFFF")), null);
 									view.setBackground(rippleButton);
 								} else {
-									if (profileData.get("profileDarkMode").equals("true")) {
+									if (settingsData.get("settingsDarkMode").equals("true")) {
 										RippleDrawable rippleButton = new RippleDrawable(new ColorStateList(new int[][]{new int[]{}}, new int[]{ Color.parseColor("#BDBDBD") }), new ColorDrawable(Color.parseColor("#1A1A1A")), null);
 										view.setBackground(rippleButton);
 									} else {
@@ -857,11 +840,11 @@ public class LocalStreamActivity extends  AppCompatActivity  {
 						twitter.setOnClickListener(new View.OnClickListener() {
 							@Override
 							public void onClick(View view) {
-								if (!profileData.containsKey("profileDarkMode")) {
+								if (!settingsData.containsKey("settingsDarkMode")) {
 									RippleDrawable rippleButton = new RippleDrawable(new ColorStateList(new int[][]{new int[]{}}, new int[]{ Color.parseColor("#BDBDBD") }), new ColorDrawable(Color.parseColor("#FFFFFF")), null);
 									view.setBackground(rippleButton);
 								} else {
-									if (profileData.get("profileDarkMode").equals("true")) {
+									if (settingsData.get("settingsDarkMode").equals("true")) {
 										RippleDrawable rippleButton = new RippleDrawable(new ColorStateList(new int[][]{new int[]{}}, new int[]{ Color.parseColor("#BDBDBD") }), new ColorDrawable(Color.parseColor("#1A1A1A")), null);
 										view.setBackground(rippleButton);
 									} else {
@@ -878,11 +861,11 @@ public class LocalStreamActivity extends  AppCompatActivity  {
 						github.setOnClickListener(new View.OnClickListener() {
 							@Override
 							public void onClick(View view) {
-								if (!profileData.containsKey("profileDarkMode")) {
+								if (!settingsData.containsKey("settingsDarkMode")) {
 									RippleDrawable rippleButton = new RippleDrawable(new ColorStateList(new int[][]{new int[]{}}, new int[]{ Color.parseColor("#BDBDBD") }), new ColorDrawable(Color.parseColor("#FFFFFF")), null);
 									view.setBackground(rippleButton);
 								} else {
-									if (profileData.get("profileDarkMode").equals("true")) {
+									if (settingsData.get("settingsDarkMode").equals("true")) {
 										RippleDrawable rippleButton = new RippleDrawable(new ColorStateList(new int[][]{new int[]{}}, new int[]{ Color.parseColor("#BDBDBD") }), new ColorDrawable(Color.parseColor("#1A1A1A")), null);
 										view.setBackground(rippleButton);
 									} else {
@@ -899,11 +882,11 @@ public class LocalStreamActivity extends  AppCompatActivity  {
 						discord.setOnClickListener(new View.OnClickListener() {
 							@Override
 							public void onClick(View view) {
-								if (!profileData.containsKey("profileDarkMode")) {
+								if (!settingsData.containsKey("settingsDarkMode")) {
 									RippleDrawable rippleButton = new RippleDrawable(new ColorStateList(new int[][]{new int[]{}}, new int[]{ Color.parseColor("#BDBDBD") }), new ColorDrawable(Color.parseColor("#FFFFFF")), null);
 									view.setBackground(rippleButton);
 								} else {
-									if (profileData.get("profileDarkMode").equals("true")) {
+									if (settingsData.get("settingsDarkMode").equals("true")) {
 										RippleDrawable rippleButton = new RippleDrawable(new ColorStateList(new int[][]{new int[]{}}, new int[]{ Color.parseColor("#BDBDBD") }), new ColorDrawable(Color.parseColor("#1A1A1A")), null);
 										view.setBackground(rippleButton);
 									} else {
@@ -920,11 +903,11 @@ public class LocalStreamActivity extends  AppCompatActivity  {
 						license.setOnClickListener(new View.OnClickListener() {
 							@Override
 							public void onClick(View view) {
-								if (!profileData.containsKey("profileDarkMode")) {
+								if (!settingsData.containsKey("settingsDarkMode")) {
 									RippleDrawable rippleButton = new RippleDrawable(new ColorStateList(new int[][]{new int[]{}}, new int[]{ Color.parseColor("#BDBDBD") }), new ColorDrawable(Color.parseColor("#FFFFFF")), null);
 									view.setBackground(rippleButton);
 								} else {
-									if (profileData.get("profileDarkMode").equals("true")) {
+									if (settingsData.get("settingsDarkMode").equals("true")) {
 										RippleDrawable rippleButton = new RippleDrawable(new ColorStateList(new int[][]{new int[]{}}, new int[]{ Color.parseColor("#BDBDBD") }), new ColorDrawable(Color.parseColor("#1A1A1A")), null);
 										view.setBackground(rippleButton);
 									} else {
@@ -941,11 +924,11 @@ public class LocalStreamActivity extends  AppCompatActivity  {
 						privacy.setOnClickListener(new View.OnClickListener() {
 							@Override
 							public void onClick(View view) {
-								if (!profileData.containsKey("profileDarkMode")) {
+								if (!settingsData.containsKey("settingsDarkMode")) {
 									RippleDrawable rippleButton = new RippleDrawable(new ColorStateList(new int[][]{new int[]{}}, new int[]{ Color.parseColor("#BDBDBD") }), new ColorDrawable(Color.parseColor("#FFFFFF")), null);
 									view.setBackground(rippleButton);
 								} else {
-									if (profileData.get("profileDarkMode").equals("true")) {
+									if (settingsData.get("settingsDarkMode").equals("true")) {
 										RippleDrawable rippleButton = new RippleDrawable(new ColorStateList(new int[][]{new int[]{}}, new int[]{ Color.parseColor("#BDBDBD") }), new ColorDrawable(Color.parseColor("#1A1A1A")), null);
 										view.setBackground(rippleButton);
 									} else {
@@ -966,10 +949,10 @@ public class LocalStreamActivity extends  AppCompatActivity  {
 						GradientDrawable roundedCorners = new GradientDrawable();
 						roundedCorners.setShape(GradientDrawable.RECTANGLE);
 						roundedCorners.setCornerRadii(new float[] {TopLeft.floatValue(),TopLeft.floatValue(), TopRight.floatValue(),TopRight.floatValue(), BottomRight.floatValue(),BottomRight.floatValue(), BottomLeft.floatValue(),BottomLeft.floatValue()});
-						if (!profileData.containsKey("profileDarkMode")) {
+						if (!settingsData.containsKey("settingsDarkMode")) {
 							roundedCorners.setColor(Color.parseColor("#FFFFFF"));
 						} else {
-							if (profileData.get("profileDarkMode").equals("true")) {
+							if (settingsData.get("settingsDarkMode").equals("true")) {
 								roundedCorners.setColor(Color.parseColor("#1A1A1A"));
 								author.setTextColor(Color.parseColor("#FFFFFF"));
 								youtube_name.setTextColor(Color.parseColor("#FFFFFF"));
@@ -994,10 +977,10 @@ public class LocalStreamActivity extends  AppCompatActivity  {
 				GradientDrawable roundedCorners = new GradientDrawable();
 				roundedCorners.setShape(GradientDrawable.RECTANGLE);
 				roundedCorners.setCornerRadii(new float[] {TopLeft.floatValue(),TopLeft.floatValue(), TopRight.floatValue(),TopRight.floatValue(), BottomRight.floatValue(),BottomRight.floatValue(), BottomLeft.floatValue(),BottomLeft.floatValue()});
-				if (!profileData.containsKey("profileDarkMode")) {
+				if (!settingsData.containsKey("settingsDarkMode")) {
 					roundedCorners.setColor(Color.parseColor("#FFFFFF"));
 				} else {
-					if (profileData.get("profileDarkMode").equals("true")) {
+					if (settingsData.get("settingsDarkMode").equals("true")) {
 						roundedCorners.setColor(Color.parseColor("#1A1A1A"));
 						profile_name.setTextColor(Color.parseColor("#FFFFFF"));
 						live_stream_name.setTextColor(Color.parseColor("#FFFFFF"));
@@ -1014,8 +997,8 @@ public class LocalStreamActivity extends  AppCompatActivity  {
 		miniplayer.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View view) {
-				if (profileData.containsKey("profileDarkMode")) {
-					if (!profileData.get("profileDarkMode").equals("true")) {
+				if (settingsData.containsKey("settingsDarkMode")) {
+					if (!settingsData.get("settingsDarkMode").equals("true")) {
 						miniplayer.setBackground(new RippleDrawable(new ColorStateList(new int[][]{new int[]{}}, new int[]{ Color.parseColor("#BDBDBD") }), new ColorDrawable(Color.parseColor("#FFFFFF")), null));
 					} else {
 						miniplayer.setBackground(new RippleDrawable(new ColorStateList(new int[][]{new int[]{}}, new int[]{ Color.parseColor("#BDBDBD") }), new ColorDrawable(Color.parseColor("#1A1A1A")), null));
@@ -1039,8 +1022,8 @@ public class LocalStreamActivity extends  AppCompatActivity  {
 					if (fadeAnim.isRunning()) {
 						fadeAnim.cancel();
 					}
-					profileData.put("profileNavigationIndex", "0");
-					savedData.edit().putString("savedProfileData", ListUtil.setHashMapToSharedJSON(profileData)).commit();
+					sessionData.put("sessionNavigationIndex", "0");
+					FileUtil.writeStringToFile(FileUtil.getPackageDir().concat("/user/session.pref"), ListUtil.setHashMapToSharedJSON(sessionData));
 					player.setVisibility(View.VISIBLE);
 					listRefresh.setVisibility(View.GONE);
 					miniplayer.setVisibility(View.GONE);
@@ -1072,8 +1055,8 @@ public class LocalStreamActivity extends  AppCompatActivity  {
 					if (fadeAnim.isRunning()) {
 						fadeAnim.cancel();
 					}
-					profileData.put("profileNavigationIndex", "1");
-					savedData.edit().putString("savedProfileData", ListUtil.setHashMapToSharedJSON(profileData)).commit();
+					sessionData.put("sessionNavigationIndex", "1");
+					FileUtil.writeStringToFile(FileUtil.getPackageDir().concat("/user/session.pref"), ListUtil.setHashMapToSharedJSON(sessionData));
 					player.setVisibility(View.GONE);
 					listRefresh.setVisibility(View.VISIBLE);
 					miniplayer.setVisibility(View.VISIBLE);
@@ -1120,35 +1103,6 @@ public class LocalStreamActivity extends  AppCompatActivity  {
 		listRefresh.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
 			@Override
 			public void onRefresh() {
-				if (profileData.containsKey("profileToggleIntro")) {
-					int randomizer = IntegerUtil.getRandom(0, 1);
-					if (randomizer == 0) {
-						if (savedData.contains("savedMusicData")) {
-							musicData = ListUtil.getArrayListFromSharedJSON(savedData, "savedMusicData");
-							songList.setAdapter(new SongListAdapter(musicData));
-							if (!musicData.isEmpty()) {
-								listEmptyMsg.setVisibility(View.GONE);
-								songList.setVisibility(View.VISIBLE);
-							} else {
-								listEmptyMsg.setVisibility(View.VISIBLE);
-								songList.setVisibility(View.GONE);
-							}
-							connectToLocalPlaybackService();
-						} else {
-							musicData = new ArrayList<>();
-							savedData.edit().putString("savedMusicData", ListUtil.setArrayListToSharedJSON(musicData)).commit();
-							if (ContextCompat.checkSelfPermission(ApplicationUtil.getAppContext(), Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED && ContextCompat.checkSelfPermission(ApplicationUtil.getAppContext(), Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED) {
-								(new MediaScanningTask()).execute();
-							}
-						}
-					} else if (randomizer == 1) {
-						if (ContextCompat.checkSelfPermission(ApplicationUtil.getAppContext(), Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_DENIED && ContextCompat.checkSelfPermission(ApplicationUtil.getAppContext(), Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_DENIED) {
-							ActivityCompat.requestPermissions(LocalStreamActivity.this, new String[]{"android.permission.READ_EXTERNAL_STORAGE", "android.permission.WRITE_EXTERNAL_STORAGE"}, 1);
-						} else {
-							(new MediaScanningTask()).execute();
-						}
-					}
-				}
 				listRefresh.setRefreshing(false);
 			}
 		});
@@ -1168,8 +1122,8 @@ public class LocalStreamActivity extends  AppCompatActivity  {
 					seekbarDuration.setProgress((int)seekbarDuration.getProgress());
 					miniplayerSeekbar.setProgress((int)seekbarDuration.getProgress());
 					currentDuration.setText(String.valueOf((int)((seekbarDuration.getProgress() / 1000) / 60)).concat(":".concat(new DecimalFormat("00").format((seekbarDuration.getProgress() / 1000) % 60))));
-					musicData.get(Integer.parseInt(profileData.get("profileSongPosition").toString())).put("songCurrentDuration", String.valueOf((int)(seekbarDuration.getProgress())));
-					savedData.edit().putString("savedMusicData", ListUtil.setArrayListToSharedJSON(musicData)).commit();
+					musicData.get(Integer.parseInt(sessionData.get("sessionSongPosition").toString())).put("songCurrentDuration", String.valueOf((int)(seekbarDuration.getProgress())));
+					FileUtil.writeStringToFile(FileUtil.getPackageDir().concat("/song.json"), ListUtil.setArrayListToSharedJSON(musicData));
 				}
 			}
 		});
@@ -1178,33 +1132,33 @@ public class LocalStreamActivity extends  AppCompatActivity  {
 			public void onClick(View view) {
 				RippleDrawable rippleButton = new RippleDrawable(new ColorStateList(new int[][]{new int[]{}}, new int[]{ Color.parseColor("#BDBDBD") }), null, null);
 				view.setBackground(rippleButton);
-				if (profileData.containsKey("profileRepeatMode")) {
-					if (profileData.get("profileRepeatMode").equals("0")) {
+				if (sessionData.containsKey("sessionRepeatMode")) {
+					if (sessionData.get("sessionRepeatMode").equals("0")) {
 						if (Build.VERSION.SDK_INT >= 23) {
 							repeat.setColorFilter(ContextCompat.getColor(ApplicationUtil.getAppContext(), R.color.colorPrimary), PorterDuff.Mode.SRC_IN);
 						} else {
 							repeat.setColorFilter(ApplicationUtil.getAppResources().getColor(R.color.colorPrimary), PorterDuff.Mode.SRC_IN);
 						}
-						profileData.put("profileRepeatMode", "1");
-						savedData.edit().putString("savedProfileData", ListUtil.setHashMapToSharedJSON(profileData)).commit();
-						if (profileData.get("profileShuffleMode").equals("1")) {
+						sessionData.put("sessionRepeatMode", "1");
+						FileUtil.writeStringToFile(FileUtil.getPackageDir().concat("/user/session.pref"), ListUtil.setHashMapToSharedJSON(sessionData));
+						if (sessionData.get("sessionShuffleMode").equals("1")) {
 							if (Build.VERSION.SDK_INT >= 23) {
 								shuffle.setColorFilter(ContextCompat.getColor(ApplicationUtil.getAppContext(), R.color.colorControlHighlight), PorterDuff.Mode.SRC_IN);
 							} else {
 								shuffle.setColorFilter(ApplicationUtil.getAppResources().getColor(R.color.colorControlHighlight), PorterDuff.Mode.SRC_IN);
 							}
-							profileData.put("profileShuffleMode", "0");
-							savedData.edit().putString("savedProfileData", ListUtil.setHashMapToSharedJSON(profileData)).commit();
+							sessionData.put("sessionShuffleMode", "0");
+							FileUtil.writeStringToFile(FileUtil.getPackageDir().concat("/user/session.pref"), ListUtil.setHashMapToSharedJSON(sessionData));
 						}
 						playbackSrv.updateOnCompletionListener();
-					} else if (profileData.get("profileRepeatMode").equals("1")) {
+					} else if (sessionData.get("sessionRepeatMode").equals("1")) {
 						if (Build.VERSION.SDK_INT >= 23) {
 							repeat.setColorFilter(ContextCompat.getColor(ApplicationUtil.getAppContext(), R.color.colorControlHighlight), PorterDuff.Mode.SRC_IN);
 						} else {
 							repeat.setColorFilter(ApplicationUtil.getAppResources().getColor(R.color.colorControlHighlight), PorterDuff.Mode.SRC_IN);
 						}
-						profileData.put("profileRepeatMode", "0");
-						savedData.edit().putString("savedProfileData", ListUtil.setHashMapToSharedJSON(profileData)).commit();
+						sessionData.put("sessionRepeatMode", "0");
+						FileUtil.writeStringToFile(FileUtil.getPackageDir().concat("/user/session.pref"), ListUtil.setHashMapToSharedJSON(sessionData));
 					}
 					playbackSrv.updateOnCompletionListener();
 				} else {
@@ -1213,8 +1167,8 @@ public class LocalStreamActivity extends  AppCompatActivity  {
 					} else {
 						repeat.setColorFilter(ApplicationUtil.getAppResources().getColor(R.color.colorPrimary), PorterDuff.Mode.SRC_IN);
 					}
-					profileData.put("profileRepeatMode", "1");
-					savedData.edit().putString("savedProfileData", ListUtil.setHashMapToSharedJSON(profileData)).commit();
+					sessionData.put("sessionRepeatMode", "1");
+					FileUtil.writeStringToFile(FileUtil.getPackageDir().concat("/user/session.pref"), ListUtil.setHashMapToSharedJSON(sessionData));
 					playbackSrv.updateOnCompletionListener();
 				}
 			}
@@ -1272,33 +1226,33 @@ public class LocalStreamActivity extends  AppCompatActivity  {
 			public void onClick(View view) {
 				RippleDrawable rippleButton = new RippleDrawable(new ColorStateList(new int[][]{new int[]{}}, new int[]{ Color.parseColor("#BDBDBD") }), null, null);
 				view.setBackground(rippleButton);
-				if (profileData.containsKey("profileShuffleMode")) {
-					if (profileData.get("profileShuffleMode").equals("0")) {
+				if (sessionData.containsKey("sessionShuffleMode")) {
+					if (sessionData.get("sessionShuffleMode").equals("0")) {
 						if (Build.VERSION.SDK_INT >= 23) {
 							shuffle.setColorFilter(ContextCompat.getColor(ApplicationUtil.getAppContext(), R.color.colorPrimary), PorterDuff.Mode.SRC_IN);
 						} else {
 							shuffle.setColorFilter(ApplicationUtil.getAppResources().getColor(R.color.colorPrimary), PorterDuff.Mode.SRC_IN);
 						}
-						profileData.put("profileShuffleMode", "1");
-						savedData.edit().putString("savedProfileData", ListUtil.setHashMapToSharedJSON(profileData)).commit();
-						if (profileData.get("profileRepeatMode").equals("1")) {
+						sessionData.put("sessionShuffleMode", "1");
+						FileUtil.writeStringToFile(FileUtil.getPackageDir().concat("/user/session.pref"), ListUtil.setHashMapToSharedJSON(sessionData));
+						if (sessionData.get("sessionRepeatMode").equals("1")) {
 							if (Build.VERSION.SDK_INT >= 23) {
 								repeat.setColorFilter(ContextCompat.getColor(ApplicationUtil.getAppContext(), R.color.colorControlHighlight), PorterDuff.Mode.SRC_IN);
 							} else {
 								repeat.setColorFilter(ApplicationUtil.getAppResources().getColor(R.color.colorControlHighlight), PorterDuff.Mode.SRC_IN);
 							}
-							profileData.put("profileRepeatMode", "0");
-							savedData.edit().putString("savedProfileData", ListUtil.setHashMapToSharedJSON(profileData)).commit();
+							sessionData.put("sessionRepeatMode", "0");
+							FileUtil.writeStringToFile(FileUtil.getPackageDir().concat("/user/session.pref"), ListUtil.setHashMapToSharedJSON(sessionData));
 						}
 						playbackSrv.updateOnCompletionListener();
-					} else if (profileData.get("profileShuffleMode").equals("1")) {
+					} else if (sessionData.get("sessionShuffleMode").equals("1")) {
 						if (Build.VERSION.SDK_INT >= 23) {
 							shuffle.setColorFilter(ContextCompat.getColor(ApplicationUtil.getAppContext(), R.color.colorControlHighlight), PorterDuff.Mode.SRC_IN);
 						} else {
 							shuffle.setColorFilter(ApplicationUtil.getAppResources().getColor(R.color.colorControlHighlight), PorterDuff.Mode.SRC_IN);
 						}
-						profileData.put("profileShuffleMode", "0");
-						savedData.edit().putString("savedProfileData", ListUtil.setHashMapToSharedJSON(profileData)).commit();
+						sessionData.put("sessionShuffleMode", "0");
+                        FileUtil.writeStringToFile(FileUtil.getPackageDir().concat("/user/session.pref"), ListUtil.setHashMapToSharedJSON(sessionData));
 						playbackSrv.updateOnCompletionListener();
 					}
 				} else {
@@ -1307,8 +1261,8 @@ public class LocalStreamActivity extends  AppCompatActivity  {
 					} else {
 						shuffle.setColorFilter(ApplicationUtil.getAppResources().getColor(R.color.colorControlHighlight), PorterDuff.Mode.SRC_IN);
 					}
-					profileData.put("profileShuffleMode", "0");
-					savedData.edit().putString("savedProfileData", ListUtil.setHashMapToSharedJSON(profileData)).commit();
+					sessionData.put("sessionShuffleMode", "0");
+                    FileUtil.writeStringToFile(FileUtil.getPackageDir().concat("/user/session.pref"), ListUtil.setHashMapToSharedJSON(sessionData));
 					playbackSrv.updateOnCompletionListener();
 				}
 			}
@@ -1317,40 +1271,40 @@ public class LocalStreamActivity extends  AppCompatActivity  {
 
 	private void skipPrevious() {
 		if (playbackSrv != null) {
-            if (!profileData.containsKey("profileRepeatMode") || !profileData.containsKey("profileShuffleMode")) {
+            if (!sessionData.containsKey("sessionRepeatMode") || !profileData.containsKey("sessionShuffleMode")) {
                 try {
-                    if (Integer.parseInt(profileData.get("profileSongPosition").toString()) - 1 < musicData.size()) {
-						profileData.put("profileSongPosition", String.valueOf(Integer.parseInt(profileData.get("profileSongPosition").toString()) - 1));
-						savedData.edit().putString("savedProfileData", ListUtil.setHashMapToSharedJSON(profileData)).commit();
-                        playbackSrv.createLocalStream(Integer.parseInt(profileData.get("profileSongPosition").toString()));
+                    if (Integer.parseInt(sessionData.get("sessionSongPosition").toString()) - 1 < musicData.size()) {
+						sessionData.put("sessionSongPosition", String.valueOf(Integer.parseInt(sessionData.get("sessionSongPosition").toString()) - 1));
+                        FileUtil.writeStringToFile(FileUtil.getPackageDir().concat("/user/session.pref"), ListUtil.setHashMapToSharedJSON(sessionData));
+                        playbackSrv.createLocalStream(Integer.parseInt(sessionData.get("sessionSongPosition").toString()));
                         playPause.performClick();
                     }
                 } catch (Exception exception) {
-                    if (Integer.parseInt(profileData.get("profileSongPosition").toString()) - 1 < musicData.size()) {
-						profileData.put("profileSongPosition", String.valueOf(Integer.parseInt(profileData.get("profileSongPosition").toString()) - 1));
-						savedData.edit().putString("savedProfileData", ListUtil.setHashMapToSharedJSON(profileData)).commit();
-                        playbackSrv.createLocalStream(Integer.parseInt(profileData.get("profileSongPosition").toString()));
+                    if (Integer.parseInt(sessionData.get("sessionSongPosition").toString()) - 1 < musicData.size()) {
+						sessionData.put("sessionSongPosition", String.valueOf(Integer.parseInt(sessionData.get("sessionSongPosition").toString()) - 1));
+                        FileUtil.writeStringToFile(FileUtil.getPackageDir().concat("/user/session.pref"), ListUtil.setHashMapToSharedJSON(sessionData));
+                        playbackSrv.createLocalStream(Integer.parseInt(sessionData.get("sessionSongPosition").toString()));
                         playPause.performClick();
                     }
                 }
             } else {
-                if (profileData.get("profileRepeatMode").equals("0") && profileData.get("profileShuffleMode").equals("0")) {
+                if (sessionData.get("sessionRepeatMode").equals("0") && sessionData.get("sessionShuffleMode").equals("0")) {
                     try {
-                        if (Integer.parseInt(profileData.get("profileSongPosition").toString()) - 1 < musicData.size()) {
-							profileData.put("profileSongPosition", String.valueOf(Integer.parseInt(profileData.get("profileSongPosition").toString()) - 1));
-							savedData.edit().putString("savedProfileData", ListUtil.setHashMapToSharedJSON(profileData)).commit();
-                            playbackSrv.createLocalStream(Integer.parseInt(profileData.get("profileSongPosition").toString()));
+                        if (Integer.parseInt(sessionData.get("sessionSongPosition").toString()) - 1 < musicData.size()) {
+							sessionData.put("sessionSongPosition", String.valueOf(Integer.parseInt(sessionData.get("sessionSongPosition").toString()) - 1));
+                            FileUtil.writeStringToFile(FileUtil.getPackageDir().concat("/user/session.pref"), ListUtil.setHashMapToSharedJSON(sessionData));
+                            playbackSrv.createLocalStream(Integer.parseInt(sessionData.get("sessionSongPosition").toString()));
                             playPause.performClick();
                         }
                     } catch (Exception exception) {
-                        if (Integer.parseInt(profileData.get("profileSongPosition").toString()) - 1 < musicData.size()) {
-							profileData.put("profileSongPosition", String.valueOf(Integer.parseInt(profileData.get("profileSongPosition").toString()) - 1));
-							savedData.edit().putString("savedProfileData", ListUtil.setHashMapToSharedJSON(profileData)).commit();
-                            playbackSrv.createLocalStream(Integer.parseInt(profileData.get("profileSongPosition").toString()));
+                        if (Integer.parseInt(sessionData.get("sessionSongPosition").toString()) - 1 < musicData.size()) {
+							sessionData.put("sessionSongPosition", String.valueOf(Integer.parseInt(sessionData.get("sessionSongPosition").toString()) - 1));
+                            FileUtil.writeStringToFile(FileUtil.getPackageDir().concat("/user/session.pref"), ListUtil.setHashMapToSharedJSON(sessionData));
+                            playbackSrv.createLocalStream(Integer.parseInt(sessionData.get("sessionSongPosition").toString()));
                             playPause.performClick();
                         }
                     }
-                } else if (profileData.get("profileRepeatMode").equals("1")) {
+                } else if (sessionData.get("sessionRepeatMode").equals("1")) {
                     playbackSrv.seek(0);
                     if (Build.VERSION.SDK_INT >= 24) {
                         miniplayerSeekbar.setProgress(0, true);
@@ -1363,20 +1317,20 @@ public class LocalStreamActivity extends  AppCompatActivity  {
                     if (playbackSrv.mp != null && !playbackSrv.isPlaying()) {
                     	playPause();
 					}
-                } else if (profileData.get("profileShuffleMode").equals("1")) {
-					int randomizer = IntegerUtil.getRandom(Integer.parseInt(profileData.get("profileSongPosition").toString()), musicData.size());
+                } else if (sessionData.get("sessionShuffleMode").equals("1")) {
+					int randomizer = IntegerUtil.getRandom(Integer.parseInt(sessionData.get("sessionSongPosition").toString()), musicData.size());
 					try {
 						if (randomizer < musicData.size()) {
-							profileData.put("profileSongPosition", String.valueOf(randomizer));
-							savedData.edit().putString("savedProfileData", ListUtil.setHashMapToSharedJSON(profileData)).commit();
+							sessionData.put("sessionSongPosition", String.valueOf(randomizer));
+                            FileUtil.writeStringToFile(FileUtil.getPackageDir().concat("/user/session.pref"), ListUtil.setHashMapToSharedJSON(sessionData));
 							playbackSrv.createLocalStream(randomizer);
 							playPause.performClick();
 						}
 					} catch (Exception exception) {
 						ApplicationUtil.toast("Error loading audio file.", Toast.LENGTH_SHORT);
 						if (randomizer < musicData.size()) {
-							profileData.put("profileSongPosition", String.valueOf(randomizer));
-							savedData.edit().putString("savedProfileData", ListUtil.setHashMapToSharedJSON(profileData)).commit();
+							sessionData.put("sessionSongPosition", String.valueOf(randomizer));
+                            FileUtil.writeStringToFile(FileUtil.getPackageDir().concat("/user/session.pref"), ListUtil.setHashMapToSharedJSON(sessionData));
 							playbackSrv.createLocalStream(randomizer);
 							playPause.performClick();
 						}
@@ -1405,8 +1359,8 @@ public class LocalStreamActivity extends  AppCompatActivity  {
 									seekbarDuration.setProgress((int)playbackSrv.getCurrentPosition());
 									miniplayerSeekbar.setProgress((int)playbackSrv.getCurrentPosition());
 									currentDuration.setText(String.valueOf((int)((playbackSrv.getCurrentPosition() / 1000) / 60)).concat(":".concat(new DecimalFormat("00").format((playbackSrv.getCurrentPosition() / 1000) % 60))));
-									musicData.get(Integer.parseInt(profileData.get("profileSongPosition").toString())).put("songCurrentDuration", String.valueOf(playbackSrv.getCurrentPosition()));
-									savedData.edit().putString("savedMusicData", ListUtil.setArrayListToSharedJSON(musicData)).commit();
+									musicData.get(Integer.parseInt(sessionData.get("sessionSongPosition").toString())).put("songCurrentDuration", String.valueOf(playbackSrv.getCurrentPosition()));
+                                    FileUtil.writeStringToFile(FileUtil.getPackageDir().concat("/song.json"), ListUtil.setArrayListToSharedJSON(musicData));
 								} catch (Exception exception) {
 									Log.e("LocalPlaybackService", "Can't track current duration.");
 								}
@@ -1430,42 +1384,42 @@ public class LocalStreamActivity extends  AppCompatActivity  {
 
 	private void skipNext() {
 		if (playbackSrv != null) {
-			if (!profileData.containsKey("profileRepeatMode") || !profileData.containsKey("profileShuffleMode")) {
+			if (!sessionData.containsKey("sessionRepeatMode") || !sessionData.containsKey("sessionShuffleMode")) {
 				try {
-					if (Integer.parseInt(profileData.get("profileSongPosition").toString()) + 1 < musicData.size()) {
-						profileData.put("profileSongPosition", String.valueOf(Integer.parseInt(profileData.get("profileSongPosition").toString()) + 1));
-						savedData.edit().putString("savedProfileData", ListUtil.setHashMapToSharedJSON(profileData)).commit();
-						playbackSrv.createLocalStream(Integer.parseInt(profileData.get("profileSongPosition").toString()));
+					if (Integer.parseInt(sessionData.get("sessionSongPosition").toString()) + 1 < musicData.size()) {
+						sessionData.put("sessionSongPosition", String.valueOf(Integer.parseInt(sessionData.get("sessionSongPosition").toString()) + 1));
+                        FileUtil.writeStringToFile(FileUtil.getPackageDir().concat("/user/session.pref"), ListUtil.setHashMapToSharedJSON(sessionData));
+						playbackSrv.createLocalStream(Integer.parseInt(sessionData.get("sessionSongPosition").toString()));
 						playPause.performClick();
 					}
 				} catch (Exception exception) {
 					ApplicationUtil.toast("Error loading audio file.", Toast.LENGTH_SHORT);
-					if (Integer.parseInt(profileData.get("profileSongPosition").toString()) + 1 < musicData.size()) {
-						profileData.put("profileSongPosition", String.valueOf(Integer.parseInt(profileData.get("profileSongPosition").toString()) + 1));
-						savedData.edit().putString("savedProfileData", ListUtil.setHashMapToSharedJSON(profileData)).commit();
-						playbackSrv.createLocalStream(Integer.parseInt(profileData.get("profileSongPosition").toString()));
+					if (Integer.parseInt(sessionData.get("sessionSongPosition").toString()) + 1 < musicData.size()) {
+						sessionData.put("sessionSongPosition", String.valueOf(Integer.parseInt(sessionData.get("sessionSongPosition").toString()) + 1));
+                        FileUtil.writeStringToFile(FileUtil.getPackageDir().concat("/user/session.pref"), ListUtil.setHashMapToSharedJSON(sessionData));
+						playbackSrv.createLocalStream(Integer.parseInt(sessionData.get("sessionSongPosition").toString()));
 						playPause.performClick();
 					}
 				}
 			} else {
-				if (profileData.get("profileRepeatMode").equals("0") && profileData.get("profileShuffleMode").equals("0")) {
+				if (sessionData.get("sessionRepeatMode").equals("0") && sessionData.get("sessionShuffleMode").equals("0")) {
 					try {
-						if (Integer.parseInt(profileData.get("profileSongPosition").toString()) + 1 < musicData.size()) {
-							profileData.put("profileSongPosition", String.valueOf(Integer.parseInt(profileData.get("profileSongPosition").toString()) + 1));
-							savedData.edit().putString("savedProfileData", ListUtil.setHashMapToSharedJSON(profileData)).commit();
-							playbackSrv.createLocalStream(Integer.parseInt(profileData.get("profileSongPosition").toString()));
+						if (Integer.parseInt(sessionData.get("sessionSongPosition").toString()) + 1 < musicData.size()) {
+							sessionData.put("sessionSongPosition", String.valueOf(Integer.parseInt(sessionData.get("sessionSongPosition").toString()) + 1));
+                            FileUtil.writeStringToFile(FileUtil.getPackageDir().concat("/user/session.pref"), ListUtil.setHashMapToSharedJSON(sessionData));
+							playbackSrv.createLocalStream(Integer.parseInt(sessionData.get("sessionSongPosition").toString()));
 							playPause.performClick();
 						}
 					} catch (Exception exception) {
 						ApplicationUtil.toast("Error loading audio file.", Toast.LENGTH_SHORT);
-						if (Integer.parseInt(profileData.get("profileSongPosition").toString()) + 1 < musicData.size()) {
-							profileData.put("profileSongPosition", String.valueOf(Integer.parseInt(profileData.get("profileSongPosition").toString()) + 1));
-							savedData.edit().putString("savedProfileData", ListUtil.setHashMapToSharedJSON(profileData)).commit();
-							playbackSrv.createLocalStream(Integer.parseInt(profileData.get("profileSongPosition").toString()));
+						if (Integer.parseInt(sessionData.get("sessionSongPosition").toString()) + 1 < musicData.size()) {
+							sessionData.put("profileSongPosition", String.valueOf(Integer.parseInt(sessionData.get("sessionSongPosition").toString()) + 1));
+                            FileUtil.writeStringToFile(FileUtil.getPackageDir().concat("/user/session.pref"), ListUtil.setHashMapToSharedJSON(sessionData));
+							playbackSrv.createLocalStream(Integer.parseInt(sessionData.get("sessionSongPosition").toString()));
 							playPause.performClick();
 						}
 					}
-				} else if (profileData.get("profileRepeatMode").equals("1")) {
+				} else if (sessionData.get("sessionRepeatMode").equals("1")) {
 					playbackSrv.seek(0);
 					if (Build.VERSION.SDK_INT >= 24) {
 						miniplayerSeekbar.setProgress(0, true);
@@ -1475,20 +1429,20 @@ public class LocalStreamActivity extends  AppCompatActivity  {
 						seekbarDuration.setProgress(0);
 					}
 					currentDuration.setText("0:00");
-				} else if (profileData.get("profileShuffleMode").equals("1")) {
-					int randomizer = IntegerUtil.getRandom(Integer.parseInt(profileData.get("profileSongPosition").toString()), musicData.size());
+				} else if (sessionData.get("sessionShuffleMode").equals("1")) {
+					int randomizer = IntegerUtil.getRandom(Integer.parseInt(sessionData.get("sessionSongPosition").toString()), musicData.size());
 					try {
 						if (randomizer < musicData.size()) {
-							profileData.put("profileSongPosition", String.valueOf(randomizer));
-							savedData.edit().putString("savedProfileData", ListUtil.setHashMapToSharedJSON(profileData)).commit();
+							sessionData.put("sessionSongPosition", String.valueOf(randomizer));
+                            FileUtil.writeStringToFile(FileUtil.getPackageDir().concat("/user/session.pref"), ListUtil.setHashMapToSharedJSON(sessionData));
 							playbackSrv.createLocalStream(randomizer);
 							playPause.performClick();
 						}
 					} catch (Exception exception) {
 						ApplicationUtil.toast("Error loading audio file.", Toast.LENGTH_SHORT);
 						if (randomizer < musicData.size()) {
-							profileData.put("profileSongPosition", String.valueOf(randomizer));
-							savedData.edit().putString("savedProfileData", ListUtil.setHashMapToSharedJSON(profileData)).commit();
+							sessionData.put("sessionSongPosition", String.valueOf(randomizer));
+                            FileUtil.writeStringToFile(FileUtil.getPackageDir().concat("/user/session.pref"), ListUtil.setHashMapToSharedJSON(sessionData));
 							playbackSrv.createLocalStream(randomizer);
 							playPause.performClick();
 						}
@@ -1509,12 +1463,12 @@ public class LocalStreamActivity extends  AppCompatActivity  {
 					if (playbackSrv.mp != null && playbackSrv.isPlaying()) {
 						playPause.setImageResource(R.drawable.ic_media_pause);
 						miniplayerPlayPause.setImageResource(R.drawable.ic_media_pause);
-						Glide.with(ApplicationUtil.getAppContext()).asBitmap().load(ImageUtil.getAlbumArt(StringUtil.decodeString(musicData.get(Integer.parseInt(profileData.get("profileSongPosition").toString())).get("songData").toString()))).into(albumArt);
-						Glide.with(ApplicationUtil.getAppContext()).asBitmap().load(ImageUtil.getAlbumArt(StringUtil.decodeString(musicData.get(Integer.parseInt(profileData.get("profileSongPosition").toString())).get("songData").toString()))).into(miniplayerAlbumArt);
-						songTitle.setText(musicData.get(Integer.parseInt(profileData.get("profileSongPosition").toString())).get("songTitle").toString());
-						songArtist.setText(musicData.get(Integer.parseInt(profileData.get("profileSongPosition").toString())).get("songArtist").toString());
-						miniplayerSongTitle.setText(musicData.get(Integer.parseInt(profileData.get("profileSongPosition").toString())).get("songTitle").toString());
-						miniplayerSongArtist.setText(musicData.get(Integer.parseInt(profileData.get("profileSongPosition").toString())).get("songArtist").toString());
+						Glide.with(ApplicationUtil.getAppContext()).asBitmap().load(ImageUtil.getAlbumArt(StringUtil.decodeString(musicData.get(Integer.parseInt(sessionData.get("sessionSongPosition").toString())).get("songData").toString()))).into(albumArt);
+						Glide.with(ApplicationUtil.getAppContext()).asBitmap().load(ImageUtil.getAlbumArt(StringUtil.decodeString(musicData.get(Integer.parseInt(sessionData.get("sessionSongPosition").toString())).get("songData").toString()))).into(miniplayerAlbumArt);
+						songTitle.setText(musicData.get(Integer.parseInt(sessionData.get("sessionSongPosition").toString())).get("songTitle").toString());
+						songArtist.setText(musicData.get(Integer.parseInt(sessionData.get("sessionSongPosition").toString())).get("songArtist").toString());
+						miniplayerSongTitle.setText(musicData.get(Integer.parseInt(sessionData.get("sessionSongPosition").toString())).get("songTitle").toString());
+						miniplayerSongArtist.setText(musicData.get(Integer.parseInt(sessionData.get("sessionSongPosition").toString())).get("songArtist").toString());
 						miniplayerSeekbar.setMax(playbackSrv.getMaxDuration());
 						miniplayerSeekbar.setProgress(playbackSrv.getCurrentPosition());
 						maxDuration.setText(String.valueOf((int)((playbackSrv.getMaxDuration() / 1000) / 60)).concat(":".concat(new DecimalFormat("00").format((playbackSrv.getMaxDuration() / 1000) % 60))));
@@ -1522,38 +1476,34 @@ public class LocalStreamActivity extends  AppCompatActivity  {
 						seekbarDuration.setMax(playbackSrv.getMaxDuration());
 						seekbarDuration.setProgress(playbackSrv.getCurrentPosition());
 					} else {
-						if (profileData.containsKey("profileSongPosition")) {
-							playbackSrv.createLocalStream(Integer.parseInt(profileData.get("profileSongPosition").toString()));
-							if (musicData.get(Integer.parseInt(profileData.get("profileSongPosition").toString())).containsKey("songCurrentDuration")) {
-								if (!musicData.get(Integer.parseInt(profileData.get("profileSongPosition").toString())).get("songCurrentDuration").equals(playbackSrv.getCurrentPosition())) {
-									playbackSrv.seek(Integer.parseInt(musicData.get(Integer.parseInt(profileData.get("profileSongPosition").toString())).get("songCurrentDuration").toString()));
-									miniplayerSeekbar.setProgress(Integer.parseInt(musicData.get(Integer.parseInt(profileData.get("profileSongPosition").toString())).get("songCurrentDuration").toString()));
-									currentDuration.setText(String.valueOf(((Integer.parseInt(musicData.get(Integer.parseInt(profileData.get("profileSongPosition").toString())).get("songCurrentDuration").toString()) / 1000) / 60)).concat(":".concat(new DecimalFormat("00").format((Integer.parseInt(musicData.get(Integer.parseInt(profileData.get("profileSongPosition").toString())).get("songCurrentDuration").toString()) / 1000) % 60))));
-									seekbarDuration.setProgress(Integer.parseInt(musicData.get(Integer.parseInt(profileData.get("profileSongPosition").toString())).get("songCurrentDuration").toString()));
+						if (sessionData.containsKey("sessionSongPosition")) {
+							playbackSrv.createLocalStream(Integer.parseInt(sessionData.get("sessionSongPosition").toString()));
+							if (musicData.get(Integer.parseInt(sessionData.get("sessionSongPosition").toString())).containsKey("songCurrentDuration")) {
+								if (!musicData.get(Integer.parseInt(sessionData.get("sessionSongPosition").toString())).get("songCurrentDuration").equals(playbackSrv.getCurrentPosition())) {
+									playbackSrv.seek(Integer.parseInt(musicData.get(Integer.parseInt(sessionData.get("sessionSongPosition").toString())).get("songCurrentDuration").toString()));
+									miniplayerSeekbar.setProgress(Integer.parseInt(musicData.get(Integer.parseInt(sessionData.get("sessionSongPosition").toString())).get("songCurrentDuration").toString()));
+									currentDuration.setText(String.valueOf(((Integer.parseInt(musicData.get(Integer.parseInt(sessionData.get("sessionSongPosition").toString())).get("songCurrentDuration").toString()) / 1000) / 60)).concat(":".concat(new DecimalFormat("00").format((Integer.parseInt(musicData.get(Integer.parseInt(sessionData.get("sessionSongPosition").toString())).get("songCurrentDuration").toString()) / 1000) % 60))));
+									seekbarDuration.setProgress(Integer.parseInt(musicData.get(Integer.parseInt(sessionData.get("sessionSongPosition").toString())).get("songCurrentDuration").toString()));
 								}
 							}
 						} else {
-							if (profileData.containsKey("profileToggleIntro")) {
-								if (!musicData.isEmpty()) {
-									if (0 < musicData.size()) {
-										playbackSrv.createLocalStream(0);
-										profileData.put("profileSongPosition", "0");
-										savedData.edit().putString("savedProfileData", ListUtil.setHashMapToSharedJSON(profileData)).commit();
-									}
-								}
-							}
+                            if (!musicData.isEmpty()) {
+                                if (0 < musicData.size()) {
+                                    playbackSrv.createLocalStream(0);
+                                    sessionData.put("sessionSongPosition", "0");
+                                    FileUtil.writeStringToFile(FileUtil.getPackageDir().concat("/user/session.pref"), ListUtil.setHashMapToSharedJSON(sessionData));
+                                }
+                            }
 						}
 					}
 				} catch (Exception e) {
-					if (profileData.containsKey("profileToggleIntro")) {
-						if (!musicData.isEmpty()) {
-							if (0 < musicData.size()) {
-								playbackSrv.createLocalStream(0);
-								profileData.put("profileSongPosition", "0");
-								savedData.edit().putString("savedProfileData", ListUtil.setHashMapToSharedJSON(profileData)).commit();
-							}
-						}
-					}
+                    if (!musicData.isEmpty()) {
+                        if (0 < musicData.size()) {
+                            playbackSrv.createLocalStream(0);
+                            sessionData.put("sessionSongPosition", "0");
+                            FileUtil.writeStringToFile(FileUtil.getPackageDir().concat("/user/session.pref"), ListUtil.setHashMapToSharedJSON(sessionData));
+                        }
+                    }
 				}
 			}
 
@@ -1563,9 +1513,18 @@ public class LocalStreamActivity extends  AppCompatActivity  {
 			}
 		};
 		if (playIntent == null) {
-			    playIntent = new Intent(this, LocalPlaybackService.class);
-			    bindService(playIntent, musicConnection, Context.BIND_AUTO_CREATE);
-			    startService(playIntent);
+			playIntent = new Intent(this, LocalPlaybackService.class);
+			bindService(playIntent, musicConnection, Context.BIND_AUTO_CREATE);
+			startService(playIntent);
+		} else {
+			if (playbackSrv != null) {
+				playIntent = new Intent(this, LocalPlaybackService.class);
+				unbindService(musicConnection);
+				stopService(playIntent);
+				// Restart service
+				bindService(playIntent, musicConnection, Context.BIND_AUTO_CREATE);
+				startService(playIntent);
+			}
 		}
 	}
 	
@@ -1581,13 +1540,7 @@ public class LocalStreamActivity extends  AppCompatActivity  {
 	@Override
 	public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
 		super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-		if (requestCode == 1) {
-			if (ContextCompat.checkSelfPermission(ApplicationUtil.getAppContext(), Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED && ContextCompat.checkSelfPermission(ApplicationUtil.getAppContext(), Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED) {
-				(new MediaScanningTask()).execute();
-			} else {
-				songList.setAdapter(new SongListAdapter(musicData));
-			}
-		} else if (requestCode == 2) {
+        if (requestCode == 1) {
 			if (ContextCompat.checkSelfPermission(ApplicationUtil.getAppContext(), Manifest.permission.RECORD_AUDIO) == PackageManager.PERMISSION_GRANTED) {
 				// Do nothing here.
 			} else {
@@ -1628,58 +1581,55 @@ public class LocalStreamActivity extends  AppCompatActivity  {
 	@Override
 	public void onResume() {
 		super.onResume();
-		if (savedData.contains("savedProfileData")) {
-			profileData = ListUtil.getHashMapFromSharedJSON(savedData, "savedProfileData");
-		} else {
-			profileData = new HashMap<>();
-		}
-		if (profileData.containsKey("profileToggleIntro")) {
-			int randomizer = IntegerUtil.getRandom(0, 1);
-			if (randomizer == 0) {
-				if (savedData.contains("savedMusicData")) {
-					musicData = ListUtil.getArrayListFromSharedJSON(savedData, "savedMusicData");
-					if (musicData != null) {
-						musicData.clear();
-					}
-					songList.setAdapter(new SongListAdapter(musicData));
-				} else {
-					musicData = new ArrayList<>();
-					savedData.edit().putString("savedMusicData", ListUtil.setArrayListToSharedJSON(musicData)).commit();
-					if (ContextCompat.checkSelfPermission(ApplicationUtil.getAppContext(), Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED && ContextCompat.checkSelfPermission(ApplicationUtil.getAppContext(), Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED) {
-						(new MediaScanningTask()).execute();
-					}
-				}
-			} else if (randomizer == 1) {
-				if (ContextCompat.checkSelfPermission(ApplicationUtil.getAppContext(), Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_DENIED && ContextCompat.checkSelfPermission(ApplicationUtil.getAppContext(), Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_DENIED) {
-					ActivityCompat.requestPermissions(LocalStreamActivity.this, new String[]{"android.permission.READ_EXTERNAL_STORAGE", "android.permission.WRITE_EXTERNAL_STORAGE"}, 1);
-				} else {
-					(new MediaScanningTask()).execute();
-				}
-			}
-		}
-		if (profileData.containsKey("profileNavigationIndex")) {
-			if (profileData.get("profileNavigationIndex").equals("0")) {
-				tabNavigation.getTabAt(0).select();
-				listRefresh.setVisibility(View.VISIBLE);
-				miniplayer.setVisibility(View.VISIBLE);
-				player.setVisibility(View.GONE);
-				miniplayerSeekbar.setVisibility(View.VISIBLE);
-			} else if (profileData.get("profileNavigationIndex").equals("1")) {
-				tabNavigation.getTabAt(1).select();
-				listRefresh.setVisibility(View.GONE);
-				player.setVisibility(View.VISIBLE);
-				miniplayer.setVisibility(View.GONE);
-				miniplayerSeekbar.setVisibility(View.GONE);
-			}
-		} else {
-			profileData.put("profileNavigationIndex", "0");
-			savedData.edit().putString("savedProfileData", ListUtil.setHashMapToSharedJSON(profileData)).commit();
-			tabNavigation.getTabAt(0).select();
-			listRefresh.setVisibility(View.VISIBLE);
-			player.setVisibility(View.GONE);
-			miniplayer.setVisibility(View.VISIBLE);
-			miniplayerSeekbar.setVisibility(View.VISIBLE);
-		}
+        if (FileUtil.doesExists(FileUtil.getPackageDir().concat("/song.json")) && FileUtil.isFile(FileUtil.getPackageDir().concat("/song.json"))) {
+            musicData = ListUtil.getArrayListFromFile(FileUtil.getPackageDir().concat("/song.json"));
+            songList.setAdapter(new SongListAdapter(musicData));
+            if (!musicData.isEmpty()) {
+                listEmptyMsg.setVisibility(View.GONE);
+                songList.setVisibility(View.VISIBLE);
+            } else {
+                listEmptyMsg.setVisibility(View.VISIBLE);
+                songList.setVisibility(View.GONE);
+            }
+        }
+        if (FileUtil.doesExists(FileUtil.getPackageDir().concat("/user/profile.pref")) && FileUtil.isFile(FileUtil.getPackageDir().concat("/user/profile.pref"))) {
+            profileData = ListUtil.getHashMapFromFile(FileUtil.getPackageDir().concat("/user/profile.pref"));
+        } else {
+            profileData = new HashMap<>();
+        }
+        if (FileUtil.doesExists(FileUtil.getPackageDir().concat("/user/session.pref")) && FileUtil.isFile(FileUtil.getPackageDir().concat("/user/session.pref"))) {
+            sessionData = ListUtil.getHashMapFromFile(FileUtil.getPackageDir().concat("/user/session.pref"));
+        } else {
+            sessionData = new HashMap<>();
+        }
+        if (FileUtil.doesExists(FileUtil.getPackageDir().concat("/user/settings.pref")) && FileUtil.isFile(FileUtil.getPackageDir().concat("/user/settings.pref"))) {
+            settingsData = ListUtil.getHashMapFromFile(FileUtil.getPackageDir().concat("/user/settings.pref"));
+        } else {
+            settingsData = new HashMap<>();
+        }
+        if (sessionData.containsKey("sessionNavigationIndex")) {
+            if (sessionData.get("sessionNavigationIndex").equals("0")) {
+                tabNavigation.getTabAt(0).select();
+                listRefresh.setVisibility(View.VISIBLE);
+                miniplayer.setVisibility(View.VISIBLE);
+                player.setVisibility(View.GONE);
+                miniplayerSeekbar.setVisibility(View.VISIBLE);
+            } else if (sessionData.get("sessionNavigationIndex").equals("1")) {
+                tabNavigation.getTabAt(1).select();
+                listRefresh.setVisibility(View.GONE);
+                player.setVisibility(View.VISIBLE);
+                miniplayer.setVisibility(View.GONE);
+                miniplayerSeekbar.setVisibility(View.GONE);
+            }
+        } else {
+            profileData.put("sessionNavigationIndex", "0");
+            FileUtil.writeStringToFile(FileUtil.getPackageDir().concat("/user/session.pref"), ListUtil.setHashMapToSharedJSON(sessionData));
+            tabNavigation.getTabAt(0).select();
+            listRefresh.setVisibility(View.VISIBLE);
+            player.setVisibility(View.GONE);
+            miniplayer.setVisibility(View.VISIBLE);
+            miniplayerSeekbar.setVisibility(View.VISIBLE);
+        }
 	}
 	
 	@Override
@@ -1700,14 +1650,25 @@ public class LocalStreamActivity extends  AppCompatActivity  {
 			miniplayerSkipPrev.setColorFilter(ContextCompat.getColor(ApplicationUtil.getAppContext(), R.color.colorPrimary), PorterDuff.Mode.SRC_IN);
 			miniplayerPlayPause.setColorFilter(ContextCompat.getColor(ApplicationUtil.getAppContext(), R.color.colorPrimary), PorterDuff.Mode.SRC_IN);
 			miniplayerSkipNext.setColorFilter(ContextCompat.getColor(ApplicationUtil.getAppContext(), R.color.colorPrimary), PorterDuff.Mode.SRC_IN);
-			if (profileData.containsKey("profileDarkMode")) {
-				if (!profileData.get("profileDarkMode").equals("true")) {
+			if (settingsData.containsKey("settingsDarkMode")) {
+				if (!settingsData.get("settingsDarkMode").equals("true")) {
 					setTheme(R.style.Theme_ArchoMusic);
 					top.setSystemUiVisibility(View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR);
 					getWindow().setStatusBarColor(Color.parseColor("#FFFFFF"));
 					getWindow().setNavigationBarColor(Color.parseColor("#FFFFFF"));
 				} else {
 					setTheme(R.style.Theme_ArchoMusic_Dark);
+                    top.setBackgroundColor(Color.parseColor("#1A1A1A"));
+                    main.setBackgroundColor(Color.parseColor("#1A1A1A"));
+                    listRefresh.setProgressBackgroundColorSchemeColor(Color.parseColor("#1A1A1A"));
+                    songTitle.setTextColor(Color.parseColor("#FFFFFF"));
+                    songArtist.setTextColor(Color.parseColor("#FFFFFF"));
+                    currentDuration.setTextColor(Color.parseColor("#FFFFFF"));
+                    maxDuration.setTextColor(Color.parseColor("#FFFFFF"));
+                    miniplayer.setBackgroundColor(Color.parseColor("#1A1A1A"));
+                    miniplayerSeekbar.setBackgroundColor(Color.parseColor("#1A1A1A"));
+                    miniplayerSongTitle.setTextColor(Color.parseColor("#FFFFFF"));
+                    miniplayerSongArtist.setTextColor(Color.parseColor("#FFFFFF"));
 					getWindow().setStatusBarColor(Color.parseColor("#1A1A1A"));
 					getWindow().setNavigationBarColor(Color.parseColor("#1A1A1A"));
 				}
@@ -1734,21 +1695,6 @@ public class LocalStreamActivity extends  AppCompatActivity  {
 		songTitle.setTypeface(Typeface.createFromAsset(getAssets(),"fonts/roboto_medium.ttf"), Typeface.NORMAL);
 		listRefresh.setColorSchemeColors(Color.parseColor("#03A9F4"), Color.parseColor("#03A9F4"), Color.parseColor("#03A9F4"));
 		songList.setLayoutManager(new LinearLayoutManager(this));
-		if (profileData.containsKey("profileDarkMode")) {
-			if (profileData.get("profileDarkMode").equals("true")) {
-				top.setBackgroundColor(Color.parseColor("#1A1A1A"));
-				main.setBackgroundColor(Color.parseColor("#1A1A1A"));
-				listRefresh.setProgressBackgroundColorSchemeColor(Color.parseColor("#1A1A1A"));
-				songTitle.setTextColor(Color.parseColor("#FFFFFF"));
-				songArtist.setTextColor(Color.parseColor("#FFFFFF"));
-				currentDuration.setTextColor(Color.parseColor("#FFFFFF"));
-				maxDuration.setTextColor(Color.parseColor("#FFFFFF"));
-				miniplayer.setBackgroundColor(Color.parseColor("#1A1A1A"));
-				miniplayerSeekbar.setBackgroundColor(Color.parseColor("#1A1A1A"));
-				miniplayerSongTitle.setTextColor(Color.parseColor("#FFFFFF"));
-				miniplayerSongArtist.setTextColor(Color.parseColor("#FFFFFF"));
-			}
-		}
 	}
 
 	public class SongListAdapter extends RecyclerView.Adapter<SongListAdapter.ViewHolder> {
@@ -1778,21 +1724,21 @@ public class LocalStreamActivity extends  AppCompatActivity  {
 			TextView songArtist = (TextView) view.findViewById(R.id.songArtist);
 			RecyclerView.LayoutParams recyclerLayoutParams = new RecyclerView.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
 			view.setLayoutParams(recyclerLayoutParams);
-			if (profileData.containsKey("profileDarkMode")) {
-				if (profileData.get("profileDarkMode").equals("true")) {
+			if (settingsData.containsKey("settingsDarkMode")) {
+				if (settingsData.get("settingsDarkMode").equals("true")) {
 					main.setBackgroundColor(Color.parseColor("#1A1A1A"));
 					songTitle.setTextColor(Color.parseColor("#FFFFFF"));
 					songArtist.setTextColor(Color.parseColor("#FFFFFF"));
 				}
 			}
 			Glide.with(ApplicationUtil.getAppContext()).asBitmap().load(ImageUtil.getAlbumArt(StringUtil.decodeString(data.get(position).get("songData").toString()))).into(albumArt);
-			songTitle.setText(data.get((int)position).get("songTitle").toString());
-			songArtist.setText(data.get((int)position).get("songArtist").toString());
+			songTitle.setText(data.get(position).get("songTitle").toString());
+			songArtist.setText(data.get(position).get("songArtist").toString());
 			main.setOnClickListener(new View.OnClickListener() {
 				@Override
 				public void onClick(View view) {
-					if (profileData.containsKey("profileDarkMode")) {
-						if (!profileData.get("profileDarkMode").equals("true")) {
+					if (settingsData.containsKey("settingsDarkMode")) {
+						if (!settingsData.get("settingsDarkMode").equals("true")) {
 							RippleDrawable rippleButton = new RippleDrawable(new ColorStateList(new int[][]{new int[]{}}, new int[]{ Color.parseColor("#BDBDBD") }), new ColorDrawable(Color.parseColor("#FFFFFF")), null);
 							main.setBackground(rippleButton);
 						} else {
@@ -1803,12 +1749,12 @@ public class LocalStreamActivity extends  AppCompatActivity  {
 						RippleDrawable rippleButton = new RippleDrawable(new ColorStateList(new int[][]{new int[]{}}, new int[]{ Color.parseColor("#BDBDBD") }), new ColorDrawable(Color.parseColor("#FFFFFF")), null);
 						main.setBackground(rippleButton);
 					}
-					if (!(position == Integer.parseInt(profileData.get("profileSongPosition").toString()))) {
+					if (!(position == Integer.parseInt(sessionData.get("sessionSongPosition").toString()))) {
 						if (new java.io.File(StringUtil.decodeString(musicData.get(position).get("songData").toString())).exists()) {
 							try {
 								playbackSrv.createLocalStream(position);
-								profileData.put("profileSongPosition", String.valueOf(position));
-								savedData.edit().putString("savedProfileData", ListUtil.setHashMapToSharedJSON(profileData)).commit();
+								sessionData.put("sessionSongPosition", String.valueOf(position));
+                                FileUtil.writeStringToFile(FileUtil.getPackageDir().concat("/user/session.pref"), ListUtil.setHashMapToSharedJSON(sessionData));
 								playPause.performClick();
 							} catch (Exception e) {
 								ApplicationUtil.toast("Error loading audio file.", Toast.LENGTH_SHORT);
@@ -1852,11 +1798,11 @@ public class LocalStreamActivity extends  AppCompatActivity  {
 					rename.setOnClickListener(new View.OnClickListener() {
 						@Override
 						public void onClick(View view) {
-							if (!profileData.containsKey("profileDarkMode")) {
+							if (!settingsData.containsKey("settingsDarkMode")) {
 								RippleDrawable rippleButton = new RippleDrawable(new ColorStateList(new int[][]{new int[]{}}, new int[]{ Color.parseColor("#BDBDBD") }), new ColorDrawable(Color.parseColor("#FFFFFF")), null);
 								view.setBackground(rippleButton);
 							} else {
-								if (profileData.get("profileDarkMode").equals("true")) {
+								if (settingsData.get("settingsDarkMode").equals("true")) {
 									RippleDrawable rippleButton = new RippleDrawable(new ColorStateList(new int[][]{new int[]{}}, new int[]{ Color.parseColor("#BDBDBD") }), new ColorDrawable(Color.parseColor("#1A1A1A")), null);
 									view.setBackground(rippleButton);
 								} else {
@@ -1869,11 +1815,11 @@ public class LocalStreamActivity extends  AppCompatActivity  {
 					lyrics.setOnClickListener(new View.OnClickListener() {
 						@Override
 						public void onClick(View view) {
-							if (!profileData.containsKey("profileDarkMode")) {
+							if (!settingsData.containsKey("settingsDarkMode")) {
 								RippleDrawable rippleButton = new RippleDrawable(new ColorStateList(new int[][]{new int[]{}}, new int[]{ Color.parseColor("#BDBDBD") }), new ColorDrawable(Color.parseColor("#FFFFFF")), null);
 								view.setBackground(rippleButton);
 							} else {
-								if (profileData.get("profileDarkMode").equals("true")) {
+								if (settingsData.get("settingsDarkMode").equals("true")) {
 									RippleDrawable rippleButton = new RippleDrawable(new ColorStateList(new int[][]{new int[]{}}, new int[]{ Color.parseColor("#BDBDBD") }), new ColorDrawable(Color.parseColor("#1A1A1A")), null);
 									view.setBackground(rippleButton);
 								} else {
@@ -1913,7 +1859,7 @@ public class LocalStreamActivity extends  AppCompatActivity  {
 									RippleDrawable rippleButton = new RippleDrawable(new ColorStateList(new int[][]{new int[]{}}, new int[]{ Color.parseColor("#BDBDBD") }), null, null);
 									view.setBackground(rippleButton);
 									Intent intent = new Intent(ApplicationUtil.getAppContext(), LyricsEditorActivity.class);
-									intent.putExtra("songPosition", String.valueOf((int)(Integer.parseInt(profileData.get("profileSongPosition").toString()))));
+									intent.putExtra("songPosition", String.valueOf((int)(Integer.parseInt(sessionData.get("sessionSongPosition").toString()))));
 									startActivity(intent);
 									lyricsDialog.dismiss();
 									songOptsDialog.dismiss();
@@ -1926,10 +1872,10 @@ public class LocalStreamActivity extends  AppCompatActivity  {
 							GradientDrawable roundedCorners = new GradientDrawable();
 							roundedCorners.setShape(GradientDrawable.RECTANGLE);
 							roundedCorners.setCornerRadii(new float[] {TopLeft.floatValue(),TopLeft.floatValue(), TopRight.floatValue(),TopRight.floatValue(), BottomRight.floatValue(),BottomRight.floatValue(), BottomLeft.floatValue(),BottomLeft.floatValue()});
-							if (!profileData.containsKey("profileDarkMode")) {
+							if (!settingsData.containsKey("settingsDarkMode")) {
 								roundedCorners.setColor(Color.parseColor("#FFFFFF"));
 							} else {
-								if (profileData.get("profileDarkMode").equals("true")) {
+								if (settingsData.get("settingsDarkMode").equals("true")) {
 									roundedCorners.setColor(Color.parseColor("#1A1A1A"));
 									lyrics.setTextColor(Color.parseColor("#FFFFFF"));
 									lyrics.setHintTextColor(Color.parseColor("#BDBDBD"));
@@ -1944,11 +1890,11 @@ public class LocalStreamActivity extends  AppCompatActivity  {
 					share.setOnClickListener(new View.OnClickListener() {
 						@Override
 						public void onClick(View view) {
-							if (!profileData.containsKey("profileDarkMode")) {
+							if (!settingsData.containsKey("settingsDarkMode")) {
 								RippleDrawable rippleButton = new RippleDrawable(new ColorStateList(new int[][]{new int[]{}}, new int[]{ Color.parseColor("#BDBDBD") }), new ColorDrawable(Color.parseColor("#FFFFFF")), null);
 								view.setBackground(rippleButton);
 							} else {
-								if (profileData.get("profileDarkMode").equals("true")) {
+								if (settingsData.get("settingsDarkMode").equals("true")) {
 									RippleDrawable rippleButton = new RippleDrawable(new ColorStateList(new int[][]{new int[]{}}, new int[]{ Color.parseColor("#BDBDBD") }), new ColorDrawable(Color.parseColor("#1A1A1A")), null);
 									view.setBackground(rippleButton);
 								} else {
@@ -1961,11 +1907,11 @@ public class LocalStreamActivity extends  AppCompatActivity  {
 					moreInformation.setOnClickListener(new View.OnClickListener() {
 						@Override
 						public void onClick(View view) {
-							if (!profileData.containsKey("profileDarkMode")) {
+							if (!settingsData.containsKey("settingsDarkMode")) {
 								RippleDrawable rippleButton = new RippleDrawable(new ColorStateList(new int[][]{new int[]{}}, new int[]{ Color.parseColor("#BDBDBD") }), new ColorDrawable(Color.parseColor("#FFFFFF")), null);
 								view.setBackground(rippleButton);
 							} else {
-								if (profileData.get("profileDarkMode").equals("true")) {
+								if (settingsData.get("settingsDarkMode").equals("true")) {
 									RippleDrawable rippleButton = new RippleDrawable(new ColorStateList(new int[][]{new int[]{}}, new int[]{ Color.parseColor("#BDBDBD") }), new ColorDrawable(Color.parseColor("#1A1A1A")), null);
 									view.setBackground(rippleButton);
 								} else {
@@ -1978,11 +1924,11 @@ public class LocalStreamActivity extends  AppCompatActivity  {
 					remove.setOnClickListener(new View.OnClickListener() {
 						@Override
 						public void onClick(View view) {
-							if (!profileData.containsKey("profileDarkMode")) {
+							if (!settingsData.containsKey("settingsDarkMode")) {
 								RippleDrawable rippleButton = new RippleDrawable(new ColorStateList(new int[][]{new int[]{}}, new int[]{ Color.parseColor("#BDBDBD") }), new ColorDrawable(Color.parseColor("#FFFFFF")), null);
 								view.setBackground(rippleButton);
 							} else {
-								if (profileData.get("profileDarkMode").equals("true")) {
+								if (settingsData.get("settingsDarkMode").equals("true")) {
 									RippleDrawable rippleButton = new RippleDrawable(new ColorStateList(new int[][]{new int[]{}}, new int[]{ Color.parseColor("#BDBDBD") }), new ColorDrawable(Color.parseColor("#1A1A1A")), null);
 									view.setBackground(rippleButton);
 								} else {
@@ -1999,10 +1945,10 @@ public class LocalStreamActivity extends  AppCompatActivity  {
 					GradientDrawable roundedCorners = new GradientDrawable();
 					roundedCorners.setShape(GradientDrawable.RECTANGLE);
 					roundedCorners.setCornerRadii(new float[] {TopLeft.floatValue(),TopLeft.floatValue(), TopRight.floatValue(),TopRight.floatValue(), BottomRight.floatValue(),BottomRight.floatValue(), BottomLeft.floatValue(),BottomLeft.floatValue()});
-					if (!profileData.containsKey("profileDarkMode")) {
+					if (!settingsData.containsKey("settingsDarkMode")) {
 						roundedCorners.setColor(Color.parseColor("#FFFFFF"));
 					} else {
-						if (profileData.get("profileDarkMode").equals("true")) {
+						if (settingsData.get("settingsDarkMode").equals("true")) {
 							roundedCorners.setColor(Color.parseColor("#1A1A1A"));
 							songTitle.setTextColor(Color.parseColor("#FFFFFF"));
 							songArtist.setTextColor(Color.parseColor("#FFFFFF"));
@@ -2036,91 +1982,6 @@ public class LocalStreamActivity extends  AppCompatActivity  {
 			}
 		}
 		
-	}
-
-	private class MediaScanningTask extends AsyncTask<Void, Void, Void> {
-
-		private ArrayList<HashMap<String, Object>> scanList;
-
-		@Override
-		protected void onPreExecute() {
-			scanList = new ArrayList<>();
-			songList.setVisibility(View.GONE);
-			listLoadBar.setVisibility(View.VISIBLE);
-		}
-
-		@Override
-		protected Void doInBackground(Void... path) {
-			if (ContextCompat.checkSelfPermission(ApplicationUtil.getAppContext(), Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED && ContextCompat.checkSelfPermission(ApplicationUtil.getAppContext(), Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED) {
-				String[] mediaProjection = {
-						android.provider.MediaStore.Audio.Media.ARTIST,
-						android.provider.MediaStore.Audio.Media.DATA,
-						android.provider.MediaStore.Audio.Media.TITLE,
-						android.provider.MediaStore.Audio.Media.ALBUM_ID
-				};
-				String orderBy = " " + android.provider.MediaStore.MediaColumns.DISPLAY_NAME;
-				Cursor mediaCursor = ApplicationUtil.getAppContext().getContentResolver().query(android.provider.MediaStore.Audio.Media.EXTERNAL_CONTENT_URI, mediaProjection, null, null, orderBy);
-				try {
-					if (mediaCursor.moveToFirst()) {
-						String name;
-						String data;
-						String artist;
-						do {
-							name = mediaCursor.getString(mediaCursor.getColumnIndexOrThrow(android.provider.MediaStore.Audio.Media.TITLE));
-							data = mediaCursor.getString(mediaCursor.getColumnIndexOrThrow(android.provider.MediaStore.Audio.Media.DATA));
-							artist = mediaCursor.getString(mediaCursor.getColumnIndexOrThrow(android.provider.MediaStore.Audio.Media.ARTIST));
-							{
-
-								HashMap<String, Object> songDetails = new HashMap<>();
-								if (name.startsWith("<unknown>")) {
-									name = "Unknown Title";
-								}
-								if (artist.startsWith("<unknown>")) {
-									artist = "Unknown Artist";
-								}
-								songDetails.put("songTitle", name);
-								songDetails.put("songData", StringUtil.encodeString(data));
-								songDetails.put("songArtist", artist);
-								scanList.add(songDetails);
-							}
-						} while (mediaCursor.moveToNext());
-					}
-				} catch (Exception exception) {
-					exception.printStackTrace();
-				}
-			}
-			return null;
-		}
-
-		@Override
-		protected void onProgressUpdate(Void... values) {
-		}
-
-		@Override
-		protected void onPostExecute(Void param){
-			ListUtil.sortArrayList(scanList, "songTitle", false, true);
-			if (musicData != null && musicData.size() < 0) {
-				if (!Objects.equals(scanList, musicData)) {
-					musicData = scanList;
-					savedData.edit().putString("savedMusicData", ListUtil.setArrayListToSharedJSON(musicData)).commit();
-				}
-			} else {
-				musicData = scanList;
-				savedData.edit().putString("savedMusicData", ListUtil.setArrayListToSharedJSON(musicData)).commit();
-			}
-			songList.setVisibility(View.VISIBLE);
-			listLoadBar.setVisibility(View.GONE);
-			songList.setAdapter(new SongListAdapter(musicData));
-			if (!musicData.isEmpty()) {
-				listEmptyMsg.setVisibility(View.GONE);
-				songList.setVisibility(View.VISIBLE);
-			} else {
-				listEmptyMsg.setVisibility(View.VISIBLE);
-				songList.setVisibility(View.GONE);
-			}
-			connectToLocalPlaybackService();
-		}
-
 	}
 
 }

@@ -21,6 +21,7 @@ import android.widget.TextView;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.gianxd.audiodev.R;
+import com.gianxd.audiodev.util.FileUtil;
 import com.gianxd.audiodev.util.ListUtil;
 
 import java.util.HashMap;
@@ -30,7 +31,7 @@ import static com.gianxd.audiodev.AudioDev.applicationContext;
 
 public class ExternalBrowserActivity extends  AppCompatActivity  {
 
-	private HashMap<String, Object> profileData;
+	private HashMap<String, Object> settingsData;
 
 	private LinearLayout toolbar;
 	private ProgressBar loadbar;
@@ -38,8 +39,6 @@ public class ExternalBrowserActivity extends  AppCompatActivity  {
 	private ImageView back;
 	private TextView webtitle;
 	private TextView weburl;
-
-	private SharedPreferences savedData;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -59,11 +58,10 @@ public class ExternalBrowserActivity extends  AppCompatActivity  {
 		web.getSettings().setSupportZoom(true);
 		webtitle = (TextView) findViewById(R.id.webtitle);
 		weburl = (TextView) findViewById(R.id.weburl);
-		savedData = getSharedPreferences("savedData", Context.MODE_PRIVATE);
-		if (savedData.contains("savedProfileData")) {
-			profileData = ListUtil.getHashMapFromSharedJSON(savedData, "savedProfileData");
+		if (FileUtil.doesExists(FileUtil.getPackageDir().concat("/user/settings.pref")) && FileUtil.isFile(FileUtil.getPackageDir().concat("/user/settings.pref"))) {
+			settingsData = ListUtil.getHashMapFromFile(FileUtil.getPackageDir().concat("/user/settings.pref"));
 		} else {
-			profileData = new HashMap<>();
+			settingsData = new HashMap<>();
 		}
 		web.setWebViewClient(new WebViewClient() {
 			@Override
@@ -109,9 +107,11 @@ public class ExternalBrowserActivity extends  AppCompatActivity  {
 		loadbar.setElevation((float)10);
 		toolbar.setElevation((float)10);
 		if (Build.VERSION.SDK_INT >= 23) {
-			if (profileData.containsKey("profileDarkMode")) {
-				if (profileData.get("profileDarkMode").equals("true")) {
+			if (settingsData.containsKey("settingsDarkMode")) {
+				if (settingsData.get("settingsDarkMode").equals("true")) {
 					setTheme(R.style.Theme_ArchoMusic_Dark);
+					toolbar.setBackgroundColor(Color.parseColor("#1A1A1A"));
+					weburl.setTextColor(Color.parseColor("#BDBDBD"));
 					getWindow().setStatusBarColor(Color.parseColor("#1A1A1A"));
 					getWindow().setNavigationBarColor(Color.parseColor("#1A1A1A"));
 				} else {
@@ -129,12 +129,6 @@ public class ExternalBrowserActivity extends  AppCompatActivity  {
 		} else {
 			getWindow().setStatusBarColor(Color.parseColor("#000000"));
 			getWindow().setNavigationBarColor(Color.parseColor("#000000"));
-		}
-		if (profileData.containsKey("profileDarkMode")) {
-			if (profileData.get("profileDarkMode").equals("true")) {
-				toolbar.setBackgroundColor(Color.parseColor("#1A1A1A"));
-				weburl.setTextColor(Color.parseColor("#BDBDBD"));
-			}
 		}
 		if (getIntent().getStringExtra("url") != null) {
 			web.loadUrl(getIntent().getStringExtra("url"));

@@ -23,6 +23,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.gianxd.audiodev.R;
 import com.gianxd.audiodev.util.ApplicationUtil;
+import com.gianxd.audiodev.util.FileUtil;
 import com.gianxd.audiodev.util.ListUtil;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 
@@ -35,14 +36,13 @@ public class SplashActivity extends AppCompatActivity {
 	
 	private Timer timer = new Timer();
 
-	private HashMap<String, Object> profileData;
+	private HashMap<String, Object> settingsData;
 	
 	private LinearLayout mainLayout;
 	private TextView logo;
 	private ProgressBar loadanim;
 
 	private TimerTask timerTask;
-	private SharedPreferences savedData;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -57,21 +57,20 @@ public class SplashActivity extends AppCompatActivity {
 		mainLayout = (LinearLayout) findViewById(R.id.mainLayout);
 		logo = (TextView) findViewById(R.id.logo);
 		loadanim = (ProgressBar) findViewById(R.id.loadanim);
-		savedData = getSharedPreferences("savedData", Context.MODE_PRIVATE);
 	}
 	
 	private void initializeLogic() {
 		logo.setTypeface(Typeface.createFromAsset(getAssets(),"fonts/leixo.ttf"), Typeface.BOLD);
 		loadanim.setVisibility(View.GONE);
 		loadanim.getIndeterminateDrawable().setColorFilter(0xFFFFFFFF, android.graphics.PorterDuff.Mode.MULTIPLY);
-		if (savedData.contains("savedProfileData")) {
-			profileData = ListUtil.getHashMapFromSharedJSON(savedData, "savedProfileData");
+		if (FileUtil.doesExists(FileUtil.getPackageDir().concat("/user/settings.pref")) && FileUtil.isFile(FileUtil.getPackageDir().concat("/user/settings.pref"))) {
+			settingsData = ListUtil.getHashMapFromFile(FileUtil.getPackageDir().concat("/user/settings.pref"));
 		} else {
-			profileData = new HashMap<>();
+			settingsData = new HashMap<>();
 		}
 		if (Build.VERSION.SDK_INT >= 23) {
-			if (profileData.containsKey("profileDarkMode")) {
-				if (!profileData.get("profileDarkMode").equals("true")) {
+			if (settingsData.containsKey("settingsDarkMode")) {
+				if (!settingsData.get("settingsDarkMode").equals("true")) {
 					getWindow().setStatusBarColor(Color.parseColor("#03A9F4"));
 					getWindow().setNavigationBarColor(Color.parseColor("#03A9F4"));
 				} else {
@@ -89,14 +88,13 @@ public class SplashActivity extends AppCompatActivity {
 			getWindow().setStatusBarColor(Color.parseColor("#000000"));
 			getWindow().setNavigationBarColor(Color.parseColor("#000000"));
 		}
-
 		timerTask = new TimerTask() {
 			@Override
 			public void run() {
 				runOnUiThread(new Runnable() {
 					@Override
 					public void run() {
-						if (profileData.containsKey("profileErrorTrace")) {
+						if (FileUtil.doesExists(FileUtil.getPackageDir().concat("/user/crash.log")) && FileUtil.isFile(FileUtil.getPackageDir().concat("/user/crash.log"))) {
 							BottomSheetDialog errorDialog = new BottomSheetDialog(SplashActivity.this);
 							View dialogLayout = getLayoutInflater().inflate(R.layout.dialog_debug, null);
 							errorDialog.setContentView(dialogLayout);
@@ -105,15 +103,15 @@ public class SplashActivity extends AppCompatActivity {
 							TextView log = dialogLayout.findViewById(R.id.log);
 							Button close = dialogLayout.findViewById(R.id.close);
 							title.setTypeface(Typeface.createFromAsset(getAssets(), "fonts/roboto_medium.ttf"), Typeface.NORMAL);
-							log.setText(profileData.get("profileErrorTrace").toString());
+							log.setText(FileUtil.readFile(FileUtil.getPackageDir().concat("/user/crash.log")));
 							close.setOnClickListener(new View.OnClickListener() {
 								@Override
 								public void onClick(View view) {
-									if (!profileData.containsKey("profileDarkMode")) {
+									if (!settingsData.containsKey("settingsDarkMode")) {
 										RippleDrawable rippleButton = new RippleDrawable(new ColorStateList(new int[][]{new int[]{}}, new int[]{ Color.parseColor("#BDBDBD") }), new ColorDrawable(Color.parseColor("#FFFFFF")), null);
 										view.setBackground(rippleButton);
 									} else {
-										if (profileData.get("profileDarkMode").equals("true")) {
+										if (settingsData.get("settingsDarkMode").equals("true")) {
 											RippleDrawable rippleButton = new RippleDrawable(new ColorStateList(new int[][]{new int[]{}}, new int[]{ Color.parseColor("#BDBDBD") }), new ColorDrawable(Color.parseColor("#1A1A1A")), null);
 											view.setBackground(rippleButton);
 										} else {
@@ -121,8 +119,7 @@ public class SplashActivity extends AppCompatActivity {
 											view.setBackground(rippleButton);
 										}
 									}
-									profileData.remove("profileErrorTrace");
-									savedData.edit().putString("savedProfileData", ListUtil.setHashMapToSharedJSON(profileData)).commit();
+									FileUtil.deleteFile(FileUtil.getPackageDir().concat("/user/crash.log"));
 									errorDialog.dismiss();
 									Intent intent = new Intent();
 									intent.setClass(ApplicationUtil.getAppContext(), LocalStreamActivity.class);
@@ -141,11 +138,11 @@ public class SplashActivity extends AppCompatActivity {
 							GradientDrawable roundedCorners2 = new GradientDrawable();
 							roundedCorners2.setShape(GradientDrawable.RECTANGLE);
 							roundedCorners2.setCornerRadius(20);
-							if (!profileData.containsKey("profileDarkMode")) {
+							if (!settingsData.containsKey("settingsDarkMode")) {
 								roundedCorners.setColor(Color.parseColor("#FFFFFF"));
 								roundedCorners2.setColor(Color.parseColor("#EEEEEE"));
 							} else {
-								if (profileData.get("profileDarkMode").equals("true")) {
+								if (settingsData.get("settingsDarkMode").equals("true")) {
 									roundedCorners.setColor(Color.parseColor("#1A1A1A"));
 									roundedCorners2.setColor(Color.parseColor("#212121"));
 									log.setTextColor(Color.parseColor("#FFFFFF"));

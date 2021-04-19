@@ -9,6 +9,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
+import java.util.Objects;
 
 public class ListUtil {
 
@@ -48,6 +49,14 @@ public class ListUtil {
 
     public static String setHashMapToSharedJSON(HashMap<String, Object> hashMap) {
         return new Gson().toJson(hashMap);
+    }
+
+    public static ArrayList<HashMap<String, Object>> getArrayListFromFile(String path) {
+        return new Gson().fromJson(FileUtil.readFile(path), new TypeToken<ArrayList<HashMap<String, Object>>>(){}.getType());
+    }
+
+    public static HashMap<String, Object> getHashMapFromFile(String path) {
+        return new Gson().fromJson(FileUtil.readFile(path), new TypeToken<HashMap<String, Object>>(){}.getType());
     }
 
 }

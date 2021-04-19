@@ -75,7 +75,7 @@ public class IntentFilterActivity extends  AppCompatActivity  {
 		maxDuration = (TextView) findViewById(R.id.maxDuration);
 		miniplayerPlayPause.setOnClickListener(new View.OnClickListener() {
 			@Override
-			public void onClick(View _view) {
+			public void onClick(View view) {
 				if (mp != null) {
 					if (!mp.isPlaying()) {
 						miniplayerPlayPause.setImageResource(R.drawable.ic_media_pause);
@@ -203,16 +203,5 @@ public class IntentFilterActivity extends  AppCompatActivity  {
 		seekbarDuration.setProgress((int)mp.getCurrentPosition());
 		miniplayerPlayPause.performClick();
 	}
-	
-	
-	public void _javaReferences () {
-	}
-	
-	
-	public void _xmlReferences () {
-		
-	}
-	
-	
-	
+
 }

@@ -23,6 +23,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.gianxd.audiodev.R;
 import com.gianxd.audiodev.util.ApplicationUtil;
+import com.gianxd.audiodev.util.FileUtil;
 import com.gianxd.audiodev.util.ListUtil;
 
 import java.util.ArrayList;
@@ -32,7 +33,7 @@ import java.util.HashMap;
 public class LyricsEditorActivity extends  AppCompatActivity  { 
 
 	private ArrayList<HashMap<String, Object>> musicData;
-	private HashMap<String, Object> profileData;
+	private HashMap<String, Object> settingsData;
 	
 	private LinearLayout toolbar;
 	private EditText lyrics;
@@ -40,8 +41,6 @@ public class LyricsEditorActivity extends  AppCompatActivity  {
 	private TextView bruh;
 	private ImageView autoedit;
 	private ImageView save;
-	
-	private SharedPreferences savedData;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -59,16 +58,15 @@ public class LyricsEditorActivity extends  AppCompatActivity  {
 		bruh = (TextView) findViewById(R.id.bruh);
 		autoedit = (ImageView) findViewById(R.id.autoedit);
 		save = (ImageView) findViewById(R.id.save);
-		savedData = getSharedPreferences("savedData", Context.MODE_PRIVATE);
-		if (savedData.contains("savedMusicData")) {
-			musicData = ListUtil.getArrayListFromSharedJSON(savedData, "savedMusicData");
+		if (FileUtil.doesExists(FileUtil.getPackageDir().concat("/song.json")) && FileUtil.isFile(FileUtil.getPackageDir().concat("/song.json"))) {
+			musicData = ListUtil.getArrayListFromFile(FileUtil.getPackageDir().concat("/song.json"));
 		} else {
 			musicData = new ArrayList<>();
 		}
-		if (savedData.contains("savedProfileData")) {
-			profileData = ListUtil.getHashMapFromSharedJSON(savedData, "savedProfileData");
+		if (FileUtil.doesExists(FileUtil.getPackageDir().concat("/user/settings.pref")) && FileUtil.isFile(FileUtil.getPackageDir().concat("/user/settings.pref"))) {
+			settingsData = ListUtil.getHashMapFromFile(FileUtil.getPackageDir().concat("/user/settings.pref"));
 		} else {
-			profileData = new HashMap<>();
+			settingsData = new HashMap<>();
 		}
 		lyrics.addTextChangedListener(new TextWatcher() {
 			@Override
@@ -117,7 +115,7 @@ public class LyricsEditorActivity extends  AppCompatActivity  {
 				save.setBackground(rippleButton);
 				try {
 					musicData.get(Integer.parseInt(getIntent().getStringExtra("songPosition"))).put("songLyrics", lyrics.getText().toString());
-					savedData.edit().putString("savedMusicData", ListUtil.setArrayListToSharedJSON(musicData)).commit();
+					FileUtil.writeStringToFile(FileUtil.getPackageDir().concat("/song.json"), ListUtil.setArrayListToSharedJSON(musicData));
 					ApplicationUtil.toast("Lyrics saved successfully.", Toast.LENGTH_SHORT);
 					finish();
 				} catch (Exception e) {
@@ -130,9 +128,13 @@ public class LyricsEditorActivity extends  AppCompatActivity  {
 	private void initializeLogic() {
 		bruh.setTypeface(Typeface.createFromAsset(getAssets(), "fonts/roboto_medium.ttf"), Typeface.NORMAL);
 		if (Build.VERSION.SDK_INT >= 23) {
-			if (profileData.containsKey("profileDarkMode")) {
-				if (profileData.get("profileDarkMode").equals("true")) {
+			if (settingsData.containsKey("settingsDarkMode")) {
+				if (settingsData.get("settingsDarkMode").equals("true")) {
 					setTheme(R.style.Theme_ArchoMusic_Dark);
+					toolbar.setBackgroundColor(Color.parseColor("#1A1A1A"));
+					lyrics.setBackgroundColor(Color.parseColor("#212121"));
+					lyrics.setHintTextColor(Color.parseColor("#BDBDBD"));
+					lyrics.setTextColor(Color.parseColor("#FFFFFF"));
 					getWindow().setStatusBarColor(Color.parseColor("#1A1A1A"));
 					getWindow().setNavigationBarColor(Color.parseColor("#1A1A1A"));
 				} else {
@@ -151,19 +153,11 @@ public class LyricsEditorActivity extends  AppCompatActivity  {
 			getWindow().setStatusBarColor(Color.parseColor("#000000"));
 			getWindow().setNavigationBarColor(Color.parseColor("#000000"));
 		}
-		if (profileData.containsKey("profileDarkMode")) {
-			if (profileData.get("profileDarkMode").equals("true")) {
-				toolbar.setBackgroundColor(Color.parseColor("#1A1A1A"));
-				lyrics.setBackgroundColor(Color.parseColor("#212121"));
-				lyrics.setHintTextColor(Color.parseColor("#BDBDBD"));
-				lyrics.setTextColor(Color.parseColor("#FFFFFF"));
-			}
-		}
-		if (musicData.get((int)Integer.parseInt(getIntent().getStringExtra("songPosition"))).containsKey("songLyrics")) {
-					if (musicData.get((int)Integer.parseInt(getIntent().getStringExtra("songPosition"))).get("songLyrics").toString().length() == 0) {
+		if (musicData.get(Integer.parseInt(getIntent().getStringExtra("songPosition"))).containsKey("songLyrics")) {
+					if (musicData.get(Integer.parseInt(getIntent().getStringExtra("songPosition"))).get("songLyrics").toString().length() == 0) {
 							// lyrics is added but empty cheems.
 					} else {
-						    lyrics.setText(musicData.get((int)Integer.parseInt(getIntent().getStringExtra("songPosition"))).get("songLyrics").toString());
+						    lyrics.setText(musicData.get(Integer.parseInt(getIntent().getStringExtra("songPosition"))).get("songLyrics").toString());
 				        }
 		} else {
 				// no lyrics found cheems.
@@ -173,9 +167,9 @@ public class LyricsEditorActivity extends  AppCompatActivity  {
 	}
 	
 	@Override
-	protected void onActivityResult(int _requestCode, int _resultCode, Intent _data) {
-		super.onActivityResult(_requestCode, _resultCode, _data);
-		switch (_requestCode) {
+	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+		super.onActivityResult(requestCode, resultCode, data);
+		switch (requestCode) {
 			default:
 			break;
 		}
