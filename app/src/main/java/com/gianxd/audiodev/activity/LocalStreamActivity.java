@@ -167,6 +167,9 @@ public class LocalStreamActivity extends  AppCompatActivity  {
 				songList.setVisibility(View.GONE);
 			}
 			connectToLocalPlaybackService();
+		} else {
+			listEmptyMsg.setVisibility(View.VISIBLE);
+			songList.setVisibility(View.GONE);
 		}
 		if (FileUtil.doesExists(FileUtil.getPackageDir().concat("/user/profile.pref")) && FileUtil.isFile(FileUtil.getPackageDir().concat("/user/profile.pref"))) {
 			profileData = ListUtil.getHashMapFromFile(FileUtil.getPackageDir().concat("/user/profile.pref"));
@@ -651,14 +654,14 @@ public class LocalStreamActivity extends  AppCompatActivity  {
 							@Override
 							public void onCheckedChanged(CompoundButton view, boolean isChecked) {
 								if (isChecked) {
-									sessionData.put("sessionDarkMode", "true");
-									FileUtil.writeStringToFile(FileUtil.getPackageDir().concat("/user/session.pref"), ListUtil.setHashMapToSharedJSON(sessionData));
+									settingsData.put("settingsDarkMode", "true");
+									FileUtil.writeStringToFile(FileUtil.getPackageDir().concat("/user/settings.pref"), ListUtil.setHashMapToSharedJSON(settingsData));
 									startActivity(new Intent(ApplicationUtil.getAppContext(), SplashActivity.class));
 									finish();
 									ApplicationUtil.toast("Dark mode enabled.", Toast.LENGTH_SHORT);
 								} else {
-									sessionData.put("sessionDarkMode", "false");
-									FileUtil.writeStringToFile(FileUtil.getPackageDir().concat("/user/session.pref"), ListUtil.setHashMapToSharedJSON(sessionData));
+									settingsData.put("settingsDarkMode", "false");
+									FileUtil.writeStringToFile(FileUtil.getPackageDir().concat("/user/settings.pref"), ListUtil.setHashMapToSharedJSON(settingsData));
 									startActivity(new Intent(ApplicationUtil.getAppContext(), SplashActivity.class));
 									finish();
 									ApplicationUtil.toast("Dark mode disabled.", Toast.LENGTH_SHORT);
@@ -669,10 +672,10 @@ public class LocalStreamActivity extends  AppCompatActivity  {
 							@Override
 							public void onCheckedChanged(CompoundButton view, boolean isChecked) {
 								if (isChecked) {
-									sessionData.put("sessionAds", "true");
+									settingsData.put("settingsAds", "true");
 									ApplicationUtil.toast("Ads enabled.", Toast.LENGTH_SHORT);
 								} else {
-									sessionData.put("sessionAds", "false");
+									settingsData.put("settingsAds", "false");
 									ApplicationUtil.toast("Ads disabled.", Toast.LENGTH_SHORT);
 								}
 							}
@@ -1469,6 +1472,7 @@ public class LocalStreamActivity extends  AppCompatActivity  {
 						songArtist.setText(musicData.get(Integer.parseInt(sessionData.get("sessionSongPosition").toString())).get("songArtist").toString());
 						miniplayerSongTitle.setText(musicData.get(Integer.parseInt(sessionData.get("sessionSongPosition").toString())).get("songTitle").toString());
 						miniplayerSongArtist.setText(musicData.get(Integer.parseInt(sessionData.get("sessionSongPosition").toString())).get("songArtist").toString());
+						playbackSrv.seek(Integer.parseInt(musicData.get(Integer.parseInt(sessionData.get("sessionSongPosition").toString())).get("songCurrentDuration").toString()));
 						miniplayerSeekbar.setMax(playbackSrv.getMaxDuration());
 						miniplayerSeekbar.setProgress(playbackSrv.getCurrentPosition());
 						maxDuration.setText(String.valueOf((int)((playbackSrv.getMaxDuration() / 1000) / 60)).concat(":".concat(new DecimalFormat("00").format((playbackSrv.getMaxDuration() / 1000) % 60))));
@@ -1566,8 +1570,7 @@ public class LocalStreamActivity extends  AppCompatActivity  {
 		if (playbackSrv.mp != null) {
 			if (playbackSrv.mp.isPlaying()) {
 				moveTaskToBack(true);
-			}
-			else {
+			} else {
 				if (!playbackSrv.isPlaying()) {
 					playIntent = new Intent(this, LocalPlaybackService.class);
 					stopService(playIntent);
@@ -1591,22 +1594,10 @@ public class LocalStreamActivity extends  AppCompatActivity  {
                 listEmptyMsg.setVisibility(View.VISIBLE);
                 songList.setVisibility(View.GONE);
             }
-        }
-        if (FileUtil.doesExists(FileUtil.getPackageDir().concat("/user/profile.pref")) && FileUtil.isFile(FileUtil.getPackageDir().concat("/user/profile.pref"))) {
-            profileData = ListUtil.getHashMapFromFile(FileUtil.getPackageDir().concat("/user/profile.pref"));
         } else {
-            profileData = new HashMap<>();
-        }
-        if (FileUtil.doesExists(FileUtil.getPackageDir().concat("/user/session.pref")) && FileUtil.isFile(FileUtil.getPackageDir().concat("/user/session.pref"))) {
-            sessionData = ListUtil.getHashMapFromFile(FileUtil.getPackageDir().concat("/user/session.pref"));
-        } else {
-            sessionData = new HashMap<>();
-        }
-        if (FileUtil.doesExists(FileUtil.getPackageDir().concat("/user/settings.pref")) && FileUtil.isFile(FileUtil.getPackageDir().concat("/user/settings.pref"))) {
-            settingsData = ListUtil.getHashMapFromFile(FileUtil.getPackageDir().concat("/user/settings.pref"));
-        } else {
-            settingsData = new HashMap<>();
-        }
+			listEmptyMsg.setVisibility(View.VISIBLE);
+			songList.setVisibility(View.GONE);
+		}
         if (sessionData.containsKey("sessionNavigationIndex")) {
             if (sessionData.get("sessionNavigationIndex").equals("0")) {
                 tabNavigation.getTabAt(0).select();
@@ -1630,6 +1621,9 @@ public class LocalStreamActivity extends  AppCompatActivity  {
             miniplayer.setVisibility(View.VISIBLE);
             miniplayerSeekbar.setVisibility(View.VISIBLE);
         }
+		if (sessionData.containsKey("sessionSongPosition")) {
+			songList.scrollToPosition(Integer.parseInt(sessionData.get("sessionSongPosition").toString()));
+		}
 	}
 	
 	@Override
