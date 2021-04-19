@@ -172,7 +172,7 @@ public class LocalPlaybackService extends Service {
 			musicData = ListUtil.getArrayListFromFile(FileUtil.getPackageDir().concat("/song.json"));
 		}
 		if (FileUtil.doesExists(FileUtil.getPackageDir().concat("/user/session.pref")) && FileUtil.isFile(FileUtil.getPackageDir().concat("/user/session.pref"))) {
-			sessionData = ListUtil.getHashMapFromFile(FileUtil.getPackageDir().concat("/user.session.pref"));
+			sessionData = ListUtil.getHashMapFromFile(FileUtil.getPackageDir().concat("/user/session.pref"));
 		}
 	}
 
