@@ -57,7 +57,11 @@ import com.gianxd.audiodev.util.FileUtil;
 import com.gianxd.audiodev.util.ImageUtil;
 import com.gianxd.audiodev.util.IntegerUtil;
 import com.gianxd.audiodev.util.ListUtil;
+import com.gianxd.audiodev.util.NetworkUtil;
 import com.gianxd.audiodev.util.StringUtil;
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.AdView;
+import com.google.android.gms.ads.MobileAds;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.android.material.tabs.TabLayout;
 
@@ -112,6 +116,7 @@ public class LocalStreamActivity extends  AppCompatActivity  {
 	public static ImageView miniplayerAlbumArt;
     public static TextView miniplayerSongTitle;
     public static TextView miniplayerSongArtist;
+    private AdView adView;
 
 	private TimerTask timerTask;
 
@@ -153,6 +158,7 @@ public class LocalStreamActivity extends  AppCompatActivity  {
 		miniplayerSongArtist = (TextView) findViewById(R.id.miniplayerSongArtist);
 		repeat = (ImageView) findViewById(R.id.repeat);
 		shuffle = (ImageView) findViewById(R.id.shuffle);
+		adView = (AdView) findViewById(R.id.adView);
 		tabNavigation.addTab(tabNavigation.newTab().setIcon(R.drawable.ic_tabnav_library));
 		tabNavigation.addTab(tabNavigation.newTab().setIcon(R.drawable.ic_tabnav_nowplaying));
 		listLoadBar.setVisibility(View.GONE);
@@ -189,6 +195,26 @@ public class LocalStreamActivity extends  AppCompatActivity  {
 		if (!settingsData.containsKey("settingsDarkMode")) {
 			settingsData.put("settingsDarkMode", "false");
 			FileUtil.writeStringToFile(FileUtil.getPackageDir().concat("/user/settings.pref"), ListUtil.setHashMapToSharedJSON(settingsData));
+		}
+		if (settingsData.containsKey("settingsAd")) {
+			if (settingsData.get("settingsAd").equals("true")) {
+				if (NetworkUtil.isNetworkConnected()) {
+					MobileAds.initialize(this);
+					AdRequest adRequest = new AdRequest.Builder().build();
+					adView.loadAd(adRequest);
+				}
+			} else if (settingsData.get("settingsAd").equals("false")) {
+				// Then don't load the adView
+				adView.setVisibility(View.GONE);
+			}
+		} else {
+			settingsData.put("settingsAd", "true");
+			FileUtil.writeStringToFile(FileUtil.getPackageDir().concat("/user/settings.pref"), ListUtil.setHashMapToSharedJSON(settingsData));
+			if (NetworkUtil.isNetworkConnected()) {
+				MobileAds.initialize(this);
+				AdRequest adRequest = new AdRequest.Builder().build();
+				adView.loadAd(adRequest);
+			}
 		}
 		if (!sessionData.containsKey("sessionToggleIntro")) {
 			BottomSheetDialog introDialog = new BottomSheetDialog(LocalStreamActivity.this);
@@ -642,6 +668,11 @@ public class LocalStreamActivity extends  AppCompatActivity  {
 								dark_mode.setChecked(true);
 							}
 						}
+						if (settingsData.containsKey("settingsAds")) {
+							if (settingsData.get("settingsAds").equals("false")) {
+								dark_mode.setChecked(true);
+							}
+						}
 						back.setOnClickListener(new View.OnClickListener() {
 							@Override
 							public void onClick(View view) {
@@ -672,11 +703,13 @@ public class LocalStreamActivity extends  AppCompatActivity  {
 							@Override
 							public void onCheckedChanged(CompoundButton view, boolean isChecked) {
 								if (isChecked) {
-									settingsData.put("settingsAds", "true");
-									ApplicationUtil.toast("Ads enabled.", Toast.LENGTH_SHORT);
-								} else {
 									settingsData.put("settingsAds", "false");
-									ApplicationUtil.toast("Ads disabled.", Toast.LENGTH_SHORT);
+									FileUtil.writeStringToFile(FileUtil.getPackageDir().concat("/user/settings.pref"), ListUtil.setHashMapToSharedJSON(settingsData));
+									ApplicationUtil.toast("Opt out of ads disabled", Toast.LENGTH_SHORT);
+								} else {
+									settingsData.put("settingsAds", "true");
+									FileUtil.writeStringToFile(FileUtil.getPackageDir().concat("/user/settings.pref"), ListUtil.setHashMapToSharedJSON(settingsData));
+									ApplicationUtil.toast("Opt out of ads enabled.", Toast.LENGTH_SHORT);
 								}
 							}
 						});
@@ -1677,6 +1710,7 @@ public class LocalStreamActivity extends  AppCompatActivity  {
                     miniplayerSeekbar.setBackgroundColor(Color.parseColor("#1A1A1A"));
                     miniplayerSongTitle.setTextColor(Color.parseColor("#FFFFFF"));
                     miniplayerSongArtist.setTextColor(Color.parseColor("#FFFFFF"));
+                    adView.setBackgroundColor(Color.parseColor("#1A1A1A"));
 					getWindow().setStatusBarColor(Color.parseColor("#1A1A1A"));
 					getWindow().setNavigationBarColor(Color.parseColor("#1A1A1A"));
 				}

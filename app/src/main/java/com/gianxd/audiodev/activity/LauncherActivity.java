@@ -83,12 +83,6 @@ public class LauncherActivity extends AppCompatActivity {
                 FileUtil.createFile(FileUtil.getPackageDir().concat("/user/online.pref"));
                 FileUtil.writeStringToFile(FileUtil.getPackageDir().concat("/user/online.pref"), "{}");
             }
-            if (FileUtil.doesExists(FileUtil.getPackageDir().concat("/song.json")) && FileUtil.isFile(FileUtil.getPackageDir().concat("/song.json"))) {
-                Log.v("LauncherActivity", "Song list exists, ignoring creation task..");
-            } else {
-                Log.e("LauncherActivity", "Song list not found, performing creation task..");
-                FileUtil.createFile(FileUtil.getPackageDir().concat("/song.json"));
-            }
             return null;
         }
 
@@ -114,6 +108,12 @@ public class LauncherActivity extends AppCompatActivity {
 
         @Override
         protected void onPreExecute() {
+            if (FileUtil.doesExists(FileUtil.getPackageDir().concat("/song.json")) && FileUtil.isFile(FileUtil.getPackageDir().concat("/song.json"))) {
+                Log.v("LauncherActivity", "Song list exists, ignoring creation task..");
+            } else {
+                Log.e("LauncherActivity", "Song list not found, performing creation task..");
+                FileUtil.createFile(FileUtil.getPackageDir().concat("/song.json"));
+            }
             scanList = new ArrayList<>();
         }
 

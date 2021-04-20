@@ -54,7 +54,7 @@
     <string name="recyclerview_list_empty_msg">No songs found.</string>
     <string name="settings_category1">General</string>
     <string name="settings_note">More options will come soon!</string>
-    <string name="settings_disable_ads">Disable Ads</string>
+    <string name="settings_disable_ads">Opt out of ads</string>
     <string name="settings_dark_mode">Dark Mode</string>
     <string name="create_a_profile_icon_title">Set profile picture</string>
     <string name="create_a_profile_icon_input_hint">Enter specified path or URL here</string>

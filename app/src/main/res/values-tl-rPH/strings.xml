@@ -58,7 +58,7 @@
     <string name="recyclerview_list_empty_msg">Walang nahanap na mga kanta.</string>
     <string name="settings_category1">Pangkalahatan</string>
     <string name="settings_note">Higit pang mga pagpipilian ay darating sa lalong madaling panahon!</string>
-    <string name="settings_disable_ads">Huwag paganahin ang Mga Ad</string>
+    <string name="settings_disable_ads">Mag-opt out sa mga ad</string>
     <string name="settings_dark_mode">Madilim na Mode</string>
     <string name="create_a_profile_icon_title">Set profile picture</string>
     <string name="create_a_profile_icon_input_hint">Ipasok dito ang tinukoy na landas o URL</string>
