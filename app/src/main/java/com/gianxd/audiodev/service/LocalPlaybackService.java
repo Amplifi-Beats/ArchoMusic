@@ -170,9 +170,13 @@ public class LocalPlaybackService extends Service {
 	public void initObjects() {
 		if (FileUtil.doesExists(FileUtil.getPackageDir().concat("/song.json")) && FileUtil.isFile(FileUtil.getPackageDir().concat("/song.json"))) {
 			musicData = ListUtil.getArrayListFromFile(FileUtil.getPackageDir().concat("/song.json"));
+		} else {
+			musicData = new ArrayList<>();
 		}
 		if (FileUtil.doesExists(FileUtil.getPackageDir().concat("/user/session.pref")) && FileUtil.isFile(FileUtil.getPackageDir().concat("/user/session.pref"))) {
 			sessionData = ListUtil.getHashMapFromFile(FileUtil.getPackageDir().concat("/user/session.pref"));
+		} else {
+			sessionData = new HashMap<>();
 		}
 	}
 
