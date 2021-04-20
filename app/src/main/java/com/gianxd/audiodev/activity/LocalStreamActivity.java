@@ -196,19 +196,19 @@ public class LocalStreamActivity extends  AppCompatActivity  {
 			settingsData.put("settingsDarkMode", "false");
 			FileUtil.writeStringToFile(FileUtil.getPackageDir().concat("/user/settings.pref"), ListUtil.setHashMapToSharedJSON(settingsData));
 		}
-		if (settingsData.containsKey("settingsAd")) {
-			if (settingsData.get("settingsAd").equals("true")) {
+		if (settingsData.containsKey("settingsAds")) {
+			if (settingsData.get("settingsAds").equals("true")) {
 				if (NetworkUtil.isNetworkConnected()) {
 					MobileAds.initialize(this);
 					AdRequest adRequest = new AdRequest.Builder().build();
 					adView.loadAd(adRequest);
 				}
-			} else if (settingsData.get("settingsAd").equals("false")) {
+			} else if (settingsData.get("settingsAds").equals("false")) {
 				// Then don't load the adView
 				adView.setVisibility(View.GONE);
 			}
 		} else {
-			settingsData.put("settingsAd", "true");
+			settingsData.put("settingsAds", "true");
 			FileUtil.writeStringToFile(FileUtil.getPackageDir().concat("/user/settings.pref"), ListUtil.setHashMapToSharedJSON(settingsData));
 			if (NetworkUtil.isNetworkConnected()) {
 				MobileAds.initialize(this);
