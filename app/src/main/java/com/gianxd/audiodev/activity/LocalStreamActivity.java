@@ -161,6 +161,7 @@ public class LocalStreamActivity extends  AppCompatActivity  {
 		adView = (AdView) findViewById(R.id.adView);
 		tabNavigation.addTab(tabNavigation.newTab().setIcon(R.drawable.ic_tabnav_library));
 		tabNavigation.addTab(tabNavigation.newTab().setIcon(R.drawable.ic_tabnav_nowplaying));
+		MobileAds.initialize(this);
 		listLoadBar.setVisibility(View.GONE);
 		if (FileUtil.doesExists(FileUtil.getPackageDir().concat("/song.json")) && FileUtil.isFile(FileUtil.getPackageDir().concat("/song.json"))) {
 			musicData = ListUtil.getArrayListFromFile(FileUtil.getPackageDir().concat("/song.json"));
@@ -199,7 +200,6 @@ public class LocalStreamActivity extends  AppCompatActivity  {
 		if (settingsData.containsKey("settingsAds")) {
 			if (settingsData.get("settingsAds").equals("true")) {
 				if (NetworkUtil.isNetworkConnected()) {
-					MobileAds.initialize(this);
 					AdRequest adRequest = new AdRequest.Builder().build();
 					adView.loadAd(adRequest);
 				}
@@ -211,7 +211,6 @@ public class LocalStreamActivity extends  AppCompatActivity  {
 			settingsData.put("settingsAds", "true");
 			FileUtil.writeStringToFile(FileUtil.getPackageDir().concat("/user/settings.pref"), ListUtil.setHashMapToSharedJSON(settingsData));
 			if (NetworkUtil.isNetworkConnected()) {
-				MobileAds.initialize(this);
 				AdRequest adRequest = new AdRequest.Builder().build();
 				adView.loadAd(adRequest);
 			}
@@ -670,7 +669,7 @@ public class LocalStreamActivity extends  AppCompatActivity  {
 						}
 						if (settingsData.containsKey("settingsAds")) {
 							if (settingsData.get("settingsAds").equals("false")) {
-								dark_mode.setChecked(true);
+								disable_ads.setChecked(true);
 							}
 						}
 						back.setOnClickListener(new View.OnClickListener() {
@@ -705,10 +704,14 @@ public class LocalStreamActivity extends  AppCompatActivity  {
 								if (isChecked) {
 									settingsData.put("settingsAds", "false");
 									FileUtil.writeStringToFile(FileUtil.getPackageDir().concat("/user/settings.pref"), ListUtil.setHashMapToSharedJSON(settingsData));
+									startActivity(new Intent(ApplicationUtil.getAppContext(), SplashActivity.class));
+									finish();
 									ApplicationUtil.toast("Opt out of ads disabled", Toast.LENGTH_SHORT);
 								} else {
 									settingsData.put("settingsAds", "true");
 									FileUtil.writeStringToFile(FileUtil.getPackageDir().concat("/user/settings.pref"), ListUtil.setHashMapToSharedJSON(settingsData));
+									startActivity(new Intent(ApplicationUtil.getAppContext(), SplashActivity.class));
+									finish();
 									ApplicationUtil.toast("Opt out of ads enabled.", Toast.LENGTH_SHORT);
 								}
 							}
