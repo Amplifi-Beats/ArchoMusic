@@ -159,7 +159,7 @@ public class LocalStreamActivity extends  AppCompatActivity  {
 		if (FileUtil.doesExists(FileUtil.getPackageDir().concat("/song.json")) && FileUtil.isFile(FileUtil.getPackageDir().concat("/song.json"))) {
 			musicData = ListUtil.getArrayListFromFile(FileUtil.getPackageDir().concat("/song.json"));
 			songList.setAdapter(new SongListAdapter(musicData));
-			if (!musicData.isEmpty()) {
+			if (musicData != null && !musicData.isEmpty()) {
 				listEmptyMsg.setVisibility(View.GONE);
 				songList.setVisibility(View.VISIBLE);
 			} else {
@@ -1106,6 +1106,20 @@ public class LocalStreamActivity extends  AppCompatActivity  {
 		listRefresh.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
 			@Override
 			public void onRefresh() {
+				if (FileUtil.doesExists(FileUtil.getPackageDir().concat("/song.json")) && FileUtil.isFile(FileUtil.getPackageDir().concat("/song.json"))) {
+					musicData = ListUtil.getArrayListFromFile(FileUtil.getPackageDir().concat("/song.json"));
+					songList.setAdapter(new SongListAdapter(musicData));
+					if (musicData != null && !musicData.isEmpty()) {
+						listEmptyMsg.setVisibility(View.GONE);
+						songList.setVisibility(View.VISIBLE);
+					} else {
+						listEmptyMsg.setVisibility(View.VISIBLE);
+						songList.setVisibility(View.GONE);
+					}
+				} else {
+					listEmptyMsg.setVisibility(View.VISIBLE);
+					songList.setVisibility(View.GONE);
+				}
 				listRefresh.setRefreshing(false);
 			}
 		});
@@ -1587,7 +1601,7 @@ public class LocalStreamActivity extends  AppCompatActivity  {
         if (FileUtil.doesExists(FileUtil.getPackageDir().concat("/song.json")) && FileUtil.isFile(FileUtil.getPackageDir().concat("/song.json"))) {
             musicData = ListUtil.getArrayListFromFile(FileUtil.getPackageDir().concat("/song.json"));
             songList.setAdapter(new SongListAdapter(musicData));
-            if (!musicData.isEmpty()) {
+            if (musicData != null && !musicData.isEmpty()) {
                 listEmptyMsg.setVisibility(View.GONE);
                 songList.setVisibility(View.VISIBLE);
             } else {
