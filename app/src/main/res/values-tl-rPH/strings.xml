@@ -57,9 +57,14 @@
     <string name="song_opts_rename_btn_cancel">Kanselahin</string>
     <string name="recyclerview_list_empty_msg">Walang nahanap na mga kanta.</string>
     <string name="settings_category1">Pangkalahatan</string>
+    <string name="settings_category2">Hitsura</string>
+    <string name="settings_category3">Audio at Pagganap</string>
     <string name="settings_note">Higit pang mga pagpipilian ay darating sa lalong madaling panahon!</string>
     <string name="settings_disable_ads">Mag-opt out sa mga ad</string>
     <string name="settings_dark_mode">Madilim na Mode</string>
+    <string name="settings_disable_anim">Huwag paganahin ang mga animasyon</string>
+    <string name="settings_background_play">Patugtugin ang kanta habang nasa background</string>
+    <string name="settings_btn_clear_data">I-reset ang data ng user at config</string>
     <string name="create_a_profile_icon_title">Set profile picture</string>
     <string name="create_a_profile_icon_input_hint">Ipasok dito ang tinukoy na landas o URL</string>
     <string name="create_a_profile_icon_btn_finish">Tapos na</string>

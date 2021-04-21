@@ -121,11 +121,26 @@ public class SplashActivity extends AppCompatActivity {
 									}
 									FileUtil.deleteFile(FileUtil.getPackageDir().concat("/user/crash.log"));
 									errorDialog.dismiss();
-									Intent intent = new Intent();
-									intent.setClass(ApplicationUtil.getAppContext(), LocalStreamActivity.class);
-									logo.setTransitionName("fade");
-									ActivityOptions optionsCompat = ActivityOptions.makeSceneTransitionAnimation(SplashActivity.this, logo, "fade");
-									startActivity(intent, optionsCompat.toBundle());
+									if (settingsData.containsKey("settingsAnimation")) {
+										if (settingsData.get("settingsAnimation").equals("true")) {
+											Intent intent = new Intent();
+											intent.setClass(ApplicationUtil.getAppContext(), LocalStreamActivity.class);
+											logo.setTransitionName("fade");
+											ActivityOptions optionsCompat = ActivityOptions.makeSceneTransitionAnimation(SplashActivity.this, logo, "fade");
+											startActivity(intent, optionsCompat.toBundle());
+											finish();
+										} else {
+											startActivity(new Intent(ApplicationUtil.getAppContext(), LocalStreamActivity.class));
+											finish();
+										}
+									} else {
+										Intent intent = new Intent();
+										intent.setClass(ApplicationUtil.getAppContext(), LocalStreamActivity.class);
+										logo.setTransitionName("fade");
+										ActivityOptions optionsCompat = ActivityOptions.makeSceneTransitionAnimation(SplashActivity.this, logo, "fade");
+										startActivity(intent, optionsCompat.toBundle());
+										finish();
+									}
 								}
 							});
 							Double TopLeft = 20.0;
@@ -161,11 +176,26 @@ public class SplashActivity extends AppCompatActivity {
 							errorDialog.setCancelable(false);
 							errorDialog.show();
 						} else {
-							Intent intent = new Intent();
-							intent.setClass(ApplicationUtil.getAppContext(), LocalStreamActivity.class);
-							logo.setTransitionName("fade");
-							ActivityOptions optionsCompat = ActivityOptions.makeSceneTransitionAnimation(SplashActivity.this, logo, "fade");
-							startActivity(intent, optionsCompat.toBundle());
+							if (settingsData.containsKey("settingsAnimation")) {
+								if (settingsData.get("settingsAnimation").equals("true")) {
+									Intent intent = new Intent();
+									intent.setClass(ApplicationUtil.getAppContext(), LocalStreamActivity.class);
+									logo.setTransitionName("fade");
+									ActivityOptions optionsCompat = ActivityOptions.makeSceneTransitionAnimation(SplashActivity.this, logo, "fade");
+									startActivity(intent, optionsCompat.toBundle());
+									finish();
+								} else {
+									startActivity(new Intent(ApplicationUtil.getAppContext(), LocalStreamActivity.class));
+									finish();
+								}
+							} else {
+								Intent intent = new Intent();
+								intent.setClass(ApplicationUtil.getAppContext(), LocalStreamActivity.class);
+								logo.setTransitionName("fade");
+								ActivityOptions optionsCompat = ActivityOptions.makeSceneTransitionAnimation(SplashActivity.this, logo, "fade");
+								startActivity(intent, optionsCompat.toBundle());
+								finish();
+							}
 						}
 					}
 				});

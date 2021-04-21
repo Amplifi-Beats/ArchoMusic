@@ -32,8 +32,21 @@ public class AudioDev extends Application {
 			@Override
 			public void uncaughtException(Thread thread, Throwable ex) {
 				Log.e("AudioDev", ApplicationUtil.getStackTrace(ex));
-				FileUtil.writeStringToFile(FileUtil.getPackageDir().concat("/user/crash.log"), ApplicationUtil.getStackTrace(ex));
-				startActivity(new Intent(getApplicationContext(), LauncherActivity.class));
+				HashMap<String, Object> settingsData;
+				if (FileUtil.doesExists(FileUtil.getPackageDir().concat("/user/settings.pref")) && FileUtil.isFile(FileUtil.getPackageDir().concat("/user/settings.pref"))) {
+					settingsData = ListUtil.getHashMapFromFile(FileUtil.getPackageDir().concat("/user/settings.pref"));
+				} else {
+					settingsData = new HashMap<>();
+				}
+				if (settingsData.containsKey("settingsCaptureError")) {
+					if (settingsData.get("settingsCaptureError").equals("true")) {
+						FileUtil.writeStringToFile(FileUtil.getPackageDir().concat("/user/crash.log"), ApplicationUtil.getStackTrace(ex));
+						startActivity(new Intent(getApplicationContext(), LauncherActivity.class));
+					}
+				} else {
+					FileUtil.writeStringToFile(FileUtil.getPackageDir().concat("/user/crash.log"), ApplicationUtil.getStackTrace(ex));
+					startActivity(new Intent(getApplicationContext(), LauncherActivity.class));
+				}
 				uncaughtExceptionHandler.uncaughtException(thread, ex);
 			}
 		});
