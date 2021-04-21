@@ -124,6 +124,7 @@ public class LocalStreamActivity extends  AppCompatActivity  {
 
 	private TimerTask timerTask;
 	private DatabaseReference liveStreamDatabase;
+	private LinearLayoutManager songListLayoutManager;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -164,6 +165,7 @@ public class LocalStreamActivity extends  AppCompatActivity  {
 		repeat = (ImageView) findViewById(R.id.repeat);
 		shuffle = (ImageView) findViewById(R.id.shuffle);
 		adView = (AdView) findViewById(R.id.adView);
+		songListLayoutManager = new LinearLayoutManager(ApplicationUtil.getAppContext());
 		liveStreamDatabase = FirebaseDatabase.getInstance().getReference("live/");
 		tabNavigation.addTab(tabNavigation.newTab().setIcon(R.drawable.ic_tabnav_library));
 		tabNavigation.addTab(tabNavigation.newTab().setIcon(R.drawable.ic_tabnav_nowplaying));
@@ -1744,7 +1746,7 @@ public class LocalStreamActivity extends  AppCompatActivity  {
 		logoName.setTypeface(Typeface.createFromAsset(getAssets(),"fonts/leixo.ttf"), Typeface.BOLD);
 		songTitle.setTypeface(Typeface.createFromAsset(getAssets(),"fonts/roboto_medium.ttf"), Typeface.NORMAL);
 		listRefresh.setColorSchemeColors(Color.parseColor("#03A9F4"), Color.parseColor("#03A9F4"), Color.parseColor("#03A9F4"));
-		songList.setLayoutManager(new LinearLayoutManager(this));
+		songList.setLayoutManager(songListLayoutManager);
 	}
 
 	public class SongListAdapter extends RecyclerView.Adapter<SongListAdapter.ViewHolder> {
