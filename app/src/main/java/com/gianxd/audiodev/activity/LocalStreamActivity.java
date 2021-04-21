@@ -40,6 +40,8 @@ import android.widget.SeekBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
@@ -1774,8 +1776,6 @@ public class LocalStreamActivity extends  AppCompatActivity  {
 			ImageView albumArt = (ImageView) view.findViewById(R.id.albumArt);
 			TextView songTitle = (TextView) view.findViewById(R.id.songTitle);
 			TextView songArtist = (TextView) view.findViewById(R.id.songArtist);
-			RecyclerView.LayoutParams recyclerLayoutParams = new RecyclerView.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-			view.setLayoutParams(recyclerLayoutParams);
 			if (settingsData.containsKey("settingsDarkMode")) {
 				if (settingsData.get("settingsDarkMode").equals("true")) {
 					main.setBackgroundColor(Color.parseColor("#1A1A1A"));
