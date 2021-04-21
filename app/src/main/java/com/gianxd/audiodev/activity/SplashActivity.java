@@ -71,8 +71,8 @@ public class SplashActivity extends AppCompatActivity {
         if (Build.VERSION.SDK_INT >= 23) {
             if (settingsData.containsKey("settingsDarkMode")) {
                 if (!settingsData.get("settingsDarkMode").equals("true")) {
-                    getWindow().setStatusBarColor(Color.parseColor("#03A9F4"));
-                    getWindow().setNavigationBarColor(Color.parseColor("#03A9F4"));
+                    getWindow().setStatusBarColor(Color.parseColor("#FFFFFF"));
+                    getWindow().setNavigationBarColor(Color.parseColor("#FFFFFF"));
 
                 } else {
                     setTheme(R.style.Theme_ArchoMusic_Dark);
@@ -85,8 +85,8 @@ public class SplashActivity extends AppCompatActivity {
                 }
 
             } else {
-                getWindow().setStatusBarColor(Color.parseColor("#03A9F4"));
-                getWindow().setNavigationBarColor(Color.parseColor("#03A9F4"));
+                getWindow().setStatusBarColor(Color.parseColor("#FFFFFF"));
+                getWindow().setNavigationBarColor(Color.parseColor("#FFFFFF"));
             }
 
         } else {
@@ -150,8 +150,6 @@ public class SplashActivity extends AppCompatActivity {
 
                                 startActivity(intent, optionsCompat.toBundle());
                             }
-
-                            finish();
                         });
 
                         float TopLeft = 20.0f;
@@ -218,8 +216,6 @@ public class SplashActivity extends AppCompatActivity {
                             ActivityOptions optionsCompat = ActivityOptions.makeSceneTransitionAnimation(SplashActivity.this, logo, "fade");
                             startActivity(intent, optionsCompat.toBundle());
                         }
-
-                        finish();
                     }
                 });
             }
