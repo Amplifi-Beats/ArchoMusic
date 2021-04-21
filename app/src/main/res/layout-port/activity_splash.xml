@@ -21,13 +21,5 @@
 			android:text="@string/splash_title"
 			android:textSize="25sp"
 			android:textColor="#03A9F4"/>
-		<ProgressBar
-			android:id="@+id/loadanim"
-			android:layout_width="30dp"
-			android:layout_height="30dp"
-			android:padding="8dp"
-			android:translationY="150.0dp"
-			android:indeterminate="true"
-			style="?android:progressBarStyle"/>
 	</LinearLayout>
 </LinearLayout>

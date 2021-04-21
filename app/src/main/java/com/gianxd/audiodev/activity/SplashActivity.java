@@ -37,7 +37,6 @@ public class SplashActivity extends AppCompatActivity {
 
     LinearLayout mainLayout;
     TextView logo;
-    ProgressBar loadAnim;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -53,14 +52,10 @@ public class SplashActivity extends AppCompatActivity {
     private void initialize() {
         mainLayout = findViewById(R.id.mainLayout);
         logo = findViewById(R.id.logo);
-        loadAnim = findViewById(R.id.loadanim);
     }
 
     private void initializeLogic() {
         logo.setTypeface(Typeface.createFromAsset(getAssets(),"fonts/leixo.ttf"), Typeface.BOLD);
-
-        loadAnim.setVisibility(View.GONE);
-        loadAnim.getIndeterminateDrawable().setColorFilter(0xFFFFFFFF, android.graphics.PorterDuff.Mode.MULTIPLY);
 
         if (FileUtil.doesExists(FileUtil.getPackageDir(this).concat("/user/settings.pref")) && FileUtil.isFile(FileUtil.getPackageDir(this).concat("/user/settings.pref"))) {
             settingsData = ListUtil.getHashMapFromFile(FileUtil.getPackageDir(this).concat("/user/settings.pref"));
@@ -71,6 +66,7 @@ public class SplashActivity extends AppCompatActivity {
         if (Build.VERSION.SDK_INT >= 23) {
             if (settingsData.containsKey("settingsDarkMode")) {
                 if (!settingsData.get("settingsDarkMode").equals("true")) {
+                    mainLayout.setSystemUiVisibility(View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR);
                     getWindow().setStatusBarColor(Color.parseColor("#FFFFFF"));
                     getWindow().setNavigationBarColor(Color.parseColor("#FFFFFF"));
 
@@ -85,6 +81,7 @@ public class SplashActivity extends AppCompatActivity {
                 }
 
             } else {
+                mainLayout.setSystemUiVisibility(View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR);
                 getWindow().setStatusBarColor(Color.parseColor("#FFFFFF"));
                 getWindow().setNavigationBarColor(Color.parseColor("#FFFFFF"));
             }
