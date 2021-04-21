@@ -64,6 +64,10 @@ import com.google.android.gms.ads.AdView;
 import com.google.android.gms.ads.MobileAds;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.android.material.tabs.TabLayout;
+import com.google.firebase.FirebaseApiNotAvailableException;
+import com.google.firebase.database.ChildEventListener;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 
 import java.text.DecimalFormat;
 import java.util.ArrayList;
@@ -119,6 +123,7 @@ public class LocalStreamActivity extends  AppCompatActivity  {
     private AdView adView;
 
 	private TimerTask timerTask;
+	private DatabaseReference liveStreamDatabase;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -159,6 +164,7 @@ public class LocalStreamActivity extends  AppCompatActivity  {
 		repeat = (ImageView) findViewById(R.id.repeat);
 		shuffle = (ImageView) findViewById(R.id.shuffle);
 		adView = (AdView) findViewById(R.id.adView);
+		liveStreamDatabase = FirebaseDatabase.getInstance().getReference("live/");
 		tabNavigation.addTab(tabNavigation.newTab().setIcon(R.drawable.ic_tabnav_library));
 		tabNavigation.addTab(tabNavigation.newTab().setIcon(R.drawable.ic_tabnav_nowplaying));
 		MobileAds.initialize(this);
@@ -632,7 +638,6 @@ public class LocalStreamActivity extends  AppCompatActivity  {
 								view.setBackground(rippleButton);
 							}
 						}
-						ApplicationUtil.toast("Feature under construction.", Toast.LENGTH_SHORT);
 					}
 				});
 				settings.setOnClickListener(new View.OnClickListener() {
