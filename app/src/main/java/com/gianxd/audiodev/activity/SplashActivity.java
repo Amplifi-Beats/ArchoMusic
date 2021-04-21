@@ -1,9 +1,7 @@
 package com.gianxd.audiodev.activity;
 
 import android.app.ActivityOptions;
-import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.content.res.ColorStateList;
 import android.graphics.Color;
 import android.graphics.Typeface;
@@ -27,7 +25,6 @@ import com.gianxd.audiodev.util.FileUtil;
 import com.gianxd.audiodev.util.ListUtil;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Timer;
 import java.util.TimerTask;

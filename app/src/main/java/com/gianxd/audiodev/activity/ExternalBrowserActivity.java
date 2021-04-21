@@ -1,8 +1,6 @@
 package com.gianxd.audiodev.activity;
 
-import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.content.res.ColorStateList;
 import android.graphics.Bitmap;
 import android.graphics.Color;
@@ -25,8 +23,6 @@ import com.gianxd.audiodev.util.FileUtil;
 import com.gianxd.audiodev.util.ListUtil;
 
 import java.util.HashMap;
-
-import static com.gianxd.audiodev.AudioDev.applicationContext;
 
 
 public class ExternalBrowserActivity extends  AppCompatActivity  {
