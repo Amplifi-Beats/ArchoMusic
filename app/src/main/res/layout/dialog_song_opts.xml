@@ -36,7 +36,7 @@
 			<androidx.cardview.widget.CardView
 				android:id="@+id/corneredView"
 				android:layout_width="50dp"
-				android:layout_height="55dp"
+				android:layout_height="50dp"
 				android:gravity="center_vertical"
 				app:cardCornerRadius="8dp">
 				<ImageView
