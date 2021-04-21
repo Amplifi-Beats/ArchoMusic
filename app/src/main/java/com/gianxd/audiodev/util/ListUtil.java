@@ -34,14 +34,6 @@ public class ListUtil {
         });
     }
 
-    public static ArrayList<HashMap<String, Object>> getArrayListFromSharedJSON(SharedPreferences sharedPreferences, String key) {
-        return new Gson().fromJson(sharedPreferences.getString(key, ""), new TypeToken<ArrayList<HashMap<String, Object>>>(){}.getType());
-    }
-
-    public static HashMap<String, Object> getHashMapFromSharedJSON(SharedPreferences sharedPreferences, String key) {
-        return new Gson().fromJson(sharedPreferences.getString(key, ""), new TypeToken<HashMap<String, Object>>(){}.getType());
-    }
-
     public static String setArrayListToSharedJSON(ArrayList<HashMap<String, Object>> arrayList) {
         return new Gson().toJson(arrayList);
     }
