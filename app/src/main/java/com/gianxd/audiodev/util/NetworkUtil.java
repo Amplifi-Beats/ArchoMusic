@@ -1,6 +1,7 @@
 package com.gianxd.audiodev.util;
 
 import android.app.Activity;
+import android.content.Context;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 
@@ -12,23 +13,22 @@ import java.util.HashMap;
 
 public class NetworkUtil {
 
+    static FirebaseDatabase database = FirebaseDatabase.getInstance();
 
     public static void sendMessageToDatabase(String path, String message) {
-        FirebaseDatabase database = FirebaseDatabase.getInstance();
         DatabaseReference myRef = database.getReference(path);
         myRef.setValue(message);
     }
 
     public static void sendMessageToDatabase(String path, HashMap<String, Object> hashMap) {
-        FirebaseDatabase database = FirebaseDatabase.getInstance();
         DatabaseReference myRef = database.getReference(path);
         myRef.setValue(hashMap);
     }
 
-    public static boolean isNetworkConnected() {
-        ConnectivityManager connectivityManager = (android.net.ConnectivityManager)AudioDev.applicationContext.getSystemService(Activity.CONNECTIVITY_SERVICE);
+    public static boolean isNetworkConnected(Context context) {
+        ConnectivityManager connectivityManager = (android.net.ConnectivityManager) context.getSystemService(Activity.CONNECTIVITY_SERVICE);
         NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
+
         return activeNetworkInfo != null && activeNetworkInfo.isConnected();
     }
-
 }

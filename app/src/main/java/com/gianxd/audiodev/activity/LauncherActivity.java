@@ -8,6 +8,7 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
@@ -15,10 +16,8 @@ import androidx.core.content.ContextCompat;
 import com.gianxd.audiodev.util.ApplicationUtil;
 import com.gianxd.audiodev.util.FileUtil;
 import com.gianxd.audiodev.util.ListUtil;
-import com.gianxd.audiodev.util.StringUtil;
+import com.gianxd.audiodev.util.Base64Util;
 import com.google.android.gms.ads.MobileAds;
-import com.google.android.gms.ads.initialization.InitializationStatus;
-import com.google.android.gms.ads.initialization.OnInitializationCompleteListener;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -30,24 +29,19 @@ public class LauncherActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        MobileAds.initialize(this, new OnInitializationCompleteListener() {
-            @Override
-            public void onInitializationComplete(InitializationStatus initializationStatus) {
-                Log.i("MobileAds", initializationStatus.toString());
-            }
-        });
-        (new initializeLocalFiles()).execute();
+        MobileAds.initialize(this, initializationStatus -> Log.i("MobileAds", initializationStatus.toString()));
+        new initializeLocalFiles().execute();
     }
 
     @Override
-    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         if (requestCode == 1) {
-            if (ContextCompat.checkSelfPermission(ApplicationUtil.getAppContext(), Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED && ContextCompat.checkSelfPermission(ApplicationUtil.getAppContext(), Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED) {
-                (new mediaScanningTask()).execute();
+            if (ContextCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED && ContextCompat.checkSelfPermission(LauncherActivity.this, Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED) {
+                new MediaScanningTask().execute();
             } else {
-               startActivity(new Intent(ApplicationUtil.getAppContext(), SplashActivity.class));
-               finish();
+                startActivity(new Intent(this, SplashActivity.class));
+                finish();
             }
         }
     }
@@ -61,19 +55,19 @@ public class LauncherActivity extends AppCompatActivity {
 
         @Override
         protected Void doInBackground(Void... path) {
-            if (FileUtil.doesExists(FileUtil.getPackageDir().concat("/user")) && FileUtil.isDirectory(FileUtil.getPackageDir().concat("/user"))) {
+            if (FileUtil.doesExists(FileUtil.getPackageDir(LauncherActivity.this).concat("/user")) && FileUtil.isDirectory(FileUtil.getPackageDir(LauncherActivity.this).concat("/user"))) {
                 Log.v("LauncherActivity", "User data exists, ignoring creation task..");
             } else {
                 Log.e("LauncherActivity", "User data not found, performing creation task..");
-                FileUtil.createDirectory(FileUtil.getPackageDir().concat("/user/"));
-                FileUtil.createFile(FileUtil.getPackageDir().concat("/user/profile.pref"));
-                FileUtil.writeStringToFile(FileUtil.getPackageDir().concat("/user/profile.pref"), "{}");
-                FileUtil.createFile(FileUtil.getPackageDir().concat("/user/settings.pref"));
-                FileUtil.writeStringToFile(FileUtil.getPackageDir().concat("/user/settings.pref"), "{}");
-                FileUtil.createFile(FileUtil.getPackageDir().concat("/user/session.pref"));
-                FileUtil.writeStringToFile(FileUtil.getPackageDir().concat("/user/session.pref"), "{}");
-                FileUtil.createFile(FileUtil.getPackageDir().concat("/user/online.pref"));
-                FileUtil.writeStringToFile(FileUtil.getPackageDir().concat("/user/online.pref"), "{}");
+                FileUtil.createDirectory(FileUtil.getPackageDir(LauncherActivity.this).concat("/user/"));
+                FileUtil.createFile(FileUtil.getPackageDir(LauncherActivity.this).concat("/user/profile.pref"));
+                FileUtil.writeStringToFile(FileUtil.getPackageDir(LauncherActivity.this).concat("/user/profile.pref"), "{}");
+                FileUtil.createFile(FileUtil.getPackageDir(LauncherActivity.this).concat("/user/settings.pref"));
+                FileUtil.writeStringToFile(FileUtil.getPackageDir(LauncherActivity.this).concat("/user/settings.pref"), "{}");
+                FileUtil.createFile(FileUtil.getPackageDir(LauncherActivity.this).concat("/user/session.pref"));
+                FileUtil.writeStringToFile(FileUtil.getPackageDir(LauncherActivity.this).concat("/user/session.pref"), "{}");
+                FileUtil.createFile(FileUtil.getPackageDir(LauncherActivity.this).concat("/user/online.pref"));
+                FileUtil.writeStringToFile(FileUtil.getPackageDir(LauncherActivity.this).concat("/user/online.pref"), "{}");
             }
             return null;
         }
@@ -85,8 +79,8 @@ public class LauncherActivity extends AppCompatActivity {
 
         @Override
         protected void onPostExecute(Void param) {
-            if (ContextCompat.checkSelfPermission(ApplicationUtil.getAppContext(), Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED && ContextCompat.checkSelfPermission(ApplicationUtil.getAppContext(), Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED) {
-                (new mediaScanningTask()).execute();
+            if (ContextCompat.checkSelfPermission(LauncherActivity.this, Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED && ContextCompat.checkSelfPermission(LauncherActivity.this, Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED) {
+                (new MediaScanningTask()).execute();
             } else {
                 ActivityCompat.requestPermissions(LauncherActivity.this, new String[]{"android.permission.READ_EXTERNAL_STORAGE", "android.permission.WRITE_EXTERNAL_STORAGE"}, 1);
             }
@@ -94,24 +88,24 @@ public class LauncherActivity extends AppCompatActivity {
 
     }
 
-    public class mediaScanningTask extends AsyncTask<Void, Void, Void> {
+    public class MediaScanningTask extends AsyncTask<Void, Void, Void> {
 
         private ArrayList<HashMap<String, Object>> scanList;
 
         @Override
         protected void onPreExecute() {
-            if (FileUtil.doesExists(FileUtil.getPackageDir().concat("/song.json")) && FileUtil.isFile(FileUtil.getPackageDir().concat("/song.json"))) {
+            if (FileUtil.doesExists(FileUtil.getPackageDir(LauncherActivity.this).concat("/song.json")) && FileUtil.isFile(FileUtil.getPackageDir(LauncherActivity.this).concat("/song.json"))) {
                 Log.v("LauncherActivity", "Song list exists, ignoring creation task..");
             } else {
                 Log.e("LauncherActivity", "Song list not found, performing creation task..");
-                FileUtil.createFile(FileUtil.getPackageDir().concat("/song.json"));
+                FileUtil.createFile(FileUtil.getPackageDir(LauncherActivity.this).concat("/song.json"));
             }
             scanList = new ArrayList<>();
         }
 
         @Override
         protected Void doInBackground(Void... path) {
-            if (ContextCompat.checkSelfPermission(ApplicationUtil.getAppContext(), Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED && ContextCompat.checkSelfPermission(ApplicationUtil.getAppContext(), Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED) {
+            if (ContextCompat.checkSelfPermission(LauncherActivity.this, Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED && ContextCompat.checkSelfPermission(LauncherActivity.this, Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED) {
                 String[] mediaProjection = {
                         android.provider.MediaStore.Audio.Media.ARTIST,
                         android.provider.MediaStore.Audio.Media.DATA,
@@ -119,7 +113,7 @@ public class LauncherActivity extends AppCompatActivity {
                         android.provider.MediaStore.Audio.Media.ALBUM_ID
                 };
                 String orderBy = " " + android.provider.MediaStore.MediaColumns.DISPLAY_NAME;
-                Cursor mediaCursor = ApplicationUtil.getAppContext().getContentResolver().query(android.provider.MediaStore.Audio.Media.EXTERNAL_CONTENT_URI, mediaProjection, null, null, orderBy);
+                Cursor mediaCursor = LauncherActivity.this.getContentResolver().query(android.provider.MediaStore.Audio.Media.EXTERNAL_CONTENT_URI, mediaProjection, null, null, orderBy);
                 try {
                     if (mediaCursor.moveToFirst()) {
                         String name;
@@ -139,7 +133,7 @@ public class LauncherActivity extends AppCompatActivity {
                                     artist = "Unknown Artist";
                                 }
                                 songDetails.put("songTitle", name);
-                                songDetails.put("songData", StringUtil.encodeString(data));
+                                songDetails.put("songData", Base64Util.encode(data));
                                 songDetails.put("songArtist", artist);
                                 scanList.add(songDetails);
                             }
@@ -159,10 +153,10 @@ public class LauncherActivity extends AppCompatActivity {
         }
 
         @Override
-        protected void onPostExecute(Void param){
+        protected void onPostExecute(Void param) {
             ListUtil.sortArrayList(scanList, "songTitle", false, true);
-            FileUtil.writeStringToFile(FileUtil.getPackageDir().concat("/song.json"), ListUtil.setArrayListToSharedJSON(scanList));
-            startActivity(new Intent(ApplicationUtil.getAppContext(), SplashActivity.class));
+            FileUtil.writeStringToFile(FileUtil.getPackageDir(LauncherActivity.this).concat("/song.json"), ListUtil.setArrayListToSharedJSON(scanList));
+            startActivity(new Intent(LauncherActivity.this, SplashActivity.class));
             finish();
         }
 
