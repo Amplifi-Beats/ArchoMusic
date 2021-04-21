@@ -4,4 +4,62 @@
 	xmlns:tools="http://schemas.android.com/tools"
 	android:layout_width="match_parent"
 	android:layout_height="match_parent"
-	android:orientation="vertical"/>
+	android:orientation="vertical">
+	<LinearLayout
+		android:id="@+id/main"
+		android:layout_width="match_parent"
+		android:layout_height="wrap_content"
+		android:padding="8dp"
+		android:background="@android:color/transparent"
+		android:orientation="vertical">
+		<TextView
+			android:id="@+id/title"
+			android:focusable="false"
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:padding="8dp"
+			android:text="@string/live_stream_link_title"
+			android:textSize="18sp"
+			android:textColor="#03A9F4"/>
+		<LinearLayout
+			android:id="@+id/line"
+			android:layout_width="match_parent"
+			android:layout_height="1dp"
+			android:padding="8dp"
+			android:background="#03A9F4"
+			android:orientation="horizontal"/>
+		<EditText
+			android:id="@+id/stream_editlink"
+			android:layout_width="match_parent"
+			android:layout_height="wrap_content"
+			android:layout_margin="8dp"
+			android:padding="8dp"
+			android:background="#EEEEEE"
+			android:textSize="12sp"
+			android:textColor="#000000"
+			android:hint="@string/live_stream_link_input_hint"
+			android:textColorHint="#607D8B"
+			android:singleLine="true"
+			android:imeOptions="actionDone"/>
+		<TextView
+			android:id="@+id/obtain_link"
+			android:layout_width="match_parent"
+			android:layout_height="wrap_content"
+			android:layout_marginTop="8dp"
+			android:padding="8dp"
+			android:textSize="11sp"
+			android:textColor="#03A9F4"
+			android:text="@string/live_stream_link_obtain_stream" />
+		<Button
+			android:id="@+id/join"
+			android:focusable="false"
+			android:layout_width="match_parent"
+			android:layout_height="wrap_content"
+			android:padding="8dp"
+			android:background="#03A9F4"
+			android:text="@string/live_stream_link_btn_join"
+			android:textSize="12sp"
+			android:textColor="#FFFFFF"
+			android:layout_weight="1"/>
+	</LinearLayout>
+</LinearLayout>

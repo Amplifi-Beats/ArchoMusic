@@ -68,4 +68,8 @@
     <string name="introduction_quote">Fast. Optimized. Open-source.</string>
     <string name="introduction_description">Pagbati po! Maligayang pagdating sa Archo Music. Makinig sa iyong mga paboritong kanta sa loob ng iyong telepono at pakiramdam ang matalo anumang oras!</string>
     <string name="introduction_btn_close">Kanselahin</string>
+    <string name="live_stream_link_title">Live Streaming</string>
+    <string name="live_stream_link_input_hint">Ipasok ang link ng stream dito</string>
+    <string name="live_stream_link_btn_join">Sumali sa Stream</string>
+    <string name="live_stream_link_obtain_stream">Kumuha ng bagong link sa stream</string>
 </resources>
