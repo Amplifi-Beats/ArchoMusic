@@ -13,22 +13,22 @@ import java.util.HashMap;
 public class ListUtil {
 
     public static void sortArrayList(ArrayList<HashMap<String, Object>> list, String key, boolean isNumber, boolean isAscending) {
-        Collections.sort(list, new Comparator<HashMap<String,Object>>(){
-            public int compare(HashMap<String,Object> compareMap1, HashMap<String,Object> compareMap2){
-                if (isNumber) {
-                    int count1 = Integer.parseInt(compareMap1.get(key).toString());
-                    int count2 = Integer.parseInt(compareMap2.get(key).toString());
-                    if (isAscending) {
-                        return count1 < count2 ? -1 : count1 < count2 ? 1 : 0;
-                    } else {
-                        return count1 > count2 ? -1 : count1 > count2 ? 1 : 0;
-                    }
+        Collections.sort(list, (compareMap1, compareMap2) -> {
+            if (isNumber) {
+                int count1 = Integer.parseInt(compareMap1.get(key).toString());
+                int count2 = Integer.parseInt(compareMap2.get(key).toString());
+
+                if (isAscending) {
+                    return count1 < count2 ? -1 : 0;
                 } else {
-                    if (isAscending) {
-                        return (compareMap1.get(key).toString()).compareTo(compareMap2.get(key).toString());
-                    } else {
-                        return (compareMap2.get(key).toString()).compareTo(compareMap1.get(key).toString());
-                    }
+                    return count1 > count2 ? -1 : 0;
+                }
+
+            } else {
+                if (isAscending) {
+                    return (compareMap1.get(key).toString()).compareTo(compareMap2.get(key).toString());
+                } else {
+                    return (compareMap2.get(key).toString()).compareTo(compareMap1.get(key).toString());
                 }
             }
         });
@@ -57,5 +57,4 @@ public class ListUtil {
     public static HashMap<String, Object> getHashMapFromFile(String path) {
         return new Gson().fromJson(FileUtil.readFile(path), new TypeToken<HashMap<String, Object>>(){}.getType());
     }
-
 }

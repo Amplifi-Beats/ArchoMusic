@@ -8,7 +8,6 @@ import android.os.Binder;
 import android.os.IBinder;
 
 public class LivePlaybackService extends Service {
-
     private final IBinder liveMusicBind = new LiveMusicBinder();
     private static final int NOTIFY_ID = 1;
     private NotificationChannel notificationChannel;
@@ -33,5 +32,4 @@ public class LivePlaybackService extends Service {
     public boolean onUnbind(Intent intent){
         return false;
     }
-
 }
