@@ -9,6 +9,7 @@ import android.graphics.BitmapFactory;
 import android.graphics.drawable.BitmapDrawable;
 import android.media.MediaMetadataRetriever;
 import android.net.Uri;
+import android.util.Log;
 import android.widget.Toast;
 
 import androidx.core.content.res.ResourcesCompat;
@@ -35,8 +36,8 @@ public class ImageUtil {
 
             activity.startActivityForResult(cropIntent, result);
 
-        } catch (ActivityNotFoundException anfe) {
-            ApplicationUtil.toast("Device not supported.", Toast.LENGTH_LONG, activity);
+        } catch (ActivityNotFoundException activityNotFoundException) {
+            activityNotFoundException.printStackTrace();
         }
     }
 
