@@ -74,6 +74,10 @@
             android:theme="@style/Theme.ArchoMusic.Dark.FullScreen"
             android:windowSoftInputMode="stateHidden" />
         <activity
+            android:name="tk.gianxddddd.audiodev.activity.PreferencesActivity"
+            android:configChanges="orientation|screenSize|keyboardHidden|smallestScreenSize|screenLayout"
+            android:windowSoftInputMode="stateHidden" />
+        <activity
             android:name="com.google.android.gms.ads.AdActivity"
             android:configChanges="keyboard|keyboardHidden|orientation|screenLayout|uiMode|screenSize|smallestScreenSize"
             android:theme="@android:style/Theme.Translucent" />
