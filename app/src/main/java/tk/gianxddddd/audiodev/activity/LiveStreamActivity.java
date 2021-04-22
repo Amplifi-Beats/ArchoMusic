@@ -60,11 +60,10 @@ public class LiveStreamActivity extends  AppCompatActivity  {
     }
 
     @Override
-    protected void onActivityResult(int _requestCode, int _resultCode, Intent _data) {
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
 
-        super.onActivityResult(_requestCode, _resultCode, _data);
-
-        switch (_requestCode) {
+        switch (requestCode) {
 
             default:
                 break;
