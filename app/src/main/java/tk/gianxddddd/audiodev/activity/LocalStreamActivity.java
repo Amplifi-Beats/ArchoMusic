@@ -365,237 +365,166 @@ public class LocalStreamActivity extends  AppCompatActivity  {
     }
 
     private void registerListeners() {
-        menu.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                RippleDrawable rippleButton = new RippleDrawable(new ColorStateList(new int[][]{new int[]{}}, new int[]{ Color.parseColor("#BDBDBD") }), null, null);
-                menu.setBackground(rippleButton);
+        menu.setOnClickListener(view -> {
+            /* Iyxan23 was here */
+            RippleDrawable rippleButton = new RippleDrawable(new ColorStateList(new int[][]{new int[]{}}, new int[]{ Color.parseColor("#BDBDBD") }), null, null);
+            menu.setBackground(rippleButton);
 
-                BottomSheetDialog menuDialog = new BottomSheetDialog(LocalStreamActivity.this);
-                View dialogLayout = getLayoutInflater().inflate(R.layout.dialog_menu, null);
-                menuDialog.setContentView(dialogLayout);
+            BottomSheetDialog menuDialog = new BottomSheetDialog(LocalStreamActivity.this);
+            View dialogLayout = getLayoutInflater().inflate(R.layout.dialog_menu, null);
+            menuDialog.setContentView(dialogLayout);
 
-                TextView title = dialogLayout.findViewById(R.id.title);
-                ImageView about = dialogLayout.findViewById(R.id.about);
-                LinearLayout profile = dialogLayout.findViewById(R.id.profile);
-                ImageView profile_icon = dialogLayout.findViewById(R.id.profile_icon);
-                TextView profile_name = dialogLayout.findViewById(R.id.profile_name);
-                TextView live_stream_name = dialogLayout.findViewById(R.id.live_stream_name);
-                TextView visualizer_name = dialogLayout.findViewById(R.id.visualizer_name);
-                TextView settings_name = dialogLayout.findViewById(R.id.settings_name);
-                LinearLayout live_streaming = dialogLayout.findViewById(R.id.live_streaming);
-                LinearLayout settings = dialogLayout.findViewById(R.id.settings);
-                LinearLayout visualizer = dialogLayout.findViewById(R.id.visualizer);
+            TextView title = dialogLayout.findViewById(R.id.title);
+            ImageView about = dialogLayout.findViewById(R.id.about);
+            LinearLayout profile = dialogLayout.findViewById(R.id.profile);
+            ImageView profile_icon = dialogLayout.findViewById(R.id.profile_icon);
+            TextView profile_name = dialogLayout.findViewById(R.id.profile_name);
+            TextView live_stream_name = dialogLayout.findViewById(R.id.live_stream_name);
+            TextView visualizer_name = dialogLayout.findViewById(R.id.visualizer_name);
+            TextView settings_name = dialogLayout.findViewById(R.id.settings_name);
+            LinearLayout live_streaming = dialogLayout.findViewById(R.id.live_streaming);
+            LinearLayout settings = dialogLayout.findViewById(R.id.settings);
+            LinearLayout visualizer = dialogLayout.findViewById(R.id.visualizer);
 
-                title.setTypeface(Typeface.createFromAsset(getAssets(),"fonts/roboto_medium.ttf"), Typeface.NORMAL);
+            title.setTypeface(Typeface.createFromAsset(getAssets(),"fonts/roboto_medium.ttf"), Typeface.NORMAL);
 
-                if (profileData.containsKey("profileName")) {
-                    profile_name.setText(profileData.get("profileName").toString());
+            if (profileData.containsKey("profileName")) {
+                profile_name.setText(profileData.get("profileName").toString());
+            }
+
+            if (profileData.containsKey("profilePicture")) {
+                if (!profileData.get("profilePicture").toString().equals("")) {
+                    Glide.with(LocalStreamActivity.this).load(profileData.get("profilePicture").toString()).into(profile_icon);
+                } else {
+                    Glide.with(LocalStreamActivity.this).load(R.drawable.ic_profile_icon).into(profile_icon);
                 }
-
-                if (profileData.containsKey("profilePicture")) {
-                    if (!profileData.get("profilePicture").toString().equals("")) {
-                        Glide.with(LocalStreamActivity.this).load(profileData.get("profilePicture").toString()).into(profile_icon);
+            }
+            profile.setOnClickListener(view15 -> {
+                if (!settingsData.containsKey("settingsDarkMode")) {
+                    RippleDrawable rippleButton15 = new RippleDrawable(new ColorStateList(new int[][]{new int[]{}}, new int[]{ Color.parseColor("#BDBDBD") }), new ColorDrawable(Color.parseColor("#FFFFFF")), null);
+                    view15.setBackground(rippleButton15);
+                } else {
+                    if (settingsData.get("settingsDarkMode").equals("true")) {
+                        RippleDrawable rippleButton15 = new RippleDrawable(new ColorStateList(new int[][]{new int[]{}}, new int[]{ Color.parseColor("#BDBDBD") }), new ColorDrawable(Color.parseColor("#1A1A1A")), null);
+                        view15.setBackground(rippleButton15);
                     } else {
-                        Glide.with(LocalStreamActivity.this).load(R.drawable.ic_profile_icon).into(profile_icon);
+                        RippleDrawable rippleButton15 = new RippleDrawable(new ColorStateList(new int[][]{new int[]{}}, new int[]{ Color.parseColor("#BDBDBD") }), new ColorDrawable(Color.parseColor("#FFFFFF")), null);
+                        view15.setBackground(rippleButton15);
                     }
                 }
-                profile.setOnClickListener(new View.OnClickListener() {
+
+                BottomSheetDialog createProfileDialog = new BottomSheetDialog(LocalStreamActivity.this);
+                View dialogLayout1 = getLayoutInflater().inflate(R.layout.dialog_create_a_profile, null);
+                createProfileDialog.setContentView(dialogLayout1);
+                TextView title1 = dialogLayout1.findViewById(R.id.title);
+                ImageView profile_icon1 = dialogLayout1.findViewById(R.id.profile_icon);
+                EditText profile_name1 = dialogLayout1.findViewById(R.id.profile_name);
+                Button create = dialogLayout1.findViewById(R.id.create);
+                if (profileData.containsKey("profileName")) {
+                    profile_name1.setText(profileData.get("profileName").toString());
+                }
+                if (profileData.containsKey("profilePicture")) {
+                    if (!profileData.get("profilePicture").toString().equals("")) {
+                        Glide.with(LocalStreamActivity.this).load(profileData.get("profilePicture").toString()).into(profile_icon1);
+                    } else {
+                        Glide.with(LocalStreamActivity.this).load(R.drawable.ic_profile_icon).into(profile_icon1);
+                    }
+                }
+                title1.setTypeface(Typeface.createFromAsset(getAssets(),"fonts/roboto_medium.ttf"), Typeface.NORMAL);
+                profile_icon1.setOnClickListener(new View.OnClickListener() {
                     @Override
-                    public void onClick(View view) {
-                        if (!settingsData.containsKey("settingsDarkMode")) {
-                            RippleDrawable rippleButton = new RippleDrawable(new ColorStateList(new int[][]{new int[]{}}, new int[]{ Color.parseColor("#BDBDBD") }), new ColorDrawable(Color.parseColor("#FFFFFF")), null);
-                            view.setBackground(rippleButton);
-                        } else {
-                            if (settingsData.get("settingsDarkMode").equals("true")) {
-                                RippleDrawable rippleButton = new RippleDrawable(new ColorStateList(new int[][]{new int[]{}}, new int[]{ Color.parseColor("#BDBDBD") }), new ColorDrawable(Color.parseColor("#1A1A1A")), null);
-                                view.setBackground(rippleButton);
-                            } else {
-                                RippleDrawable rippleButton = new RippleDrawable(new ColorStateList(new int[][]{new int[]{}}, new int[]{ Color.parseColor("#BDBDBD") }), new ColorDrawable(Color.parseColor("#FFFFFF")), null);
-                                view.setBackground(rippleButton);
-                            }
-                        }
-
-                        BottomSheetDialog createProfileDialog = new BottomSheetDialog(LocalStreamActivity.this);
-                        View dialogLayout = getLayoutInflater().inflate(R.layout.dialog_create_a_profile, null);
-                        createProfileDialog.setContentView(dialogLayout);
-                        TextView title = dialogLayout.findViewById(R.id.title);
-                        ImageView profile_icon = dialogLayout.findViewById(R.id.profile_icon);
-                        EditText profile_name = dialogLayout.findViewById(R.id.profile_name);
-                        Button create = dialogLayout.findViewById(R.id.create);
-                        if (profileData.containsKey("profileName")) {
-                            profile_name.setText(profileData.get("profileName").toString());
-                        }
+                    public void onClick(View view15) {
+                        RippleDrawable rippleButton15 = new RippleDrawable(new ColorStateList(new int[][]{new int[]{}}, new int[]{Color.parseColor("#BDBDBD")}), null, null);
+                        view15.setBackground(rippleButton15);
+                        BottomSheetDialog pfpDialog = new BottomSheetDialog(LocalStreamActivity.this);
+                        View dialogLayout1 = getLayoutInflater().inflate(R.layout.dialog_create_a_profile_icon, null);
+                        pfpDialog.setContentView(dialogLayout1);
+                        TextView title1 = dialogLayout1.findViewById(R.id.title);
+                        ImageView profile_picture = dialogLayout1.findViewById(R.id.profile_icon);
+                        EditText url = dialogLayout1.findViewById(R.id.url);
+                        Button finish = dialogLayout1.findViewById(R.id.finish);
+                        Button cancel = dialogLayout1.findViewById(R.id.cancel);
                         if (profileData.containsKey("profilePicture")) {
-                            if (!profileData.get("profilePicture").toString().equals("")) {
-                                Glide.with(LocalStreamActivity.this).load(profileData.get("profilePicture").toString()).into(profile_icon);
-                            } else {
-                                Glide.with(LocalStreamActivity.this).load(R.drawable.ic_profile_icon).into(profile_icon);
-                            }
+                            Glide.with(LocalStreamActivity.this).load(profileData.get("profilePicture").toString()).into(profile_picture);
+                            url.setText(profileData.get("profilePicture").toString());
                         }
-                        title.setTypeface(Typeface.createFromAsset(getAssets(),"fonts/roboto_medium.ttf"), Typeface.NORMAL);
-                        profile_icon.setOnClickListener(new View.OnClickListener() {
+                        title1.setTypeface(Typeface.createFromAsset(getAssets(),"fonts/roboto_medium.ttf"), Typeface.NORMAL);
+                        url.addTextChangedListener(new TextWatcher() {
                             @Override
-                            public void onClick(View view) {
-                                RippleDrawable rippleButton = new RippleDrawable(new ColorStateList(new int[][]{new int[]{}}, new int[]{Color.parseColor("#BDBDBD")}), null, null);
-                                view.setBackground(rippleButton);
-                                BottomSheetDialog pfpDialog = new BottomSheetDialog(LocalStreamActivity.this);
-                                View dialogLayout = getLayoutInflater().inflate(R.layout.dialog_create_a_profile_icon, null);
-                                pfpDialog.setContentView(dialogLayout);
-                                TextView title = dialogLayout.findViewById(R.id.title);
-                                ImageView profile_picture = dialogLayout.findViewById(R.id.profile_icon);
-                                EditText url = dialogLayout.findViewById(R.id.url);
-                                Button finish = dialogLayout.findViewById(R.id.finish);
-                                Button cancel = dialogLayout.findViewById(R.id.cancel);
-                                if (profileData.containsKey("profilePicture")) {
-                                    Glide.with(LocalStreamActivity.this).load(profileData.get("profilePicture").toString()).into(profile_picture);
-                                    url.setText(profileData.get("profilePicture").toString());
-                                }
-                                title.setTypeface(Typeface.createFromAsset(getAssets(),"fonts/roboto_medium.ttf"), Typeface.NORMAL);
-                                url.addTextChangedListener(new TextWatcher() {
-                                    @Override
-                                    public void beforeTextChanged(CharSequence charSequence, int start, int count, int after) {
-                                        // DO NOTHING
-                                    }
+                            public void beforeTextChanged(CharSequence charSequence, int start, int count, int after) {
+                                // DO NOTHING
+                            }
 
-                                    @Override
-                                    public void onTextChanged(CharSequence charSequence, int start, int before, int count) {
-                                        if (!(url.getText().toString().length() == 0)) {
-                                            Glide.with(LocalStreamActivity.this).load(url.getText().toString()).into(profile_picture);
-                                        } else {
-                                            Glide.with(LocalStreamActivity.this).load(R.drawable.ic_profile_icon).into(profile_picture);
-                                        }
-                                    }
-
-                                    @Override
-                                    public void afterTextChanged(Editable editable) {
-                                        // DO NOTHING
-                                    }
-                                });
-                                finish.setOnClickListener(new View.OnClickListener() {
-                                    @Override
-                                    public void onClick(View view) {
-                                        if (profileData.containsKey("profilePicture")) {
-                                            if (url.getText().toString().equals(profileData.get("profileName").toString())) {
-                                                pfpDialog.dismiss();
-                                            } else {
-                                                String pfpUrl = url.getText().toString();
-                                                profileData.put("profilePicture", pfpUrl);
-                                                FileUtil.writeStringToFile(FileUtil.getPackageDir(LocalStreamActivity.this).concat("/user/profile.pref"), ListUtil.setHashMapToSharedJSON(profileData));
-                                                if (!pfpUrl.equals("")) {
-                                                    Glide.with(LocalStreamActivity.this).load(pfpUrl).into(profile_icon);
-                                                    Glide.with(LocalStreamActivity.this).load(pfpUrl).into(menu);
-                                                } else {
-                                                    Glide.with(LocalStreamActivity.this).load(R.drawable.ic_profile_icon).into(profile_icon);
-                                                    Glide.with(LocalStreamActivity.this).load(R.drawable.ic_profile_icon).into(menu);
-                                                }
-                                                tabNavigation.getTabAt(0).select();
-                                                menuDialog.dismiss();
-                                                pfpDialog.dismiss();
-                                            }
-                                        } else {
-                                            if (url.getText().toString().equals(profileData.get("profileName").toString())) {
-                                                pfpDialog.dismiss();
-                                            } else {
-                                                String pfpUrl = url.getText().toString();
-                                                profileData.put("profilePicture", pfpUrl);
-                                                FileUtil.writeStringToFile(FileUtil.getPackageDir(LocalStreamActivity.this).concat("/user/profile.pref"), ListUtil.setHashMapToSharedJSON(profileData));
-                                                if (!pfpUrl.equals("")) {
-                                                    Glide.with(LocalStreamActivity.this).load(pfpUrl).into(profile_icon);
-                                                    Glide.with(LocalStreamActivity.this).load(pfpUrl).into(menu);
-                                                } else {
-                                                    Glide.with(LocalStreamActivity.this).load(R.drawable.ic_profile_icon).into(profile_icon);
-                                                    Glide.with(LocalStreamActivity.this).load(R.drawable.ic_profile_icon).into(menu);
-                                                }
-                                                tabNavigation.getTabAt(0).select();
-                                                menuDialog.dismiss();
-                                                pfpDialog.dismiss();
-                                            }
-                                        }
-                                    }
-                                });
-                                cancel.setOnClickListener(view1 -> {
-                                    if (!settingsData.containsKey("settingsDarkMode")) {
-                                        RippleDrawable rippleButton1 = new RippleDrawable(new ColorStateList(new int[][]{new int[]{}}, new int[]{ Color.parseColor("#BDBDBD") }), new ColorDrawable(Color.parseColor("#FFFFFF")), null);
-                                        view1.setBackground(rippleButton1);
-                                    } else {
-                                        if (settingsData.get("settingsDarkMode").equals("true")) {
-                                            RippleDrawable rippleButton1 = new RippleDrawable(new ColorStateList(new int[][]{new int[]{}}, new int[]{ Color.parseColor("#BDBDBD") }), new ColorDrawable(Color.parseColor("#1A1A1A")), null);
-                                            view1.setBackground(rippleButton1);
-                                        } else {
-                                            RippleDrawable rippleButton1 = new RippleDrawable(new ColorStateList(new int[][]{new int[]{}}, new int[]{ Color.parseColor("#BDBDBD") }), new ColorDrawable(Color.parseColor("#FFFFFF")), null);
-                                            view1.setBackground(rippleButton1);
-                                        }
-                                    }
-                                    pfpDialog.dismiss();
-                                });
-                                Double TopLeft = 20.0;
-                                Double TopRight = 20.0;
-                                Double BottomRight = 0.0;
-                                Double BottomLeft = 0.0;
-                                GradientDrawable roundedCorners = new GradientDrawable();
-                                roundedCorners.setShape(GradientDrawable.RECTANGLE);
-                                roundedCorners.setCornerRadii(new float[] {TopLeft.floatValue(),TopLeft.floatValue(), TopRight.floatValue(),TopRight.floatValue(), BottomRight.floatValue(),BottomRight.floatValue(), BottomLeft.floatValue(),BottomLeft.floatValue()});
-                                GradientDrawable roundedCorners2 = new GradientDrawable();
-                                roundedCorners2.setShape(GradientDrawable.RECTANGLE);
-                                roundedCorners2.setCornerRadius(20);
-                                if (!settingsData.containsKey("settingsDarkMode")) {
-                                    roundedCorners.setColor(Color.parseColor("#FFFFFF"));
-                                    roundedCorners2.setColor(Color.parseColor("#EEEEEE"));
+                            @Override
+                            public void onTextChanged(CharSequence charSequence, int start, int before, int count) {
+                                if (!(url.getText().toString().length() == 0)) {
+                                    Glide.with(LocalStreamActivity.this).load(url.getText().toString()).into(profile_picture);
                                 } else {
-                                    if (settingsData.get("settingsDarkMode").equals("true")) {
-                                        roundedCorners.setColor(Color.parseColor("#1A1A1A"));
-                                        roundedCorners2.setColor(Color.parseColor("#212121"));
-                                        url.setTextColor(Color.parseColor("#FFFFFF"));
-                                        url.setHintTextColor(Color.parseColor("#BDBDBD"));
-                                    } else {
-                                        roundedCorners.setColor(Color.parseColor("#FFFFFF"));
-                                        roundedCorners2.setColor(Color.parseColor("#EEEEEE"));
-                                    }
+                                    Glide.with(LocalStreamActivity.this).load(R.drawable.ic_profile_icon).into(profile_picture);
                                 }
-                                ((ViewGroup)dialogLayout.getParent()).setBackground(roundedCorners);
-                                url.setBackground(roundedCorners2);
-                                GradientDrawable gradientButton = new GradientDrawable();
-                                gradientButton.setColor(Color.parseColor("#03A9F4"));
-                                gradientButton.setCornerRadius(20);
-                                finish.setBackground(gradientButton);
-                                cancel.setBackground(gradientButton);
-                                pfpDialog.show();
+                            }
+
+                            @Override
+                            public void afterTextChanged(Editable editable) {
+                                // DO NOTHING
                             }
                         });
-                        create.setOnClickListener(new View.OnClickListener() {
+                        finish.setOnClickListener(new View.OnClickListener() {
                             @Override
-                            public void onClick(View view) {
-                                if (profile_name.getText().toString().length() > 0) {
-                                    if (profileData.containsKey("profileName")) {
-                                        if (profile_name.getText().toString().equals(profileData.get("profileName").toString())) {
-                                            createProfileDialog.dismiss();
-                                        } else {
-                                            String profileName = profile_name.getText().toString();
-                                            profileData.put("profileName", profileName);
-                                            FileUtil.writeStringToFile(FileUtil.getPackageDir(LocalStreamActivity.this).concat("/user/profile.pref"), ListUtil.setHashMapToSharedJSON(profileData));
-                                            ApplicationUtil.toast("Renamed profile sucessfully.", Toast.LENGTH_SHORT, LocalStreamActivity.this);
-                                            tabNavigation.getTabAt(0).select();
-                                            createProfileDialog.dismiss();
-                                            menuDialog.dismiss();
-                                            startActivity(new Intent(LocalStreamActivity.this, SplashActivity.class));
-                                            finish();
-                                        }
+                            public void onClick(View view15) {
+                                if (profileData.containsKey("profilePicture")) {
+                                    if (url.getText().toString().equals(profileData.get("profileName").toString())) {
+                                        pfpDialog.dismiss();
                                     } else {
-                                        String profileName = profile_name.getText().toString();
-                                        profileData.put("profileName", profileName);
+                                        String pfpUrl = url.getText().toString();
+                                        profileData.put("profilePicture", pfpUrl);
                                         FileUtil.writeStringToFile(FileUtil.getPackageDir(LocalStreamActivity.this).concat("/user/profile.pref"), ListUtil.setHashMapToSharedJSON(profileData));
-                                        ApplicationUtil.toast("Renamed profile sucessfully.", Toast.LENGTH_SHORT, LocalStreamActivity.this);
+                                        if (!pfpUrl.equals("")) {
+                                            Glide.with(LocalStreamActivity.this).load(pfpUrl).into(profile_icon1);
+                                            Glide.with(LocalStreamActivity.this).load(pfpUrl).into(menu);
+                                        } else {
+                                            Glide.with(LocalStreamActivity.this).load(R.drawable.ic_profile_icon).into(profile_icon1);
+                                            Glide.with(LocalStreamActivity.this).load(R.drawable.ic_profile_icon).into(menu);
+                                        }
                                         tabNavigation.getTabAt(0).select();
-                                        createProfileDialog.dismiss();
                                         menuDialog.dismiss();
-                                        startActivity(new Intent(LocalStreamActivity.this, SplashActivity.class));
-                                        finish();
+                                        pfpDialog.dismiss();
                                     }
                                 } else {
-                                    profile_name.setError("Profile name should not be blank.");
+                                    if (url.getText().toString().equals(profileData.get("profileName").toString())) {
+                                        pfpDialog.dismiss();
+                                    } else {
+                                        String pfpUrl = url.getText().toString();
+                                        profileData.put("profilePicture", pfpUrl);
+                                        FileUtil.writeStringToFile(FileUtil.getPackageDir(LocalStreamActivity.this).concat("/user/profile.pref"), ListUtil.setHashMapToSharedJSON(profileData));
+                                        if (!pfpUrl.equals("")) {
+                                            Glide.with(LocalStreamActivity.this).load(pfpUrl).into(profile_icon1);
+                                            Glide.with(LocalStreamActivity.this).load(pfpUrl).into(menu);
+                                        } else {
+                                            Glide.with(LocalStreamActivity.this).load(R.drawable.ic_profile_icon).into(profile_icon1);
+                                            Glide.with(LocalStreamActivity.this).load(R.drawable.ic_profile_icon).into(menu);
+                                        }
+                                        tabNavigation.getTabAt(0).select();
+                                        menuDialog.dismiss();
+                                        pfpDialog.dismiss();
+                                    }
                                 }
                             }
+                        });
+                        cancel.setOnClickListener(view1 -> {
+                            if (!settingsData.containsKey("settingsDarkMode")) {
+                                RippleDrawable rippleButton1 = new RippleDrawable(new ColorStateList(new int[][]{new int[]{}}, new int[]{ Color.parseColor("#BDBDBD") }), new ColorDrawable(Color.parseColor("#FFFFFF")), null);
+                                view1.setBackground(rippleButton1);
+                            } else {
+                                if (settingsData.get("settingsDarkMode").equals("true")) {
+                                    RippleDrawable rippleButton1 = new RippleDrawable(new ColorStateList(new int[][]{new int[]{}}, new int[]{ Color.parseColor("#BDBDBD") }), new ColorDrawable(Color.parseColor("#1A1A1A")), null);
+                                    view1.setBackground(rippleButton1);
+                                } else {
+                                    RippleDrawable rippleButton1 = new RippleDrawable(new ColorStateList(new int[][]{new int[]{}}, new int[]{ Color.parseColor("#BDBDBD") }), new ColorDrawable(Color.parseColor("#FFFFFF")), null);
+                                    view1.setBackground(rippleButton1);
+                                }
+                            }
+                            pfpDialog.dismiss();
                         });
                         Double TopLeft = 20.0;
                         Double TopRight = 20.0;
@@ -614,495 +543,55 @@ public class LocalStreamActivity extends  AppCompatActivity  {
                             if (settingsData.get("settingsDarkMode").equals("true")) {
                                 roundedCorners.setColor(Color.parseColor("#1A1A1A"));
                                 roundedCorners2.setColor(Color.parseColor("#212121"));
-                                profile_name.setTextColor(Color.parseColor("#FFFFFF"));
-                                profile_name.setHintTextColor(Color.parseColor("#BDBDBD"));
+                                url.setTextColor(Color.parseColor("#FFFFFF"));
+                                url.setHintTextColor(Color.parseColor("#BDBDBD"));
                             } else {
+                                roundedCorners.setColor(Color.parseColor("#FFFFFF"));
                                 roundedCorners2.setColor(Color.parseColor("#EEEEEE"));
-                                roundedCorners.setColor(Color.parseColor("#FFFFFF"));
                             }
                         }
-                        ((ViewGroup)dialogLayout.getParent()).setBackground(roundedCorners);
-                        profile_name.setBackground(roundedCorners2);
+                        ((ViewGroup) dialogLayout1.getParent()).setBackground(roundedCorners);
+                        url.setBackground(roundedCorners2);
                         GradientDrawable gradientButton = new GradientDrawable();
                         gradientButton.setColor(Color.parseColor("#03A9F4"));
                         gradientButton.setCornerRadius(20);
-                        create.setBackground(gradientButton);
-                        createProfileDialog.show();
+                        finish.setBackground(gradientButton);
+                        cancel.setBackground(gradientButton);
+                        pfpDialog.show();
                     }
                 });
-                live_streaming.setOnClickListener(new View.OnClickListener() {
+                create.setOnClickListener(new View.OnClickListener() {
                     @Override
-                    public void onClick(View view) {
-                        if (!settingsData.containsKey("settingsDarkMode")) {
-                            RippleDrawable rippleButton = new RippleDrawable(new ColorStateList(new int[][]{new int[]{}}, new int[]{ Color.parseColor("#BDBDBD") }), new ColorDrawable(Color.parseColor("#FFFFFF")), null);
-                            view.setBackground(rippleButton);
-                        } else {
-                            if (settingsData.get("settingsDarkMode").equals("true")) {
-                                RippleDrawable rippleButton = new RippleDrawable(new ColorStateList(new int[][]{new int[]{}}, new int[]{ Color.parseColor("#BDBDBD") }), new ColorDrawable(Color.parseColor("#1A1A1A")), null);
-                                view.setBackground(rippleButton);
-                            } else {
-                                RippleDrawable rippleButton = new RippleDrawable(new ColorStateList(new int[][]{new int[]{}}, new int[]{ Color.parseColor("#BDBDBD") }), new ColorDrawable(Color.parseColor("#FFFFFF")), null);
-                                view.setBackground(rippleButton);
-                            }
-                        }
-                    }
-                });
-                settings.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                        if (!settingsData.containsKey("settingsDarkMode")) {
-                            RippleDrawable rippleButton = new RippleDrawable(new ColorStateList(new int[][]{new int[]{}}, new int[]{ Color.parseColor("#BDBDBD") }), new ColorDrawable(Color.parseColor("#FFFFFF")), null);
-                            view.setBackground(rippleButton);
-                        } else {
-                            if (settingsData.get("settingsDarkMode").equals("true")) {
-                                RippleDrawable rippleButton = new RippleDrawable(new ColorStateList(new int[][]{new int[]{}}, new int[]{ Color.parseColor("#BDBDBD") }), new ColorDrawable(Color.parseColor("#1A1A1A")), null);
-                                view.setBackground(rippleButton);
-                            } else {
-                                RippleDrawable rippleButton = new RippleDrawable(new ColorStateList(new int[][]{new int[]{}}, new int[]{ Color.parseColor("#BDBDBD") }), new ColorDrawable(Color.parseColor("#FFFFFF")), null);
-                                view.setBackground(rippleButton);
-                            }
-                        }
-                        
-                        BottomSheetDialog settingsDialog = new BottomSheetDialog(LocalStreamActivity.this);
-                        View dialogLayout = getLayoutInflater().inflate(R.layout.dialog_settings, null);
-                        settingsDialog.setContentView(dialogLayout);
-
-                        ImageView back = dialogLayout.findViewById(R.id.back);
-                        TextView title = dialogLayout.findViewById(R.id.title);
-                        TextView general_title = dialogLayout.findViewById(R.id.general_title);
-                        TextView appearance_title = dialogLayout.findViewById(R.id.appearance_title);
-                        TextView audio_title = dialogLayout.findViewById(R.id.audio_title);
-                        TextView other_title = dialogLayout.findViewById(R.id.other_title);
-                        CheckBox disable_ads = dialogLayout.findViewById(R.id.disable_ads);
-                        CheckBox dark_mode = dialogLayout.findViewById(R.id.dark_mode);
-                        CheckBox disable_anim = dialogLayout.findViewById(R.id.disable_anim);
-                        CheckBox background_play = dialogLayout.findViewById(R.id.background_play);
-                        CheckBox capture_error = dialogLayout.findViewById(R.id.capture_error);
-                        Button clear_data = dialogLayout.findViewById(R.id.clear_data);
-
-                        title.setTypeface(Typeface.createFromAsset(getAssets(),"fonts/roboto_medium.ttf"), Typeface.NORMAL);
-                        general_title.setTypeface(Typeface.createFromAsset(getAssets(),"fonts/roboto_medium.ttf"), Typeface.NORMAL);
-                        appearance_title.setTypeface(Typeface.createFromAsset(getAssets(),"fonts/roboto_medium.ttf"), Typeface.NORMAL);
-                        audio_title.setTypeface(Typeface.createFromAsset(getAssets(),"fonts/roboto_medium.ttf"), Typeface.NORMAL);
-                        other_title.setTypeface(Typeface.createFromAsset(getAssets(),"fonts/roboto_medium.ttf"), Typeface.NORMAL);
-
-                        if (settingsData.containsKey("settingsAds")) {
-                            if (settingsData.get("settingsAds").equals("false")) {
-                                disable_ads.setChecked(true);
-                            }
-                        }
-
-                        if (settingsData.containsKey("settingsDarkMode")) {
-                            if (settingsData.get("settingsDarkMode").equals("true")) {
-                                dark_mode.setChecked(true);
-                            }
-                        }
-
-                        if (settingsData.containsKey("settingsAnimation")) {
-                            if (settingsData.get("settingsAnimation").equals("false")) {
-                                disable_anim.setChecked(true);
-                            }
-                        }
-
-                        if (settingsData.containsKey("settingsBackgroundAudio")) {
-                            if (settingsData.get("settingsBackgroundAudio").equals("true")) {
-                                background_play.setChecked(true);
-                            }
-                        }
-
-                        if (settingsData.containsKey("settingsCaptureError")) {
-                            if (settingsData.get("settingsCaptureError").equals("true")) {
-                                capture_error.setChecked(true);
-                            }
-                        }
-
-                        back.setOnClickListener(view12 -> {
-                            RippleDrawable rippleButton12 = new RippleDrawable(new ColorStateList(new int[][]{new int[]{}}, new int[]{ Color.parseColor("#BDBDBD") }), null, null);
-                            view12.setBackground(rippleButton12);
-                            settingsDialog.dismiss();
-                        });
-
-                        disable_ads.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-                            @Override
-                            public void onCheckedChanged(CompoundButton view, boolean isChecked) {
-                                if (isChecked) {
-                                    settingsData.put("settingsAds", "false");
-                                    FileUtil.writeStringToFile(FileUtil.getPackageDir(LocalStreamActivity.this).concat("/user/settings.pref"), ListUtil.setHashMapToSharedJSON(settingsData));
-                                    startActivity(new Intent(LocalStreamActivity.this, SplashActivity.class));
-                                    finish();
-                                    ApplicationUtil.toast("Opt out of ads disabled, hope you re-enable it soon ;)", Toast.LENGTH_SHORT, LocalStreamActivity.this);
+                    public void onClick(View view15) {
+                        if (profile_name1.getText().toString().length() > 0) {
+                            if (profileData.containsKey("profileName")) {
+                                if (profile_name1.getText().toString().equals(profileData.get("profileName").toString())) {
+                                    createProfileDialog.dismiss();
                                 } else {
-                                    settingsData.put("settingsAds", "true");
-                                    FileUtil.writeStringToFile(FileUtil.getPackageDir(LocalStreamActivity.this).concat("/user/settings.pref"), ListUtil.setHashMapToSharedJSON(settingsData));
-                                    startActivity(new Intent(LocalStreamActivity.this, SplashActivity.class));
-                                    finish();
-                                    ApplicationUtil.toast("Opt out of ads enabled, thanks for enabling that again!", Toast.LENGTH_SHORT, LocalStreamActivity.this);
-                                }
-                            }
-                        });
-                        dark_mode.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-                            @Override
-                            public void onCheckedChanged(CompoundButton view, boolean isChecked) {
-                                if (isChecked) {
-                                    settingsData.put("settingsDarkMode", "true");
-                                    FileUtil.writeStringToFile(FileUtil.getPackageDir(LocalStreamActivity.this).concat("/user/settings.pref"), ListUtil.setHashMapToSharedJSON(settingsData));
-                                    startActivity(new Intent(LocalStreamActivity.this, SplashActivity.class));
-                                    finish();
-                                    ApplicationUtil.toast("Dark mode is enabled, take a look at the moon!", Toast.LENGTH_SHORT, LocalStreamActivity.this);
-                                } else {
-                                    settingsData.put("settingsDarkMode", "false");
-                                    FileUtil.writeStringToFile(FileUtil.getPackageDir(LocalStreamActivity.this).concat("/user/settings.pref"), ListUtil.setHashMapToSharedJSON(settingsData));
-                                    startActivity(new Intent(LocalStreamActivity.this, SplashActivity.class));
-                                    finish();
-                                    ApplicationUtil.toast("Dark mode is disabled, prepare to make your eyes burn!", Toast.LENGTH_SHORT, LocalStreamActivity.this);
-                                }
-                            }
-                        });
-                        disable_anim.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-                            @Override
-                            public void onCheckedChanged(CompoundButton view, boolean isChecked) {
-                                if (isChecked) {
-                                    settingsData.put("settingsAnimation", "false");
-                                    FileUtil.writeStringToFile(FileUtil.getPackageDir(LocalStreamActivity.this).concat("/user/settings.pref"), ListUtil.setHashMapToSharedJSON(settingsData));
-                                    startActivity(new Intent(LocalStreamActivity.this, SplashActivity.class));
-                                    finish();
-                                    ApplicationUtil.toast("Animations are disabled, it optimizes performance.", Toast.LENGTH_SHORT, LocalStreamActivity.this);
-                                } else {
-                                    settingsData.put("settingsAnimation", "true");
-                                    FileUtil.writeStringToFile(FileUtil.getPackageDir(LocalStreamActivity.this).concat("/user/settings.pref"), ListUtil.setHashMapToSharedJSON(settingsData));
-                                    startActivity(new Intent(LocalStreamActivity.this, SplashActivity.class));
-                                    finish();
-                                    ApplicationUtil.toast("Animations are enabled, turn it off if you are experiencing lags!", Toast.LENGTH_SHORT, LocalStreamActivity.this);
-                                }
-                            }
-                        });
-                        background_play.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-                            @Override
-                            public void onCheckedChanged(CompoundButton view, boolean isChecked) {
-                                if (isChecked) {
-                                    settingsData.put("settingsBackgroundAudio", "true");
-                                    FileUtil.writeStringToFile(FileUtil.getPackageDir(LocalStreamActivity.this).concat("/user/settings.pref"), ListUtil.setHashMapToSharedJSON(settingsData));
-                                    startActivity(new Intent(LocalStreamActivity.this, SplashActivity.class));
-                                    finish();
-                                    ApplicationUtil.toast("Audio will be played while in background, hope you enjoy!", Toast.LENGTH_SHORT, LocalStreamActivity.this);
-                                } else {
-                                    settingsData.put("settingsBackgroundAudio", "false");
-                                    FileUtil.writeStringToFile(FileUtil.getPackageDir(LocalStreamActivity.this).concat("/user/settings.pref"), ListUtil.setHashMapToSharedJSON(settingsData));
-                                    startActivity(new Intent(LocalStreamActivity.this, SplashActivity.class));
-                                    finish();
-                                    ApplicationUtil.toast("Audio will NOT be played while in background, You don't like music are you?", Toast.LENGTH_SHORT, LocalStreamActivity.this);
-                                }
-                            }
-                        });
-                        capture_error.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-                            @Override
-                            public void onCheckedChanged(CompoundButton view, boolean isChecked) {
-                                if (isChecked) {
-                                    settingsData.put("settingsCaptureError", "true");
-                                    FileUtil.writeStringToFile(FileUtil.getPackageDir(LocalStreamActivity.this).concat("/user/settings.pref"), ListUtil.setHashMapToSharedJSON(settingsData));
-                                    startActivity(new Intent(LocalStreamActivity.this, SplashActivity.class));
-                                    finish();
-                                    ApplicationUtil.toast("Capturing errors are enabled, Helps us out fix bugs!", Toast.LENGTH_SHORT, LocalStreamActivity.this);
-                                } else {
-                                    settingsData.put("settingsCaptureError", "false");
-                                    FileUtil.writeStringToFile(FileUtil.getPackageDir(LocalStreamActivity.this).concat("/user/settings.pref"), ListUtil.setHashMapToSharedJSON(settingsData));
-                                    startActivity(new Intent(LocalStreamActivity.this, SplashActivity.class));
-                                    finish();
-                                    ApplicationUtil.toast("Capturing errors are disabled, Hmmm..", Toast.LENGTH_SHORT, LocalStreamActivity.this);
-                                }
-                            }
-                        });
-                        Double TopLeft = 20.0;
-                        Double TopRight = 20.0;
-                        Double BottomRight = 0.0;
-                        Double BottomLeft = 0.0;
-                        GradientDrawable roundedCorners = new GradientDrawable();
-                        roundedCorners.setShape(GradientDrawable.RECTANGLE);
-                        roundedCorners.setCornerRadii(new float[] {TopLeft.floatValue(),TopLeft.floatValue(), TopRight.floatValue(),TopRight.floatValue(), BottomRight.floatValue(),BottomRight.floatValue(), BottomLeft.floatValue(),BottomLeft.floatValue()});
-                        if (!settingsData.containsKey("settingsDarkMode")) {
-                            roundedCorners.setColor(Color.parseColor("#FFFFFF"));
-                        } else {
-                            if (settingsData.get("settingsDarkMode").equals("true")) {
-                                roundedCorners.setColor(Color.parseColor("#1A1A1A"));
-                                disable_ads.setTextColor(Color.parseColor("#FFFFFF"));
-                                dark_mode.setTextColor(Color.parseColor("#FFFFFF"));
-                                disable_anim.setTextColor(Color.parseColor("#FFFFFF"));
-                                background_play.setTextColor(Color.parseColor("#FFFFFF"));
-                                capture_error.setTextColor(Color.parseColor("#FFFFFF"));
-                            } else {
-                                roundedCorners.setColor(Color.parseColor("#FFFFFF"));
-                            }
-                        }
-                        GradientDrawable gradientButton = new GradientDrawable();
-                        gradientButton.setColor(Color.parseColor("#03A9F4"));
-                        gradientButton.setCornerRadius(20);
-                        clear_data.setBackground(gradientButton);
-                        ((ViewGroup)dialogLayout.getParent()).setBackground(roundedCorners);
-                        settingsDialog.show();
-                    }
-                });
-                visualizer.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                        if (!settingsData.containsKey("settingsDarkMode")) {
-                            RippleDrawable rippleButton = new RippleDrawable(new ColorStateList(new int[][]{new int[]{}}, new int[]{ Color.parseColor("#BDBDBD") }), new ColorDrawable(Color.parseColor("#FFFFFF")), null);
-                            view.setBackground(rippleButton);
-                        } else {
-                            if (settingsData.get("settingsDarkMode").equals("true")) {
-                                RippleDrawable rippleButton = new RippleDrawable(new ColorStateList(new int[][]{new int[]{}}, new int[]{ Color.parseColor("#BDBDBD") }), new ColorDrawable(Color.parseColor("#1A1A1A")), null);
-                                view.setBackground(rippleButton);
-                            } else {
-                                RippleDrawable rippleButton = new RippleDrawable(new ColorStateList(new int[][]{new int[]{}}, new int[]{ Color.parseColor("#BDBDBD") }), new ColorDrawable(Color.parseColor("#FFFFFF")), null);
-                                view.setBackground(rippleButton);
-                            }
-                        }
-                        if (ContextCompat.checkSelfPermission(LocalStreamActivity.this, Manifest.permission.RECORD_AUDIO) == PackageManager.PERMISSION_DENIED) {
-                            ActivityCompat.requestPermissions(LocalStreamActivity.this, new String[]{"android.permission.RECORD_AUDIO"}, 1);
-                        } else {
-                            BottomSheetDialog visualizerDialog = new BottomSheetDialog(LocalStreamActivity.this);
-                            View dialogLayout = getLayoutInflater().inflate(R.layout.dialog_visualizer, null);
-                            visualizerDialog.setContentView(dialogLayout);
-                            ImageView back = dialogLayout.findViewById(R.id.back);
-                            ImageView fullscreen = dialogLayout.findViewById(R.id.fullscreen);
-                            BarVisualizer visualizer = dialogLayout.findViewById(R.id.visualizer);
-                            back.setOnClickListener(new View.OnClickListener() {
-                                @Override
-                                public void onClick(View view) {
-                                    RippleDrawable rippleButton = new RippleDrawable(new ColorStateList(new int[][]{new int[]{}}, new int[]{ Color.parseColor("#BDBDBD") }), null, null);
-                                    view.setBackground(rippleButton);
-                                    if (playbackSrv.mp != null && visualizerDialog != null) {
-                                        visualizer.release();
-                                    }
-                                    visualizerDialog.dismiss();
-                                }
-                            });
-                            fullscreen.setOnClickListener(new View.OnClickListener() {
-                                @Override
-                                public void onClick(View view) {
-                                    RippleDrawable rippleButton = new RippleDrawable(new ColorStateList(new int[][]{new int[]{}}, new int[]{ Color.parseColor("#BDBDBD") }), null, null);
-                                    view.setBackground(rippleButton);
-                                    if (playbackSrv.mp != null && visualizerDialog != null) {
-                                        visualizer.release();
-                                    }
-                                    startActivity(new Intent(LocalStreamActivity.this, FullVisualizerActivity.class));
-                                    visualizerDialog.dismiss();
+                                    String profileName = profile_name1.getText().toString();
+                                    profileData.put("profileName", profileName);
+                                    FileUtil.writeStringToFile(FileUtil.getPackageDir(LocalStreamActivity.this).concat("/user/profile.pref"), ListUtil.setHashMapToSharedJSON(profileData));
+                                    ApplicationUtil.toast(LocalStreamActivity.this, "Renamed profile sucessfully.", Toast.LENGTH_SHORT);
+                                    tabNavigation.getTabAt(0).select();
+                                    createProfileDialog.dismiss();
                                     menuDialog.dismiss();
-                                }});
-                            if (playbackSrv.mp != null) {
-                                if (playbackSrv.mp.getAudioSessionId() != -1) {
-                                    visualizer.setAudioSessionId(playbackSrv.mp.getAudioSessionId());
+                                    startActivity(new Intent(LocalStreamActivity.this, SplashActivity.class));
+                                    finish();
                                 }
-                                if (!playbackSrv.isPlaying()) {
-                                    ApplicationUtil.toast("Visualizer not visible, please resume/play the song.", Toast.LENGTH_LONG, LocalStreamActivity.this);
-                                }
-                            }
-                            Double TopLeft = 20.0;
-                            Double TopRight = 20.0;
-                            Double BottomRight = 0.0;
-                            Double BottomLeft = 0.0;
-                            GradientDrawable roundedCorners = new GradientDrawable();
-                            roundedCorners.setShape(GradientDrawable.RECTANGLE);
-                            roundedCorners.setCornerRadii(new float[] {TopLeft.floatValue(),TopLeft.floatValue(), TopRight.floatValue(),TopRight.floatValue(), BottomRight.floatValue(),BottomRight.floatValue(), BottomLeft.floatValue(),BottomLeft.floatValue()});
-                            roundedCorners.setColor(Color.parseColor("#000000"));
-                            ((ViewGroup)dialogLayout.getParent()).setBackground(roundedCorners);
-                            visualizerDialog.setCancelable(false);
-                            visualizerDialog.show();
-                        }
-                    }
-                });
-                about.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                        RippleDrawable rippleButton = new RippleDrawable(new ColorStateList(new int[][]{new int[]{}}, new int[]{ Color.parseColor("#BDBDBD") }), null, null);
-                        view.setBackground(rippleButton);
-                        BottomSheetDialog about = new BottomSheetDialog(LocalStreamActivity.this);
-                        View dialogLayout = getLayoutInflater().inflate(R.layout.dialog_about, null);
-                        about.setContentView(dialogLayout);
-                        LinearLayout main = dialogLayout.findViewById(R.id.main);
-                        TextView title = dialogLayout.findViewById(R.id.title);
-                        TextView author = dialogLayout.findViewById(R.id.author);
-                        TextView youtube_name = dialogLayout.findViewById(R.id.youtube_name);
-                        TextView twitter_name = dialogLayout.findViewById(R.id.twitter_name);
-                        TextView github_name = dialogLayout.findViewById(R.id.github_name);
-                        TextView discord_name = dialogLayout.findViewById(R.id.discord_name);
-                        TextView licenses_name = dialogLayout.findViewById(R.id.license_name);
-                        TextView privacy_name = dialogLayout.findViewById(R.id.privacy_name);
-                        TextView version = dialogLayout.findViewById(R.id.version);
-                        LinearLayout youtube = dialogLayout.findViewById(R.id.youtube);
-                        LinearLayout twitter = dialogLayout.findViewById(R.id.twitter);
-                        LinearLayout github = dialogLayout.findViewById(R.id.github);
-                        LinearLayout discord = dialogLayout.findViewById(R.id.discord);
-                        LinearLayout license = dialogLayout.findViewById(R.id.license);
-                        LinearLayout privacy = dialogLayout.findViewById(R.id.privacy);
-                        title.setTypeface(Typeface.createFromAsset(getAssets(),"fonts/leixo.ttf"), Typeface.BOLD);
-                        int randomizer = IntegerUtil.getRandom(0, 9);
-                        if (randomizer == 0) {
-                            author.setText(R.string.about_description);
-                        } else if (randomizer == 1) {
-                            author.setText(R.string.about_description2);
-                        } else if (randomizer == 2) {
-                            author.setText(R.string.about_description3);
-                        } else if (randomizer == 3) {
-                            author.setText(R.string.about_description4);
-                        } else if (randomizer == 4) {
-                            author.setText(R.string.about_description5);
-                        } else if (randomizer == 5) {
-                            author.setText(R.string.about_description6);
-                        } else if (randomizer == 6) {
-                            author.setText(R.string.about_description7);
-                        } else if (randomizer == 7) {
-                            author.setText(R.string.about_description8);
-                        } else if (randomizer == 8) {
-                            author.setText(R.string.about_description9);
-                        } else if (randomizer == 10) {
-                            author.setText(R.string.about_description10);
-                        }
-                        youtube.setOnClickListener(view13 -> {
-                            if (!settingsData.containsKey("settingsDarkMode")) {
-                                RippleDrawable rippleButton13 = new RippleDrawable(new ColorStateList(new int[][]{new int[]{}}, new int[]{ Color.parseColor("#BDBDBD") }), new ColorDrawable(Color.parseColor("#FFFFFF")), null);
-                                view13.setBackground(rippleButton13);
                             } else {
-                                if (settingsData.get("settingsDarkMode").equals("true")) {
-                                    RippleDrawable rippleButton13 = new RippleDrawable(new ColorStateList(new int[][]{new int[]{}}, new int[]{ Color.parseColor("#BDBDBD") }), new ColorDrawable(Color.parseColor("#1A1A1A")), null);
-                                    view13.setBackground(rippleButton13);
-                                } else {
-                                    RippleDrawable rippleButton13 = new RippleDrawable(new ColorStateList(new int[][]{new int[]{}}, new int[]{ Color.parseColor("#BDBDBD") }), new ColorDrawable(Color.parseColor("#FFFFFF")), null);
-                                    view13.setBackground(rippleButton13);
-                                }
+                                String profileName = profile_name1.getText().toString();
+                                profileData.put("profileName", profileName);
+                                FileUtil.writeStringToFile(FileUtil.getPackageDir(LocalStreamActivity.this).concat("/user/profile.pref"), ListUtil.setHashMapToSharedJSON(profileData));
+                                ApplicationUtil.toast(LocalStreamActivity.this, "Renamed profile sucessfully.", Toast.LENGTH_SHORT);
+                                tabNavigation.getTabAt(0).select();
+                                createProfileDialog.dismiss();
+                                menuDialog.dismiss();
+                                startActivity(new Intent(LocalStreamActivity.this, SplashActivity.class));
+                                finish();
                             }
-                            Intent intent = new Intent();
-                            intent.putExtra("url", "https://youtube.com/channel/UCndTdCP5Qr-ekaV2Im1VCgg");
-                            intent.setClass(LocalStreamActivity.this, ExternalBrowserActivity.class);
-                            startActivity(intent);
-                        });
-                        twitter.setOnClickListener(view14 -> {
-                            if (!settingsData.containsKey("settingsDarkMode")) {
-                                RippleDrawable rippleButton14 = new RippleDrawable(new ColorStateList(new int[][]{new int[]{}}, new int[]{ Color.parseColor("#BDBDBD") }), new ColorDrawable(Color.parseColor("#FFFFFF")), null);
-                                view14.setBackground(rippleButton14);
-                            } else {
-                                if (settingsData.get("settingsDarkMode").equals("true")) {
-                                    RippleDrawable rippleButton14 = new RippleDrawable(new ColorStateList(new int[][]{new int[]{}}, new int[]{ Color.parseColor("#BDBDBD") }), new ColorDrawable(Color.parseColor("#1A1A1A")), null);
-                                    view14.setBackground(rippleButton14);
-                                } else {
-                                    RippleDrawable rippleButton14 = new RippleDrawable(new ColorStateList(new int[][]{new int[]{}}, new int[]{ Color.parseColor("#BDBDBD") }), new ColorDrawable(Color.parseColor("#FFFFFF")), null);
-                                    view14.setBackground(rippleButton14);
-                                }
-                            }
-                            Intent intent = new Intent();
-                            intent.putExtra("url", "https://twitter.com/gianxddddd");
-                            intent.setClass(LocalStreamActivity.this, ExternalBrowserActivity.class);
-                            startActivity(intent);
-                        });
-                        github.setOnClickListener(new View.OnClickListener() {
-                            @Override
-                            public void onClick(View view) {
-                                if (!settingsData.containsKey("settingsDarkMode")) {
-                                    RippleDrawable rippleButton = new RippleDrawable(new ColorStateList(new int[][]{new int[]{}}, new int[]{ Color.parseColor("#BDBDBD") }), new ColorDrawable(Color.parseColor("#FFFFFF")), null);
-                                    view.setBackground(rippleButton);
-                                } else {
-                                    if (settingsData.get("settingsDarkMode").equals("true")) {
-                                        RippleDrawable rippleButton = new RippleDrawable(new ColorStateList(new int[][]{new int[]{}}, new int[]{ Color.parseColor("#BDBDBD") }), new ColorDrawable(Color.parseColor("#1A1A1A")), null);
-                                        view.setBackground(rippleButton);
-                                    } else {
-                                        RippleDrawable rippleButton = new RippleDrawable(new ColorStateList(new int[][]{new int[]{}}, new int[]{ Color.parseColor("#BDBDBD") }), new ColorDrawable(Color.parseColor("#FFFFFF")), null);
-                                        view.setBackground(rippleButton);
-                                    }
-                                }
-                                Intent intent = new Intent();
-                                intent.putExtra("url", "https://github.com/gianxddddd/ArchoMusic");
-                                intent.setClass(LocalStreamActivity.this, ExternalBrowserActivity.class);
-                                startActivity(intent);
-                            }
-                        });
-                        discord.setOnClickListener(new View.OnClickListener() {
-                            @Override
-                            public void onClick(View view) {
-                                if (!settingsData.containsKey("settingsDarkMode")) {
-                                    RippleDrawable rippleButton = new RippleDrawable(new ColorStateList(new int[][]{new int[]{}}, new int[]{ Color.parseColor("#BDBDBD") }), new ColorDrawable(Color.parseColor("#FFFFFF")), null);
-                                    view.setBackground(rippleButton);
-                                } else {
-                                    if (settingsData.get("settingsDarkMode").equals("true")) {
-                                        RippleDrawable rippleButton = new RippleDrawable(new ColorStateList(new int[][]{new int[]{}}, new int[]{ Color.parseColor("#BDBDBD") }), new ColorDrawable(Color.parseColor("#1A1A1A")), null);
-                                        view.setBackground(rippleButton);
-                                    } else {
-                                        RippleDrawable rippleButton = new RippleDrawable(new ColorStateList(new int[][]{new int[]{}}, new int[]{ Color.parseColor("#BDBDBD") }), new ColorDrawable(Color.parseColor("#FFFFFF")), null);
-                                        view.setBackground(rippleButton);
-                                    }
-                                }
-                                Intent intent = new Intent();
-                                intent.putExtra("url", "https://discord.gg/x5t9n9fWCV");
-                                intent.setClass(LocalStreamActivity.this, ExternalBrowserActivity.class);
-                                startActivity(intent);
-                            }
-                        });
-                        license.setOnClickListener(new View.OnClickListener() {
-                            @Override
-                            public void onClick(View view) {
-                                if (!settingsData.containsKey("settingsDarkMode")) {
-                                    RippleDrawable rippleButton = new RippleDrawable(new ColorStateList(new int[][]{new int[]{}}, new int[]{ Color.parseColor("#BDBDBD") }), new ColorDrawable(Color.parseColor("#FFFFFF")), null);
-                                    view.setBackground(rippleButton);
-                                } else {
-                                    if (settingsData.get("settingsDarkMode").equals("true")) {
-                                        RippleDrawable rippleButton = new RippleDrawable(new ColorStateList(new int[][]{new int[]{}}, new int[]{ Color.parseColor("#BDBDBD") }), new ColorDrawable(Color.parseColor("#1A1A1A")), null);
-                                        view.setBackground(rippleButton);
-                                    } else {
-                                        RippleDrawable rippleButton = new RippleDrawable(new ColorStateList(new int[][]{new int[]{}}, new int[]{ Color.parseColor("#BDBDBD") }), new ColorDrawable(Color.parseColor("#FFFFFF")), null);
-                                        view.setBackground(rippleButton);
-                                    }
-                                }
-                                Intent intent = new Intent();
-                                intent.putExtra("url", "file:///android_asset/LICENSE.html");
-                                intent.setClass(LocalStreamActivity.this, ExternalBrowserActivity.class);
-                                startActivity(intent);
-                            }
-                        });
-                        privacy.setOnClickListener(new View.OnClickListener() {
-                            @Override
-                            public void onClick(View view) {
-                                if (!settingsData.containsKey("settingsDarkMode")) {
-                                    RippleDrawable rippleButton = new RippleDrawable(new ColorStateList(new int[][]{new int[]{}}, new int[]{ Color.parseColor("#BDBDBD") }), new ColorDrawable(Color.parseColor("#FFFFFF")), null);
-                                    view.setBackground(rippleButton);
-                                } else {
-                                    if (settingsData.get("settingsDarkMode").equals("true")) {
-                                        RippleDrawable rippleButton = new RippleDrawable(new ColorStateList(new int[][]{new int[]{}}, new int[]{ Color.parseColor("#BDBDBD") }), new ColorDrawable(Color.parseColor("#1A1A1A")), null);
-                                        view.setBackground(rippleButton);
-                                    } else {
-                                        RippleDrawable rippleButton = new RippleDrawable(new ColorStateList(new int[][]{new int[]{}}, new int[]{ Color.parseColor("#BDBDBD") }), new ColorDrawable(Color.parseColor("#FFFFFF")), null);
-                                        view.setBackground(rippleButton);
-                                    }
-                                }
-                                Intent intent = new Intent();
-                                intent.putExtra("url", "file:///android_asset/PRIVACY.html");
-                                intent.setClass(LocalStreamActivity.this, ExternalBrowserActivity.class);
-                                startActivity(intent);
-                            }
-                        });
-                        Double TopLeft = 20.0;
-                        Double TopRight = 20.0;
-                        Double BottomRight = 0.0;
-                        Double BottomLeft = 0.0;
-                        GradientDrawable roundedCorners = new GradientDrawable();
-                        roundedCorners.setShape(GradientDrawable.RECTANGLE);
-                        roundedCorners.setCornerRadii(new float[] {TopLeft.floatValue(),TopLeft.floatValue(), TopRight.floatValue(),TopRight.floatValue(), BottomRight.floatValue(),BottomRight.floatValue(), BottomLeft.floatValue(),BottomLeft.floatValue()});
-                        if (!settingsData.containsKey("settingsDarkMode")) {
-                            roundedCorners.setColor(Color.parseColor("#FFFFFF"));
                         } else {
-                            if (settingsData.get("settingsDarkMode").equals("true")) {
-                                roundedCorners.setColor(Color.parseColor("#1A1A1A"));
-                                author.setTextColor(Color.parseColor("#FFFFFF"));
-                                youtube_name.setTextColor(Color.parseColor("#FFFFFF"));
-                                twitter_name.setTextColor(Color.parseColor("#FFFFFF"));
-                                github_name.setTextColor(Color.parseColor("#FFFFFF"));
-                                discord_name.setTextColor(Color.parseColor("#FFFFFF"));
-                                licenses_name.setTextColor(Color.parseColor("#FFFFFF"));
-                                privacy_name.setTextColor(Color.parseColor("#FFFFFF"));
-                                version.setTextColor(Color.parseColor("#FFFFFF"));
-                            } else {
-                                roundedCorners.setColor(Color.parseColor("#FFFFFF"));
-                            }
+                            profile_name1.setError("Profile name should not be blank.");
                         }
-                        ((ViewGroup)dialogLayout.getParent()).setBackground(roundedCorners);
-                        about.show();
                     }
                 });
                 Double TopLeft = 20.0;
@@ -1112,22 +601,528 @@ public class LocalStreamActivity extends  AppCompatActivity  {
                 GradientDrawable roundedCorners = new GradientDrawable();
                 roundedCorners.setShape(GradientDrawable.RECTANGLE);
                 roundedCorners.setCornerRadii(new float[] {TopLeft.floatValue(),TopLeft.floatValue(), TopRight.floatValue(),TopRight.floatValue(), BottomRight.floatValue(),BottomRight.floatValue(), BottomLeft.floatValue(),BottomLeft.floatValue()});
+                GradientDrawable roundedCorners2 = new GradientDrawable();
+                roundedCorners2.setShape(GradientDrawable.RECTANGLE);
+                roundedCorners2.setCornerRadius(20);
                 if (!settingsData.containsKey("settingsDarkMode")) {
                     roundedCorners.setColor(Color.parseColor("#FFFFFF"));
+                    roundedCorners2.setColor(Color.parseColor("#EEEEEE"));
                 } else {
                     if (settingsData.get("settingsDarkMode").equals("true")) {
                         roundedCorners.setColor(Color.parseColor("#1A1A1A"));
-                        profile_name.setTextColor(Color.parseColor("#FFFFFF"));
-                        live_stream_name.setTextColor(Color.parseColor("#FFFFFF"));
-                        visualizer_name.setTextColor(Color.parseColor("#FFFFFF"));
-                        settings_name.setTextColor(Color.parseColor("#FFFFFF"));
+                        roundedCorners2.setColor(Color.parseColor("#212121"));
+                        profile_name1.setTextColor(Color.parseColor("#FFFFFF"));
+                        profile_name1.setHintTextColor(Color.parseColor("#BDBDBD"));
                     } else {
+                        roundedCorners2.setColor(Color.parseColor("#EEEEEE"));
                         roundedCorners.setColor(Color.parseColor("#FFFFFF"));
                     }
                 }
-                ((ViewGroup)dialogLayout.getParent()).setBackground(roundedCorners);
-                menuDialog.show();
+                ((ViewGroup) dialogLayout1.getParent()).setBackground(roundedCorners);
+                profile_name1.setBackground(roundedCorners2);
+                GradientDrawable gradientButton = new GradientDrawable();
+                gradientButton.setColor(Color.parseColor("#03A9F4"));
+                gradientButton.setCornerRadius(20);
+                create.setBackground(gradientButton);
+                createProfileDialog.show();
+            });
+            live_streaming.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    if (!settingsData.containsKey("settingsDarkMode")) {
+                        RippleDrawable rippleButton = new RippleDrawable(new ColorStateList(new int[][]{new int[]{}}, new int[]{ Color.parseColor("#BDBDBD") }), new ColorDrawable(Color.parseColor("#FFFFFF")), null);
+                        view.setBackground(rippleButton);
+                    } else {
+                        if (settingsData.get("settingsDarkMode").equals("true")) {
+                            RippleDrawable rippleButton = new RippleDrawable(new ColorStateList(new int[][]{new int[]{}}, new int[]{ Color.parseColor("#BDBDBD") }), new ColorDrawable(Color.parseColor("#1A1A1A")), null);
+                            view.setBackground(rippleButton);
+                        } else {
+                            RippleDrawable rippleButton = new RippleDrawable(new ColorStateList(new int[][]{new int[]{}}, new int[]{ Color.parseColor("#BDBDBD") }), new ColorDrawable(Color.parseColor("#FFFFFF")), null);
+                            view.setBackground(rippleButton);
+                        }
+                    }
+                }
+            });
+            settings.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    if (!settingsData.containsKey("settingsDarkMode")) {
+                        RippleDrawable rippleButton = new RippleDrawable(new ColorStateList(new int[][]{new int[]{}}, new int[]{ Color.parseColor("#BDBDBD") }), new ColorDrawable(Color.parseColor("#FFFFFF")), null);
+                        view.setBackground(rippleButton);
+                    } else {
+                        if (settingsData.get("settingsDarkMode").equals("true")) {
+                            RippleDrawable rippleButton = new RippleDrawable(new ColorStateList(new int[][]{new int[]{}}, new int[]{ Color.parseColor("#BDBDBD") }), new ColorDrawable(Color.parseColor("#1A1A1A")), null);
+                            view.setBackground(rippleButton);
+                        } else {
+                            RippleDrawable rippleButton = new RippleDrawable(new ColorStateList(new int[][]{new int[]{}}, new int[]{ Color.parseColor("#BDBDBD") }), new ColorDrawable(Color.parseColor("#FFFFFF")), null);
+                            view.setBackground(rippleButton);
+                        }
+                    }
+
+                    BottomSheetDialog settingsDialog = new BottomSheetDialog(LocalStreamActivity.this);
+                    View dialogLayout = getLayoutInflater().inflate(R.layout.dialog_settings, null);
+                    settingsDialog.setContentView(dialogLayout);
+
+                    ImageView back = dialogLayout.findViewById(R.id.back);
+                    TextView title = dialogLayout.findViewById(R.id.title);
+                    TextView general_title = dialogLayout.findViewById(R.id.general_title);
+                    TextView appearance_title = dialogLayout.findViewById(R.id.appearance_title);
+                    TextView audio_title = dialogLayout.findViewById(R.id.audio_title);
+                    TextView other_title = dialogLayout.findViewById(R.id.other_title);
+                    CheckBox disable_ads = dialogLayout.findViewById(R.id.disable_ads);
+                    CheckBox dark_mode = dialogLayout.findViewById(R.id.dark_mode);
+                    CheckBox disable_anim = dialogLayout.findViewById(R.id.disable_anim);
+                    CheckBox background_play = dialogLayout.findViewById(R.id.background_play);
+                    CheckBox capture_error = dialogLayout.findViewById(R.id.capture_error);
+                    Button clear_data = dialogLayout.findViewById(R.id.clear_data);
+
+                    title.setTypeface(Typeface.createFromAsset(getAssets(),"fonts/roboto_medium.ttf"), Typeface.NORMAL);
+                    general_title.setTypeface(Typeface.createFromAsset(getAssets(),"fonts/roboto_medium.ttf"), Typeface.NORMAL);
+                    appearance_title.setTypeface(Typeface.createFromAsset(getAssets(),"fonts/roboto_medium.ttf"), Typeface.NORMAL);
+                    audio_title.setTypeface(Typeface.createFromAsset(getAssets(),"fonts/roboto_medium.ttf"), Typeface.NORMAL);
+                    other_title.setTypeface(Typeface.createFromAsset(getAssets(),"fonts/roboto_medium.ttf"), Typeface.NORMAL);
+
+                    if (settingsData.containsKey("settingsAds")) {
+                        if (settingsData.get("settingsAds").equals("false")) {
+                            disable_ads.setChecked(true);
+                        }
+                    }
+
+                    if (settingsData.containsKey("settingsDarkMode")) {
+                        if (settingsData.get("settingsDarkMode").equals("true")) {
+                            dark_mode.setChecked(true);
+                        }
+                    }
+
+                    if (settingsData.containsKey("settingsAnimation")) {
+                        if (settingsData.get("settingsAnimation").equals("false")) {
+                            disable_anim.setChecked(true);
+                        }
+                    }
+
+                    if (settingsData.containsKey("settingsBackgroundAudio")) {
+                        if (settingsData.get("settingsBackgroundAudio").equals("true")) {
+                            background_play.setChecked(true);
+                        }
+                    }
+
+                    if (settingsData.containsKey("settingsCaptureError")) {
+                        if (settingsData.get("settingsCaptureError").equals("true")) {
+                            capture_error.setChecked(true);
+                        }
+                    }
+
+                    back.setOnClickListener(view12 -> {
+                        RippleDrawable rippleButton12 = new RippleDrawable(new ColorStateList(new int[][]{new int[]{}}, new int[]{ Color.parseColor("#BDBDBD") }), null, null);
+                        view12.setBackground(rippleButton12);
+                        settingsDialog.dismiss();
+                    });
+
+                    disable_ads.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+                        @Override
+                        public void onCheckedChanged(CompoundButton view, boolean isChecked) {
+                            if (isChecked) {
+                                settingsData.put("settingsAds", "false");
+                                FileUtil.writeStringToFile(FileUtil.getPackageDir(LocalStreamActivity.this).concat("/user/settings.pref"), ListUtil.setHashMapToSharedJSON(settingsData));
+                                startActivity(new Intent(LocalStreamActivity.this, SplashActivity.class));
+                                finish();
+                                ApplicationUtil.toast(LocalStreamActivity.this, "Opt out of ads disabled, hope you re-enable it soon ;)", Toast.LENGTH_SHORT);
+                            } else {
+                                settingsData.put("settingsAds", "true");
+                                FileUtil.writeStringToFile(FileUtil.getPackageDir(LocalStreamActivity.this).concat("/user/settings.pref"), ListUtil.setHashMapToSharedJSON(settingsData));
+                                startActivity(new Intent(LocalStreamActivity.this, SplashActivity.class));
+                                finish();
+                                ApplicationUtil.toast(LocalStreamActivity.this, "Opt out of ads enabled, thanks for enabling that again!", Toast.LENGTH_SHORT);
+                            }
+                        }
+                    });
+                    dark_mode.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+                        @Override
+                        public void onCheckedChanged(CompoundButton view, boolean isChecked) {
+                            if (isChecked) {
+                                settingsData.put("settingsDarkMode", "true");
+                                FileUtil.writeStringToFile(FileUtil.getPackageDir(LocalStreamActivity.this).concat("/user/settings.pref"), ListUtil.setHashMapToSharedJSON(settingsData));
+                                startActivity(new Intent(LocalStreamActivity.this, SplashActivity.class));
+                                finish();
+                                ApplicationUtil.toast(LocalStreamActivity.this, "Dark mode is enabled, take a look at the moon!", Toast.LENGTH_SHORT);
+                            } else {
+                                settingsData.put("settingsDarkMode", "false");
+                                FileUtil.writeStringToFile(FileUtil.getPackageDir(LocalStreamActivity.this).concat("/user/settings.pref"), ListUtil.setHashMapToSharedJSON(settingsData));
+                                startActivity(new Intent(LocalStreamActivity.this, SplashActivity.class));
+                                finish();
+                                ApplicationUtil.toast(LocalStreamActivity.this,"Dark mode is disabled, prepare to make your eyes burn!", Toast.LENGTH_SHORT);
+                            }
+                        }
+                    });
+                    disable_anim.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+                        @Override
+                        public void onCheckedChanged(CompoundButton view, boolean isChecked) {
+                            if (isChecked) {
+                                settingsData.put("settingsAnimation", "false");
+                                FileUtil.writeStringToFile(FileUtil.getPackageDir(LocalStreamActivity.this).concat("/user/settings.pref"), ListUtil.setHashMapToSharedJSON(settingsData));
+                                startActivity(new Intent(LocalStreamActivity.this, SplashActivity.class));
+                                finish();
+                                ApplicationUtil.toast(LocalStreamActivity.this, "Animations are disabled, it optimizes performance.", Toast.LENGTH_SHORT);
+                            } else {
+                                settingsData.put("settingsAnimation", "true");
+                                FileUtil.writeStringToFile(FileUtil.getPackageDir(LocalStreamActivity.this).concat("/user/settings.pref"), ListUtil.setHashMapToSharedJSON(settingsData));
+                                startActivity(new Intent(LocalStreamActivity.this, SplashActivity.class));
+                                finish();
+                                ApplicationUtil.toast(LocalStreamActivity.this, "Animations are enabled, turn it off if you are experiencing lags!", Toast.LENGTH_SHORT);
+                            }
+                        }
+                    });
+                    background_play.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+                        @Override
+                        public void onCheckedChanged(CompoundButton view, boolean isChecked) {
+                            if (isChecked) {
+                                settingsData.put("settingsBackgroundAudio", "true");
+                                FileUtil.writeStringToFile(FileUtil.getPackageDir(LocalStreamActivity.this).concat("/user/settings.pref"), ListUtil.setHashMapToSharedJSON(settingsData));
+                                startActivity(new Intent(LocalStreamActivity.this, SplashActivity.class));
+                                finish();
+                                ApplicationUtil.toast(LocalStreamActivity.this, "Audio will be played while in background, hope you enjoy!", Toast.LENGTH_SHORT);
+                            } else {
+                                settingsData.put("settingsBackgroundAudio", "false");
+                                FileUtil.writeStringToFile(FileUtil.getPackageDir(LocalStreamActivity.this).concat("/user/settings.pref"), ListUtil.setHashMapToSharedJSON(settingsData));
+                                startActivity(new Intent(LocalStreamActivity.this, SplashActivity.class));
+                                finish();
+                                ApplicationUtil.toast(LocalStreamActivity.this, "Audio will NOT be played while in background, You don't like music are you?", Toast.LENGTH_SHORT);
+                            }
+                        }
+                    });
+                    capture_error.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+                        @Override
+                        public void onCheckedChanged(CompoundButton view, boolean isChecked) {
+                            if (isChecked) {
+                                settingsData.put("settingsCaptureError", "true");
+                                FileUtil.writeStringToFile(FileUtil.getPackageDir(LocalStreamActivity.this).concat("/user/settings.pref"), ListUtil.setHashMapToSharedJSON(settingsData));
+                                startActivity(new Intent(LocalStreamActivity.this, SplashActivity.class));
+                                finish();
+                                ApplicationUtil.toast(LocalStreamActivity.this, "Capturing errors are enabled, Helps us out fix bugs!", Toast.LENGTH_SHORT);
+                            } else {
+                                settingsData.put("settingsCaptureError", "false");
+                                FileUtil.writeStringToFile(FileUtil.getPackageDir(LocalStreamActivity.this).concat("/user/settings.pref"), ListUtil.setHashMapToSharedJSON(settingsData));
+                                startActivity(new Intent(LocalStreamActivity.this, SplashActivity.class));
+                                finish();
+                                ApplicationUtil.toast(LocalStreamActivity.this, "Capturing errors are disabled, Hmmm..", Toast.LENGTH_SHORT);
+                            }
+                        }
+                    });
+                    Double TopLeft = 20.0;
+                    Double TopRight = 20.0;
+                    Double BottomRight = 0.0;
+                    Double BottomLeft = 0.0;
+                    GradientDrawable roundedCorners = new GradientDrawable();
+                    roundedCorners.setShape(GradientDrawable.RECTANGLE);
+                    roundedCorners.setCornerRadii(new float[] {TopLeft.floatValue(),TopLeft.floatValue(), TopRight.floatValue(),TopRight.floatValue(), BottomRight.floatValue(),BottomRight.floatValue(), BottomLeft.floatValue(),BottomLeft.floatValue()});
+                    if (!settingsData.containsKey("settingsDarkMode")) {
+                        roundedCorners.setColor(Color.parseColor("#FFFFFF"));
+                    } else {
+                        if (settingsData.get("settingsDarkMode").equals("true")) {
+                            roundedCorners.setColor(Color.parseColor("#1A1A1A"));
+                            disable_ads.setTextColor(Color.parseColor("#FFFFFF"));
+                            dark_mode.setTextColor(Color.parseColor("#FFFFFF"));
+                            disable_anim.setTextColor(Color.parseColor("#FFFFFF"));
+                            background_play.setTextColor(Color.parseColor("#FFFFFF"));
+                            capture_error.setTextColor(Color.parseColor("#FFFFFF"));
+                        } else {
+                            roundedCorners.setColor(Color.parseColor("#FFFFFF"));
+                        }
+                    }
+                    GradientDrawable gradientButton = new GradientDrawable();
+                    gradientButton.setColor(Color.parseColor("#03A9F4"));
+                    gradientButton.setCornerRadius(20);
+                    clear_data.setBackground(gradientButton);
+                    ((ViewGroup)dialogLayout.getParent()).setBackground(roundedCorners);
+                    settingsDialog.show();
+                }
+            });
+            visualizer.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    if (!settingsData.containsKey("settingsDarkMode")) {
+                        RippleDrawable rippleButton = new RippleDrawable(new ColorStateList(new int[][]{new int[]{}}, new int[]{ Color.parseColor("#BDBDBD") }), new ColorDrawable(Color.parseColor("#FFFFFF")), null);
+                        view.setBackground(rippleButton);
+                    } else {
+                        if (settingsData.get("settingsDarkMode").equals("true")) {
+                            RippleDrawable rippleButton = new RippleDrawable(new ColorStateList(new int[][]{new int[]{}}, new int[]{ Color.parseColor("#BDBDBD") }), new ColorDrawable(Color.parseColor("#1A1A1A")), null);
+                            view.setBackground(rippleButton);
+                        } else {
+                            RippleDrawable rippleButton = new RippleDrawable(new ColorStateList(new int[][]{new int[]{}}, new int[]{ Color.parseColor("#BDBDBD") }), new ColorDrawable(Color.parseColor("#FFFFFF")), null);
+                            view.setBackground(rippleButton);
+                        }
+                    }
+                    if (ContextCompat.checkSelfPermission(LocalStreamActivity.this, Manifest.permission.RECORD_AUDIO) == PackageManager.PERMISSION_DENIED) {
+                        ActivityCompat.requestPermissions(LocalStreamActivity.this, new String[]{"android.permission.RECORD_AUDIO"}, 1);
+                    } else {
+                        BottomSheetDialog visualizerDialog = new BottomSheetDialog(LocalStreamActivity.this);
+                        View dialogLayout = getLayoutInflater().inflate(R.layout.dialog_visualizer, null);
+                        visualizerDialog.setContentView(dialogLayout);
+                        ImageView back = dialogLayout.findViewById(R.id.back);
+                        ImageView fullscreen = dialogLayout.findViewById(R.id.fullscreen);
+                        BarVisualizer visualizer = dialogLayout.findViewById(R.id.visualizer);
+                        back.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View view) {
+                                RippleDrawable rippleButton = new RippleDrawable(new ColorStateList(new int[][]{new int[]{}}, new int[]{ Color.parseColor("#BDBDBD") }), null, null);
+                                view.setBackground(rippleButton);
+                                if (playbackSrv.mp != null && visualizerDialog != null) {
+                                    visualizer.release();
+                                }
+                                visualizerDialog.dismiss();
+                            }
+                        });
+                        fullscreen.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View view) {
+                                RippleDrawable rippleButton = new RippleDrawable(new ColorStateList(new int[][]{new int[]{}}, new int[]{ Color.parseColor("#BDBDBD") }), null, null);
+                                view.setBackground(rippleButton);
+                                if (playbackSrv.mp != null && visualizerDialog != null) {
+                                    visualizer.release();
+                                }
+                                startActivity(new Intent(LocalStreamActivity.this, FullVisualizerActivity.class));
+                                visualizerDialog.dismiss();
+                                menuDialog.dismiss();
+                            }});
+                        if (playbackSrv.mp != null) {
+                            if (playbackSrv.mp.getAudioSessionId() != -1) {
+                                visualizer.setAudioSessionId(playbackSrv.mp.getAudioSessionId());
+                            }
+                            if (!playbackSrv.isPlaying()) {
+                                ApplicationUtil.toast(LocalStreamActivity.this, "Visualizer not visible, please resume/play the song.", Toast.LENGTH_LONG);
+                            }
+                        }
+                        Double TopLeft = 20.0;
+                        Double TopRight = 20.0;
+                        Double BottomRight = 0.0;
+                        Double BottomLeft = 0.0;
+                        GradientDrawable roundedCorners = new GradientDrawable();
+                        roundedCorners.setShape(GradientDrawable.RECTANGLE);
+                        roundedCorners.setCornerRadii(new float[] {TopLeft.floatValue(),TopLeft.floatValue(), TopRight.floatValue(),TopRight.floatValue(), BottomRight.floatValue(),BottomRight.floatValue(), BottomLeft.floatValue(),BottomLeft.floatValue()});
+                        roundedCorners.setColor(Color.parseColor("#000000"));
+                        ((ViewGroup)dialogLayout.getParent()).setBackground(roundedCorners);
+                        visualizerDialog.setCancelable(false);
+                        visualizerDialog.show();
+                    }
+                }
+            });
+            about.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    RippleDrawable rippleButton = new RippleDrawable(new ColorStateList(new int[][]{new int[]{}}, new int[]{ Color.parseColor("#BDBDBD") }), null, null);
+                    view.setBackground(rippleButton);
+                    BottomSheetDialog about = new BottomSheetDialog(LocalStreamActivity.this);
+                    View dialogLayout = getLayoutInflater().inflate(R.layout.dialog_about, null);
+                    about.setContentView(dialogLayout);
+                    LinearLayout main = dialogLayout.findViewById(R.id.main);
+                    TextView title = dialogLayout.findViewById(R.id.title);
+                    TextView author = dialogLayout.findViewById(R.id.author);
+                    TextView youtube_name = dialogLayout.findViewById(R.id.youtube_name);
+                    TextView twitter_name = dialogLayout.findViewById(R.id.twitter_name);
+                    TextView github_name = dialogLayout.findViewById(R.id.github_name);
+                    TextView discord_name = dialogLayout.findViewById(R.id.discord_name);
+                    TextView licenses_name = dialogLayout.findViewById(R.id.license_name);
+                    TextView privacy_name = dialogLayout.findViewById(R.id.privacy_name);
+                    TextView version = dialogLayout.findViewById(R.id.version);
+                    LinearLayout youtube = dialogLayout.findViewById(R.id.youtube);
+                    LinearLayout twitter = dialogLayout.findViewById(R.id.twitter);
+                    LinearLayout github = dialogLayout.findViewById(R.id.github);
+                    LinearLayout discord = dialogLayout.findViewById(R.id.discord);
+                    LinearLayout license = dialogLayout.findViewById(R.id.license);
+                    LinearLayout privacy = dialogLayout.findViewById(R.id.privacy);
+                    title.setTypeface(Typeface.createFromAsset(getAssets(),"fonts/leixo.ttf"), Typeface.BOLD);
+                    int randomizer = IntegerUtil.getRandom(0, 9);
+                    if (randomizer == 0) {
+                        author.setText(R.string.about_description);
+                    } else if (randomizer == 1) {
+                        author.setText(R.string.about_description2);
+                    } else if (randomizer == 2) {
+                        author.setText(R.string.about_description3);
+                    } else if (randomizer == 3) {
+                        author.setText(R.string.about_description4);
+                    } else if (randomizer == 4) {
+                        author.setText(R.string.about_description5);
+                    } else if (randomizer == 5) {
+                        author.setText(R.string.about_description6);
+                    } else if (randomizer == 6) {
+                        author.setText(R.string.about_description7);
+                    } else if (randomizer == 7) {
+                        author.setText(R.string.about_description8);
+                    } else if (randomizer == 8) {
+                        author.setText(R.string.about_description9);
+                    } else if (randomizer == 10) {
+                        author.setText(R.string.about_description10);
+                    }
+                    youtube.setOnClickListener(view13 -> {
+                        if (!settingsData.containsKey("settingsDarkMode")) {
+                            RippleDrawable rippleButton13 = new RippleDrawable(new ColorStateList(new int[][]{new int[]{}}, new int[]{ Color.parseColor("#BDBDBD") }), new ColorDrawable(Color.parseColor("#FFFFFF")), null);
+                            view13.setBackground(rippleButton13);
+                        } else {
+                            if (settingsData.get("settingsDarkMode").equals("true")) {
+                                RippleDrawable rippleButton13 = new RippleDrawable(new ColorStateList(new int[][]{new int[]{}}, new int[]{ Color.parseColor("#BDBDBD") }), new ColorDrawable(Color.parseColor("#1A1A1A")), null);
+                                view13.setBackground(rippleButton13);
+                            } else {
+                                RippleDrawable rippleButton13 = new RippleDrawable(new ColorStateList(new int[][]{new int[]{}}, new int[]{ Color.parseColor("#BDBDBD") }), new ColorDrawable(Color.parseColor("#FFFFFF")), null);
+                                view13.setBackground(rippleButton13);
+                            }
+                        }
+                        Intent intent = new Intent();
+                        intent.putExtra("url", "https://youtube.com/channel/UCndTdCP5Qr-ekaV2Im1VCgg");
+                        intent.setClass(LocalStreamActivity.this, ExternalBrowserActivity.class);
+                        startActivity(intent);
+                    });
+                    twitter.setOnClickListener(view14 -> {
+                        if (!settingsData.containsKey("settingsDarkMode")) {
+                            RippleDrawable rippleButton14 = new RippleDrawable(new ColorStateList(new int[][]{new int[]{}}, new int[]{ Color.parseColor("#BDBDBD") }), new ColorDrawable(Color.parseColor("#FFFFFF")), null);
+                            view14.setBackground(rippleButton14);
+                        } else {
+                            if (settingsData.get("settingsDarkMode").equals("true")) {
+                                RippleDrawable rippleButton14 = new RippleDrawable(new ColorStateList(new int[][]{new int[]{}}, new int[]{ Color.parseColor("#BDBDBD") }), new ColorDrawable(Color.parseColor("#1A1A1A")), null);
+                                view14.setBackground(rippleButton14);
+                            } else {
+                                RippleDrawable rippleButton14 = new RippleDrawable(new ColorStateList(new int[][]{new int[]{}}, new int[]{ Color.parseColor("#BDBDBD") }), new ColorDrawable(Color.parseColor("#FFFFFF")), null);
+                                view14.setBackground(rippleButton14);
+                            }
+                        }
+                        Intent intent = new Intent();
+                        intent.putExtra("url", "https://twitter.com/gianxddddd");
+                        intent.setClass(LocalStreamActivity.this, ExternalBrowserActivity.class);
+                        startActivity(intent);
+                    });
+                    github.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            if (!settingsData.containsKey("settingsDarkMode")) {
+                                RippleDrawable rippleButton = new RippleDrawable(new ColorStateList(new int[][]{new int[]{}}, new int[]{ Color.parseColor("#BDBDBD") }), new ColorDrawable(Color.parseColor("#FFFFFF")), null);
+                                view.setBackground(rippleButton);
+                            } else {
+                                if (settingsData.get("settingsDarkMode").equals("true")) {
+                                    RippleDrawable rippleButton = new RippleDrawable(new ColorStateList(new int[][]{new int[]{}}, new int[]{ Color.parseColor("#BDBDBD") }), new ColorDrawable(Color.parseColor("#1A1A1A")), null);
+                                    view.setBackground(rippleButton);
+                                } else {
+                                    RippleDrawable rippleButton = new RippleDrawable(new ColorStateList(new int[][]{new int[]{}}, new int[]{ Color.parseColor("#BDBDBD") }), new ColorDrawable(Color.parseColor("#FFFFFF")), null);
+                                    view.setBackground(rippleButton);
+                                }
+                            }
+                            Intent intent = new Intent();
+                            intent.putExtra("url", "https://github.com/gianxddddd/ArchoMusic");
+                            intent.setClass(LocalStreamActivity.this, ExternalBrowserActivity.class);
+                            startActivity(intent);
+                        }
+                    });
+                    discord.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            if (!settingsData.containsKey("settingsDarkMode")) {
+                                RippleDrawable rippleButton = new RippleDrawable(new ColorStateList(new int[][]{new int[]{}}, new int[]{ Color.parseColor("#BDBDBD") }), new ColorDrawable(Color.parseColor("#FFFFFF")), null);
+                                view.setBackground(rippleButton);
+                            } else {
+                                if (settingsData.get("settingsDarkMode").equals("true")) {
+                                    RippleDrawable rippleButton = new RippleDrawable(new ColorStateList(new int[][]{new int[]{}}, new int[]{ Color.parseColor("#BDBDBD") }), new ColorDrawable(Color.parseColor("#1A1A1A")), null);
+                                    view.setBackground(rippleButton);
+                                } else {
+                                    RippleDrawable rippleButton = new RippleDrawable(new ColorStateList(new int[][]{new int[]{}}, new int[]{ Color.parseColor("#BDBDBD") }), new ColorDrawable(Color.parseColor("#FFFFFF")), null);
+                                    view.setBackground(rippleButton);
+                                }
+                            }
+                            Intent intent = new Intent();
+                            intent.putExtra("url", "https://discord.gg/x5t9n9fWCV");
+                            intent.setClass(LocalStreamActivity.this, ExternalBrowserActivity.class);
+                            startActivity(intent);
+                        }
+                    });
+                    license.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            if (!settingsData.containsKey("settingsDarkMode")) {
+                                RippleDrawable rippleButton = new RippleDrawable(new ColorStateList(new int[][]{new int[]{}}, new int[]{ Color.parseColor("#BDBDBD") }), new ColorDrawable(Color.parseColor("#FFFFFF")), null);
+                                view.setBackground(rippleButton);
+                            } else {
+                                if (settingsData.get("settingsDarkMode").equals("true")) {
+                                    RippleDrawable rippleButton = new RippleDrawable(new ColorStateList(new int[][]{new int[]{}}, new int[]{ Color.parseColor("#BDBDBD") }), new ColorDrawable(Color.parseColor("#1A1A1A")), null);
+                                    view.setBackground(rippleButton);
+                                } else {
+                                    RippleDrawable rippleButton = new RippleDrawable(new ColorStateList(new int[][]{new int[]{}}, new int[]{ Color.parseColor("#BDBDBD") }), new ColorDrawable(Color.parseColor("#FFFFFF")), null);
+                                    view.setBackground(rippleButton);
+                                }
+                            }
+                            Intent intent = new Intent();
+                            intent.putExtra("url", "file:///android_asset/LICENSE.html");
+                            intent.setClass(LocalStreamActivity.this, ExternalBrowserActivity.class);
+                            startActivity(intent);
+                        }
+                    });
+                    privacy.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            if (!settingsData.containsKey("settingsDarkMode")) {
+                                RippleDrawable rippleButton = new RippleDrawable(new ColorStateList(new int[][]{new int[]{}}, new int[]{ Color.parseColor("#BDBDBD") }), new ColorDrawable(Color.parseColor("#FFFFFF")), null);
+                                view.setBackground(rippleButton);
+                            } else {
+                                if (settingsData.get("settingsDarkMode").equals("true")) {
+                                    RippleDrawable rippleButton = new RippleDrawable(new ColorStateList(new int[][]{new int[]{}}, new int[]{ Color.parseColor("#BDBDBD") }), new ColorDrawable(Color.parseColor("#1A1A1A")), null);
+                                    view.setBackground(rippleButton);
+                                } else {
+                                    RippleDrawable rippleButton = new RippleDrawable(new ColorStateList(new int[][]{new int[]{}}, new int[]{ Color.parseColor("#BDBDBD") }), new ColorDrawable(Color.parseColor("#FFFFFF")), null);
+                                    view.setBackground(rippleButton);
+                                }
+                            }
+                            Intent intent = new Intent();
+                            intent.putExtra("url", "file:///android_asset/PRIVACY.html");
+                            intent.setClass(LocalStreamActivity.this, ExternalBrowserActivity.class);
+                            startActivity(intent);
+                        }
+                    });
+                    Double TopLeft = 20.0;
+                    Double TopRight = 20.0;
+                    Double BottomRight = 0.0;
+                    Double BottomLeft = 0.0;
+                    GradientDrawable roundedCorners = new GradientDrawable();
+                    roundedCorners.setShape(GradientDrawable.RECTANGLE);
+                    roundedCorners.setCornerRadii(new float[] {TopLeft.floatValue(),TopLeft.floatValue(), TopRight.floatValue(),TopRight.floatValue(), BottomRight.floatValue(),BottomRight.floatValue(), BottomLeft.floatValue(),BottomLeft.floatValue()});
+                    if (!settingsData.containsKey("settingsDarkMode")) {
+                        roundedCorners.setColor(Color.parseColor("#FFFFFF"));
+                    } else {
+                        if (settingsData.get("settingsDarkMode").equals("true")) {
+                            roundedCorners.setColor(Color.parseColor("#1A1A1A"));
+                            author.setTextColor(Color.parseColor("#FFFFFF"));
+                            youtube_name.setTextColor(Color.parseColor("#FFFFFF"));
+                            twitter_name.setTextColor(Color.parseColor("#FFFFFF"));
+                            github_name.setTextColor(Color.parseColor("#FFFFFF"));
+                            discord_name.setTextColor(Color.parseColor("#FFFFFF"));
+                            licenses_name.setTextColor(Color.parseColor("#FFFFFF"));
+                            privacy_name.setTextColor(Color.parseColor("#FFFFFF"));
+                            version.setTextColor(Color.parseColor("#FFFFFF"));
+                        } else {
+                            roundedCorners.setColor(Color.parseColor("#FFFFFF"));
+                        }
+                    }
+                    ((ViewGroup)dialogLayout.getParent()).setBackground(roundedCorners);
+                    about.show();
+                }
+            });
+            Double TopLeft = 20.0;
+            Double TopRight = 20.0;
+            Double BottomRight = 0.0;
+            Double BottomLeft = 0.0;
+            GradientDrawable roundedCorners = new GradientDrawable();
+            roundedCorners.setShape(GradientDrawable.RECTANGLE);
+            roundedCorners.setCornerRadii(new float[] {TopLeft.floatValue(),TopLeft.floatValue(), TopRight.floatValue(),TopRight.floatValue(), BottomRight.floatValue(),BottomRight.floatValue(), BottomLeft.floatValue(),BottomLeft.floatValue()});
+            if (!settingsData.containsKey("settingsDarkMode")) {
+                roundedCorners.setColor(Color.parseColor("#FFFFFF"));
+            } else {
+                if (settingsData.get("settingsDarkMode").equals("true")) {
+                    roundedCorners.setColor(Color.parseColor("#1A1A1A"));
+                    profile_name.setTextColor(Color.parseColor("#FFFFFF"));
+                    live_stream_name.setTextColor(Color.parseColor("#FFFFFF"));
+                    visualizer_name.setTextColor(Color.parseColor("#FFFFFF"));
+                    settings_name.setTextColor(Color.parseColor("#FFFFFF"));
+                } else {
+                    roundedCorners.setColor(Color.parseColor("#FFFFFF"));
+                }
             }
+            ((ViewGroup)dialogLayout.getParent()).setBackground(roundedCorners);
+            menuDialog.show();
         });
 
         miniplayer.setOnClickListener(view -> {
@@ -1532,7 +1527,7 @@ public class LocalStreamActivity extends  AppCompatActivity  {
                             playPause.performClick();
                         }
                     } catch (Exception exception) {
-                        ApplicationUtil.toast("Error loading audio file.", Toast.LENGTH_SHORT, this);
+                        ApplicationUtil.toast(this, "Error loading audio file.", Toast.LENGTH_SHORT);
                         if (randomizer < musicData.size()) {
                             sessionData.put("sessionSongPosition", String.valueOf(randomizer));
                             FileUtil.writeStringToFile(FileUtil.getPackageDir(this).concat("/user/session.pref"), ListUtil.setHashMapToSharedJSON(sessionData));
@@ -1598,7 +1593,7 @@ public class LocalStreamActivity extends  AppCompatActivity  {
                         playPause.performClick();
                     }
                 } catch (Exception exception) {
-                    ApplicationUtil.toast("Error loading audio file.", Toast.LENGTH_SHORT, this);
+                    ApplicationUtil.toast(this, "Error loading audio file.", Toast.LENGTH_SHORT);
                     if (Integer.parseInt(sessionData.get("sessionSongPosition").toString()) + 1 < musicData.size()) {
                         sessionData.put("sessionSongPosition", String.valueOf(Integer.parseInt(sessionData.get("sessionSongPosition").toString()) + 1));
                         FileUtil.writeStringToFile(FileUtil.getPackageDir(this).concat("/user/session.pref"), ListUtil.setHashMapToSharedJSON(sessionData));
@@ -1616,7 +1611,7 @@ public class LocalStreamActivity extends  AppCompatActivity  {
                             playPause.performClick();
                         }
                     } catch (Exception exception) {
-                        ApplicationUtil.toast("Error loading audio file.", Toast.LENGTH_SHORT, this);
+                        ApplicationUtil.toast(this, "Error loading audio file.", Toast.LENGTH_SHORT);
                         if (Integer.parseInt(sessionData.get("sessionSongPosition").toString()) + 1 < musicData.size()) {
                             sessionData.put("profileSongPosition", String.valueOf(Integer.parseInt(sessionData.get("sessionSongPosition").toString()) + 1));
                             FileUtil.writeStringToFile(FileUtil.getPackageDir(this).concat("/user/session.pref"), ListUtil.setHashMapToSharedJSON(sessionData));
@@ -1644,7 +1639,7 @@ public class LocalStreamActivity extends  AppCompatActivity  {
                             playPause.performClick();
                         }
                     } catch (Exception exception) {
-                        ApplicationUtil.toast("Error loading audio file.", Toast.LENGTH_SHORT, this);
+                        ApplicationUtil.toast(this, "Error loading audio file.", Toast.LENGTH_SHORT);
                         if (randomizer < musicData.size()) {
                             sessionData.put("sessionSongPosition", String.valueOf(randomizer));
                             FileUtil.writeStringToFile(FileUtil.getPackageDir(this).concat("/user/session.pref"), ListUtil.setHashMapToSharedJSON(sessionData));
@@ -1750,7 +1745,7 @@ public class LocalStreamActivity extends  AppCompatActivity  {
             if (ContextCompat.checkSelfPermission(this, Manifest.permission.RECORD_AUDIO) == PackageManager.PERMISSION_GRANTED) {
                 // Do nothing here.
             } else {
-                ApplicationUtil.toast("Record permission was denied, Visualizer will not run unless you allow it.", Toast.LENGTH_SHORT, this);
+                ApplicationUtil.toast(this, "Record permission was denied, Visualizer will not run unless you allow it.", Toast.LENGTH_SHORT);
             }
         }
     }
@@ -1969,14 +1964,14 @@ public class LocalStreamActivity extends  AppCompatActivity  {
                             FileUtil.writeStringToFile(FileUtil.getPackageDir(LocalStreamActivity.this).concat("/user/session.pref"), ListUtil.setHashMapToSharedJSON(sessionData));
                             playPause.performClick();
                         } catch (Exception e) {
-                            ApplicationUtil.toast("Error loading audio file.", Toast.LENGTH_SHORT, LocalStreamActivity.this);
+                            ApplicationUtil.toast(LocalStreamActivity.this, "Error loading audio file.", Toast.LENGTH_SHORT);
                             skipForward.performClick();
                         }
                     } else {
-                        ApplicationUtil.toast("Selected song does not exist.", Toast.LENGTH_SHORT, LocalStreamActivity.this);
+                        ApplicationUtil.toast(LocalStreamActivity.this, "Selected song does not exist.", Toast.LENGTH_SHORT);
                     }
                 } else {
-                    ApplicationUtil.toast("Selected song is currently playing.", Toast.LENGTH_SHORT, LocalStreamActivity.this);
+                    ApplicationUtil.toast(LocalStreamActivity.this, "Selected song is currently playing.", Toast.LENGTH_SHORT);
                 }
             });
             more.setOnClickListener(view16 -> {

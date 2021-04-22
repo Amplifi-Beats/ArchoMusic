@@ -125,7 +125,7 @@ public class IntentFilterActivity extends AppCompatActivity {
         try {
             startupMP(data);
         } catch (Exception e) {
-            ApplicationUtil.toast("Error loading audio file.", Toast.LENGTH_LONG, this);
+            ApplicationUtil.toast(this, "Error loading audio file.", Toast.LENGTH_LONG);
             finish();
         }
     }

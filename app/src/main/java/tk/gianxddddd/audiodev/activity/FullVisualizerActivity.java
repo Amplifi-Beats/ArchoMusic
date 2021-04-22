@@ -34,6 +34,7 @@ public class FullVisualizerActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_fullscreen_visualizer);
 
+        /* Hide status bar & navbar */
         getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY
                 | View.SYSTEM_UI_FLAG_LAYOUT_STABLE
                 | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
@@ -73,10 +74,10 @@ public class FullVisualizerActivity extends AppCompatActivity {
                     }
 
                 } else if (playbackSrv.mp != null && !playbackSrv.isPlaying()) {
-                    ApplicationUtil.toast("Visualizer not visible, please resume/play the song.", Toast.LENGTH_LONG, FullVisualizerActivity.this);
+                    ApplicationUtil.toast(FullVisualizerActivity.this, "Visualizer not visible, please resume/play the song.", Toast.LENGTH_LONG);
 
                 } else if (playbackSrv.mp != null) {
-                    ApplicationUtil.toast("Failed to initialize Visualizer.", Toast.LENGTH_LONG, FullVisualizerActivity.this);
+                    ApplicationUtil.toast(FullVisualizerActivity.this, "Failed to initialize Visualizer.", Toast.LENGTH_LONG);
                 }
             }
 

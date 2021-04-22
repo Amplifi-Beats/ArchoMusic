@@ -36,7 +36,7 @@ public class ApplicationUtil {
         inputMethodManager.toggleSoftInput(InputMethodManager.SHOW_FORCED, 0);
     }
 
-    public static void toast(String toastMsg, int toastLength, Context context) {
+    public static void toast( Context context, String toastMsg, int toastLength) {
         Toast.makeText(context, toastMsg, toastLength).show();
     }
 }
