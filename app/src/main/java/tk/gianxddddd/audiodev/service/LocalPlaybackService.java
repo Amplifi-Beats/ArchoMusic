@@ -271,7 +271,7 @@ public class LocalPlaybackService extends Service {
                             playPause.performClick();
                         }
                     } catch (Exception exception) {
-                        ApplicationUtil.toast("Error loading audio file.", Toast.LENGTH_SHORT, this);
+                        ApplicationUtil.toast(this, "Error loading audio file.", Toast.LENGTH_SHORT);
                         if (Integer.parseInt(sessionData.get("sessionSongPosition").toString()) + 1 < musicData.size()) {
                             sessionData.put("sessionSongPosition", String.valueOf(Integer.parseInt(sessionData.get("sessionSongPosition").toString()) + 1));
                             FileUtil.writeStringToFile(FileUtil.getPackageDir(this).concat("/user/session.pref"), ListUtil.setHashMapToSharedJSON(sessionData));
@@ -289,7 +289,7 @@ public class LocalPlaybackService extends Service {
                                 playPause.performClick();
                             }
                         } catch (Exception exception) {
-                            ApplicationUtil.toast("Error loading audio file.", Toast.LENGTH_SHORT, this);
+                            ApplicationUtil.toast(this, "Error loading audio file.", Toast.LENGTH_SHORT);
                             if (Integer.parseInt(sessionData.get("sessionSongPosition").toString()) + 1 < musicData.size()) {
                                 sessionData.put("profileSongPosition", String.valueOf(Integer.parseInt(sessionData.get("sessionSongPosition").toString()) + 1));
                                 FileUtil.writeStringToFile(FileUtil.getPackageDir(this).concat("/user/session.pref"), ListUtil.setHashMapToSharedJSON(sessionData));
@@ -317,7 +317,7 @@ public class LocalPlaybackService extends Service {
                                 playPause.performClick();
                             }
                         } catch (Exception exception) {
-                            ApplicationUtil.toast("Error loading audio file.", Toast.LENGTH_SHORT, this);
+                            ApplicationUtil.toast(this, "Error loading audio file.", Toast.LENGTH_SHORT);
                             if (randomizer < musicData.size()) {
                                 sessionData.put("sessionSongPosition", String.valueOf(randomizer));
                                 FileUtil.writeStringToFile(FileUtil.getPackageDir(this).concat("/user/session.pref"), ListUtil.setHashMapToSharedJSON(sessionData));
