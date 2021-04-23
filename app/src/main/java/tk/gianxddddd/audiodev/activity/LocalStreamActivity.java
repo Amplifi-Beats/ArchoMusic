@@ -279,7 +279,7 @@ public class LocalStreamActivity extends  AppCompatActivity  {
             ((ViewGroup)dialogLayout.getParent()).setBackground(roundedCorners);
             GradientDrawable gradientButton = new GradientDrawable();
             gradientButton.setColor(Color.parseColor("#03A9F4"));
-            gradientButton.setCornerRadius(20);
+            gradientButton.setCornerRadius(10);
             close.setBackground(gradientButton);
             introDialog.setCancelable(false);
             introDialog.show();
@@ -612,7 +612,7 @@ public class LocalStreamActivity extends  AppCompatActivity  {
                         url.setBackground(roundedCorners2);
                         GradientDrawable gradientButton = new GradientDrawable();
                         gradientButton.setColor(Color.parseColor("#03A9F4"));
-                        gradientButton.setCornerRadius(20);
+                        gradientButton.setCornerRadius(10);
                         finish.setBackground(gradientButton);
                         cancel.setBackground(gradientButton);
                         pfpDialog.show();
@@ -680,7 +680,7 @@ public class LocalStreamActivity extends  AppCompatActivity  {
                 profile_name1.setBackground(roundedCorners2);
                 GradientDrawable gradientButton = new GradientDrawable();
                 gradientButton.setColor(Color.parseColor("#03A9F4"));
-                gradientButton.setCornerRadius(20);
+                gradientButton.setCornerRadius(10);
                 create.setBackground(gradientButton);
                 createProfileDialog.show();
             });

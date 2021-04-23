@@ -185,7 +185,7 @@ public class SplashActivity extends AppCompatActivity {
 
                         GradientDrawable gradientButton = new GradientDrawable();
                         gradientButton.setColor(Color.parseColor("#03A9F4"));
-                        gradientButton.setCornerRadius(20);
+                        gradientButton.setCornerRadius(10);
 
                         close.setBackground(gradientButton);
 
