@@ -364,6 +364,64 @@ public class LocalStreamActivity extends  AppCompatActivity  {
         startupUI();
     }
 
+    public void startupUI () {
+        if (Build.VERSION.SDK_INT >= 23) {
+            skipBackward.setColorFilter(ContextCompat.getColor(this, R.color.colorPrimary), PorterDuff.Mode.SRC_IN);
+            playPause.setColorFilter(ContextCompat.getColor(this, R.color.colorPrimary), PorterDuff.Mode.SRC_IN);
+            skipForward.setColorFilter(ContextCompat.getColor(this, R.color.colorPrimary), PorterDuff.Mode.SRC_IN);
+            miniplayerSkipPrev.setColorFilter(ContextCompat.getColor(this, R.color.colorPrimary), PorterDuff.Mode.SRC_IN);
+            miniplayerPlayPause.setColorFilter(ContextCompat.getColor(this, R.color.colorPrimary), PorterDuff.Mode.SRC_IN);
+            miniplayerSkipNext.setColorFilter(ContextCompat.getColor(this, R.color.colorPrimary), PorterDuff.Mode.SRC_IN);
+            if (settingsData.containsKey("settingsDarkMode")) {
+                if (!settingsData.get("settingsDarkMode").equals("true")) {
+                    setTheme(R.style.Theme_ArchoMusic);
+                    top.setSystemUiVisibility(View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR);
+                    getWindow().setStatusBarColor(Color.parseColor("#FFFFFF"));
+                    getWindow().setNavigationBarColor(Color.parseColor("#FFFFFF"));
+                } else {
+                    setTheme(R.style.Theme_ArchoMusic_Dark);
+                    top.setBackgroundColor(Color.parseColor("#1A1A1A"));
+                    main.setBackgroundColor(Color.parseColor("#1A1A1A"));
+                    listRefresh.setProgressBackgroundColorSchemeColor(Color.parseColor("#1A1A1A"));
+                    songTitle.setTextColor(Color.parseColor("#FFFFFF"));
+                    songArtist.setTextColor(Color.parseColor("#FFFFFF"));
+                    currentDuration.setTextColor(Color.parseColor("#FFFFFF"));
+                    maxDuration.setTextColor(Color.parseColor("#FFFFFF"));
+                    miniplayer.setBackgroundColor(Color.parseColor("#1A1A1A"));
+                    miniplayerSeekbar.setBackgroundColor(Color.parseColor("#1A1A1A"));
+                    miniplayerSongTitle.setTextColor(Color.parseColor("#FFFFFF"));
+                    miniplayerSongArtist.setTextColor(Color.parseColor("#FFFFFF"));
+                    adView.setBackgroundColor(Color.parseColor("#1A1A1A"));
+                    getWindow().setStatusBarColor(Color.parseColor("#1A1A1A"));
+                    getWindow().setNavigationBarColor(Color.parseColor("#1A1A1A"));
+                }
+            } else {
+                settingsData.put("settingsDarkMode", "false");
+                FileUtil.writeStringToFile(FileUtil.getPackageDir(this).concat("/user/settings.pref"), ListUtil.setHashMapToSharedJSON(settingsData));
+                setTheme(R.style.Theme_ArchoMusic);
+                top.setSystemUiVisibility(View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR);
+                getWindow().setStatusBarColor(Color.parseColor("#FFFFFF"));
+                getWindow().setNavigationBarColor(Color.parseColor("#FFFFFF"));
+            }
+        } else {
+            getWindow().setStatusBarColor(Color.parseColor("#000000"));
+            getWindow().setNavigationBarColor(Color.parseColor("#000000"));
+            miniplayerSongTitle.setTypeface(Typeface.createFromAsset(getAssets(), "fonts/roboto_medium.ttf"), Typeface.NORMAL);
+            skipBackward.setColorFilter(getResources().getColor(R.color.colorPrimary), PorterDuff.Mode.SRC_IN);
+            playPause.setColorFilter(getResources().getColor(R.color.colorPrimary), PorterDuff.Mode.SRC_IN);
+            skipForward.setColorFilter(getResources().getColor(R.color.colorPrimary), PorterDuff.Mode.SRC_IN);
+            miniplayerSkipPrev.setColorFilter(getResources().getColor(R.color.colorPrimary), PorterDuff.Mode.SRC_IN);
+            miniplayerPlayPause.setColorFilter(getResources().getColor(R.color.colorPrimary), PorterDuff.Mode.SRC_IN);
+            miniplayerSkipNext.setColorFilter(getResources().getColor(R.color.colorPrimary), PorterDuff.Mode.SRC_IN);
+            repeat.setColorFilter(getResources().getColor(R.color.colorPrimary), PorterDuff.Mode.SRC_IN);
+        }
+        miniplayerSongTitle.setTypeface(Typeface.createFromAsset(getAssets(),"fonts/roboto_medium.ttf"), Typeface.NORMAL);
+        logoName.setTypeface(Typeface.createFromAsset(getAssets(),"fonts/leixo.ttf"), Typeface.BOLD);
+        songTitle.setTypeface(Typeface.createFromAsset(getAssets(),"fonts/roboto_medium.ttf"), Typeface.NORMAL);
+        listRefresh.setColorSchemeColors(Color.parseColor("#03A9F4"), Color.parseColor("#03A9F4"), Color.parseColor("#03A9F4"));
+        songList.setLayoutManager(songListLayoutManager);
+    }
+
     private void registerListeners() {
         menu.setOnClickListener(view -> {
             /* Iyxan23 was here */
@@ -659,182 +717,9 @@ public class LocalStreamActivity extends  AppCompatActivity  {
                         }
                     }
 
-                    BottomSheetDialog settingsDialog = new BottomSheetDialog(LocalStreamActivity.this);
-                    View dialogLayout = getLayoutInflater().inflate(R.layout.dialog_settings, null);
-                    settingsDialog.setContentView(dialogLayout);
-
-                    ImageView back = dialogLayout.findViewById(R.id.back);
-                    TextView title = dialogLayout.findViewById(R.id.title);
-                    TextView general_title = dialogLayout.findViewById(R.id.general_title);
-                    TextView appearance_title = dialogLayout.findViewById(R.id.appearance_title);
-                    TextView audio_title = dialogLayout.findViewById(R.id.audio_title);
-                    TextView other_title = dialogLayout.findViewById(R.id.other_title);
-                    CheckBox disable_ads = dialogLayout.findViewById(R.id.disable_ads);
-                    CheckBox dark_mode = dialogLayout.findViewById(R.id.dark_mode);
-                    CheckBox disable_anim = dialogLayout.findViewById(R.id.disable_anim);
-                    CheckBox background_play = dialogLayout.findViewById(R.id.background_play);
-                    CheckBox capture_error = dialogLayout.findViewById(R.id.capture_error);
-                    Button clear_data = dialogLayout.findViewById(R.id.clear_data);
-
-                    title.setTypeface(Typeface.createFromAsset(getAssets(),"fonts/roboto_medium.ttf"), Typeface.NORMAL);
-                    general_title.setTypeface(Typeface.createFromAsset(getAssets(),"fonts/roboto_medium.ttf"), Typeface.NORMAL);
-                    appearance_title.setTypeface(Typeface.createFromAsset(getAssets(),"fonts/roboto_medium.ttf"), Typeface.NORMAL);
-                    audio_title.setTypeface(Typeface.createFromAsset(getAssets(),"fonts/roboto_medium.ttf"), Typeface.NORMAL);
-                    other_title.setTypeface(Typeface.createFromAsset(getAssets(),"fonts/roboto_medium.ttf"), Typeface.NORMAL);
-
-                    if (settingsData.containsKey("settingsAds")) {
-                        if (settingsData.get("settingsAds").equals("false")) {
-                            disable_ads.setChecked(true);
-                        }
-                    }
-
-                    if (settingsData.containsKey("settingsDarkMode")) {
-                        if (settingsData.get("settingsDarkMode").equals("true")) {
-                            dark_mode.setChecked(true);
-                        }
-                    }
-
-                    if (settingsData.containsKey("settingsAnimation")) {
-                        if (settingsData.get("settingsAnimation").equals("false")) {
-                            disable_anim.setChecked(true);
-                        }
-                    }
-
-                    if (settingsData.containsKey("settingsBackgroundAudio")) {
-                        if (settingsData.get("settingsBackgroundAudio").equals("true")) {
-                            background_play.setChecked(true);
-                        }
-                    }
-
-                    if (settingsData.containsKey("settingsCaptureError")) {
-                        if (settingsData.get("settingsCaptureError").equals("true")) {
-                            capture_error.setChecked(true);
-                        }
-                    }
-
-                    back.setOnClickListener(view12 -> {
-                        RippleDrawable rippleButton12 = new RippleDrawable(new ColorStateList(new int[][]{new int[]{}}, new int[]{ Color.parseColor("#BDBDBD") }), null, null);
-                        view12.setBackground(rippleButton12);
-                        settingsDialog.dismiss();
-                    });
-
-                    disable_ads.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-                        @Override
-                        public void onCheckedChanged(CompoundButton view, boolean isChecked) {
-                            if (isChecked) {
-                                settingsData.put("settingsAds", "false");
-                                FileUtil.writeStringToFile(FileUtil.getPackageDir(LocalStreamActivity.this).concat("/user/settings.pref"), ListUtil.setHashMapToSharedJSON(settingsData));
-                                startActivity(new Intent(LocalStreamActivity.this, SplashActivity.class));
-                                finish();
-                                ApplicationUtil.toast(LocalStreamActivity.this, "Opt out of ads disabled, hope you re-enable it soon ;)", Toast.LENGTH_SHORT);
-                            } else {
-                                settingsData.put("settingsAds", "true");
-                                FileUtil.writeStringToFile(FileUtil.getPackageDir(LocalStreamActivity.this).concat("/user/settings.pref"), ListUtil.setHashMapToSharedJSON(settingsData));
-                                startActivity(new Intent(LocalStreamActivity.this, SplashActivity.class));
-                                finish();
-                                ApplicationUtil.toast(LocalStreamActivity.this, "Opt out of ads enabled, thanks for enabling that again!", Toast.LENGTH_SHORT);
-                            }
-                        }
-                    });
-                    dark_mode.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-                        @Override
-                        public void onCheckedChanged(CompoundButton view, boolean isChecked) {
-                            if (isChecked) {
-                                settingsData.put("settingsDarkMode", "true");
-                                FileUtil.writeStringToFile(FileUtil.getPackageDir(LocalStreamActivity.this).concat("/user/settings.pref"), ListUtil.setHashMapToSharedJSON(settingsData));
-                                startActivity(new Intent(LocalStreamActivity.this, SplashActivity.class));
-                                finish();
-                                ApplicationUtil.toast(LocalStreamActivity.this, "Dark mode is enabled, take a look at the moon!", Toast.LENGTH_SHORT);
-                            } else {
-                                settingsData.put("settingsDarkMode", "false");
-                                FileUtil.writeStringToFile(FileUtil.getPackageDir(LocalStreamActivity.this).concat("/user/settings.pref"), ListUtil.setHashMapToSharedJSON(settingsData));
-                                startActivity(new Intent(LocalStreamActivity.this, SplashActivity.class));
-                                finish();
-                                ApplicationUtil.toast(LocalStreamActivity.this,"Dark mode is disabled, prepare to make your eyes burn!", Toast.LENGTH_SHORT);
-                            }
-                        }
-                    });
-                    disable_anim.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-                        @Override
-                        public void onCheckedChanged(CompoundButton view, boolean isChecked) {
-                            if (isChecked) {
-                                settingsData.put("settingsAnimation", "false");
-                                FileUtil.writeStringToFile(FileUtil.getPackageDir(LocalStreamActivity.this).concat("/user/settings.pref"), ListUtil.setHashMapToSharedJSON(settingsData));
-                                startActivity(new Intent(LocalStreamActivity.this, SplashActivity.class));
-                                finish();
-                                ApplicationUtil.toast(LocalStreamActivity.this, "Animations are disabled, it optimizes performance.", Toast.LENGTH_SHORT);
-                            } else {
-                                settingsData.put("settingsAnimation", "true");
-                                FileUtil.writeStringToFile(FileUtil.getPackageDir(LocalStreamActivity.this).concat("/user/settings.pref"), ListUtil.setHashMapToSharedJSON(settingsData));
-                                startActivity(new Intent(LocalStreamActivity.this, SplashActivity.class));
-                                finish();
-                                ApplicationUtil.toast(LocalStreamActivity.this, "Animations are enabled, turn it off if you are experiencing lags!", Toast.LENGTH_SHORT);
-                            }
-                        }
-                    });
-                    background_play.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-                        @Override
-                        public void onCheckedChanged(CompoundButton view, boolean isChecked) {
-                            if (isChecked) {
-                                settingsData.put("settingsBackgroundAudio", "true");
-                                FileUtil.writeStringToFile(FileUtil.getPackageDir(LocalStreamActivity.this).concat("/user/settings.pref"), ListUtil.setHashMapToSharedJSON(settingsData));
-                                startActivity(new Intent(LocalStreamActivity.this, SplashActivity.class));
-                                finish();
-                                ApplicationUtil.toast(LocalStreamActivity.this, "Audio will be played while in background, hope you enjoy!", Toast.LENGTH_SHORT);
-                            } else {
-                                settingsData.put("settingsBackgroundAudio", "false");
-                                FileUtil.writeStringToFile(FileUtil.getPackageDir(LocalStreamActivity.this).concat("/user/settings.pref"), ListUtil.setHashMapToSharedJSON(settingsData));
-                                startActivity(new Intent(LocalStreamActivity.this, SplashActivity.class));
-                                finish();
-                                ApplicationUtil.toast(LocalStreamActivity.this, "Audio will NOT be played while in background, You don't like music are you?", Toast.LENGTH_SHORT);
-                            }
-                        }
-                    });
-                    capture_error.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-                        @Override
-                        public void onCheckedChanged(CompoundButton view, boolean isChecked) {
-                            if (isChecked) {
-                                settingsData.put("settingsCaptureError", "true");
-                                FileUtil.writeStringToFile(FileUtil.getPackageDir(LocalStreamActivity.this).concat("/user/settings.pref"), ListUtil.setHashMapToSharedJSON(settingsData));
-                                startActivity(new Intent(LocalStreamActivity.this, SplashActivity.class));
-                                finish();
-                                ApplicationUtil.toast(LocalStreamActivity.this, "Capturing errors are enabled, Helps us out fix bugs!", Toast.LENGTH_SHORT);
-                            } else {
-                                settingsData.put("settingsCaptureError", "false");
-                                FileUtil.writeStringToFile(FileUtil.getPackageDir(LocalStreamActivity.this).concat("/user/settings.pref"), ListUtil.setHashMapToSharedJSON(settingsData));
-                                startActivity(new Intent(LocalStreamActivity.this, SplashActivity.class));
-                                finish();
-                                ApplicationUtil.toast(LocalStreamActivity.this, "Capturing errors are disabled, Hmmm..", Toast.LENGTH_SHORT);
-                            }
-                        }
-                    });
-                    Double TopLeft = 20.0;
-                    Double TopRight = 20.0;
-                    Double BottomRight = 0.0;
-                    Double BottomLeft = 0.0;
-                    GradientDrawable roundedCorners = new GradientDrawable();
-                    roundedCorners.setShape(GradientDrawable.RECTANGLE);
-                    roundedCorners.setCornerRadii(new float[] {TopLeft.floatValue(),TopLeft.floatValue(), TopRight.floatValue(),TopRight.floatValue(), BottomRight.floatValue(),BottomRight.floatValue(), BottomLeft.floatValue(),BottomLeft.floatValue()});
-                    if (!settingsData.containsKey("settingsDarkMode")) {
-                        roundedCorners.setColor(Color.parseColor("#FFFFFF"));
-                    } else {
-                        if (settingsData.get("settingsDarkMode").equals("true")) {
-                            roundedCorners.setColor(Color.parseColor("#1A1A1A"));
-                            disable_ads.setTextColor(Color.parseColor("#FFFFFF"));
-                            dark_mode.setTextColor(Color.parseColor("#FFFFFF"));
-                            disable_anim.setTextColor(Color.parseColor("#FFFFFF"));
-                            background_play.setTextColor(Color.parseColor("#FFFFFF"));
-                            capture_error.setTextColor(Color.parseColor("#FFFFFF"));
-                        } else {
-                            roundedCorners.setColor(Color.parseColor("#FFFFFF"));
-                        }
-                    }
-                    GradientDrawable gradientButton = new GradientDrawable();
-                    gradientButton.setColor(Color.parseColor("#03A9F4"));
-                    gradientButton.setCornerRadius(20);
-                    clear_data.setBackground(gradientButton);
-                    ((ViewGroup)dialogLayout.getParent()).setBackground(roundedCorners);
-                    settingsDialog.show();
+                    startActivity(new Intent(LocalStreamActivity.this, PreferencesActivity.class));
+                    menuDialog.dismiss();
+                    finish();
                 }
             });
             visualizer.setOnClickListener(new View.OnClickListener() {
@@ -1848,64 +1733,6 @@ public class LocalStreamActivity extends  AppCompatActivity  {
                 stopService(playIntent);
             }
         }
-    }
-
-    public void startupUI () {
-        if (Build.VERSION.SDK_INT >= 23) {
-            skipBackward.setColorFilter(ContextCompat.getColor(this, R.color.colorPrimary), PorterDuff.Mode.SRC_IN);
-            playPause.setColorFilter(ContextCompat.getColor(this, R.color.colorPrimary), PorterDuff.Mode.SRC_IN);
-            skipForward.setColorFilter(ContextCompat.getColor(this, R.color.colorPrimary), PorterDuff.Mode.SRC_IN);
-            miniplayerSkipPrev.setColorFilter(ContextCompat.getColor(this, R.color.colorPrimary), PorterDuff.Mode.SRC_IN);
-            miniplayerPlayPause.setColorFilter(ContextCompat.getColor(this, R.color.colorPrimary), PorterDuff.Mode.SRC_IN);
-            miniplayerSkipNext.setColorFilter(ContextCompat.getColor(this, R.color.colorPrimary), PorterDuff.Mode.SRC_IN);
-            if (settingsData.containsKey("settingsDarkMode")) {
-                if (!settingsData.get("settingsDarkMode").equals("true")) {
-                    setTheme(R.style.Theme_ArchoMusic);
-                    top.setSystemUiVisibility(View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR);
-                    getWindow().setStatusBarColor(Color.parseColor("#FFFFFF"));
-                    getWindow().setNavigationBarColor(Color.parseColor("#FFFFFF"));
-                } else {
-                    setTheme(R.style.Theme_ArchoMusic_Dark);
-                    top.setBackgroundColor(Color.parseColor("#1A1A1A"));
-                    main.setBackgroundColor(Color.parseColor("#1A1A1A"));
-                    listRefresh.setProgressBackgroundColorSchemeColor(Color.parseColor("#1A1A1A"));
-                    songTitle.setTextColor(Color.parseColor("#FFFFFF"));
-                    songArtist.setTextColor(Color.parseColor("#FFFFFF"));
-                    currentDuration.setTextColor(Color.parseColor("#FFFFFF"));
-                    maxDuration.setTextColor(Color.parseColor("#FFFFFF"));
-                    miniplayer.setBackgroundColor(Color.parseColor("#1A1A1A"));
-                    miniplayerSeekbar.setBackgroundColor(Color.parseColor("#1A1A1A"));
-                    miniplayerSongTitle.setTextColor(Color.parseColor("#FFFFFF"));
-                    miniplayerSongArtist.setTextColor(Color.parseColor("#FFFFFF"));
-                    adView.setBackgroundColor(Color.parseColor("#1A1A1A"));
-                    getWindow().setStatusBarColor(Color.parseColor("#1A1A1A"));
-                    getWindow().setNavigationBarColor(Color.parseColor("#1A1A1A"));
-                }
-            } else {
-                setTheme(R.style.Theme_ArchoMusic);
-                top.setSystemUiVisibility(View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR);
-                getWindow().setStatusBarColor(Color.parseColor("#FFFFFF"));
-                getWindow().setNavigationBarColor(Color.parseColor("#FFFFFF"));
-            }
-        } else {
-            settingsData.put("settingsDarkMode", "false");
-            FileUtil.writeStringToFile(FileUtil.getPackageDir(this).concat("/user/settings.pref"), ListUtil.setHashMapToSharedJSON(settingsData));
-            getWindow().setStatusBarColor(Color.parseColor("#000000"));
-            getWindow().setNavigationBarColor(Color.parseColor("#000000"));
-            miniplayerSongTitle.setTypeface(Typeface.createFromAsset(getAssets(), "fonts/roboto_medium.ttf"), Typeface.NORMAL);
-            skipBackward.setColorFilter(getResources().getColor(R.color.colorPrimary), PorterDuff.Mode.SRC_IN);
-            playPause.setColorFilter(getResources().getColor(R.color.colorPrimary), PorterDuff.Mode.SRC_IN);
-            skipForward.setColorFilter(getResources().getColor(R.color.colorPrimary), PorterDuff.Mode.SRC_IN);
-            miniplayerSkipPrev.setColorFilter(getResources().getColor(R.color.colorPrimary), PorterDuff.Mode.SRC_IN);
-            miniplayerPlayPause.setColorFilter(getResources().getColor(R.color.colorPrimary), PorterDuff.Mode.SRC_IN);
-            miniplayerSkipNext.setColorFilter(getResources().getColor(R.color.colorPrimary), PorterDuff.Mode.SRC_IN);
-            repeat.setColorFilter(getResources().getColor(R.color.colorPrimary), PorterDuff.Mode.SRC_IN);
-        }
-        miniplayerSongTitle.setTypeface(Typeface.createFromAsset(getAssets(),"fonts/roboto_medium.ttf"), Typeface.NORMAL);
-        logoName.setTypeface(Typeface.createFromAsset(getAssets(),"fonts/leixo.ttf"), Typeface.BOLD);
-        songTitle.setTypeface(Typeface.createFromAsset(getAssets(),"fonts/roboto_medium.ttf"), Typeface.NORMAL);
-        listRefresh.setColorSchemeColors(Color.parseColor("#03A9F4"), Color.parseColor("#03A9F4"), Color.parseColor("#03A9F4"));
-        songList.setLayoutManager(songListLayoutManager);
     }
 
     public class SongListAdapter extends RecyclerView.Adapter<SongListAdapter.ViewHolder> {
