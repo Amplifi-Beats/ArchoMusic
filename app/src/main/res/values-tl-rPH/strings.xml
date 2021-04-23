@@ -77,4 +77,6 @@
     <string name="live_stream_link_input_hint">Ipasok ang link ng stream dito</string>
     <string name="live_stream_link_btn_join">Sumali sa Stream</string>
     <string name="live_stream_link_obtain_stream">Kumuha ng bagong link sa stream</string>
+    <string name="ext_browser_loading_webtitle">Naglo-load..</string>
+    <string name="ext_browser_loading_weburl">Naglo-load..</string>
 </resources>

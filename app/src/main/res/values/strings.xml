@@ -77,4 +77,6 @@
     <string name="live_stream_link_input_hint">Enter stream link here</string>
     <string name="live_stream_link_btn_join">Join Stream</string>
     <string name="live_stream_link_obtain_stream">Get new stream link</string>
+    <string name="ext_browser_loading_webtitle">Loading..</string>
+    <string name="ext_browser_loading_weburl">Loading..</string>
 </resources>

@@ -18,31 +18,34 @@
 			android:layout_height="40dp"
 			android:src="@drawable/ic_extbrowser_back_key"
 			android:scaleType="fitCenter"/>
+
 		<LinearLayout
 			android:id="@+id/aaa"
 			android:layout_width="150dp"
-			android:layout_height="match_parent"
-			android:orientation="vertical"
-			android:layout_weight="1">
+			android:layout_height="wrap_content"
+			android:layout_weight="1"
+			android:orientation="vertical">
+
 			<TextView
 				android:id="@+id/webtitle"
 				android:layout_width="match_parent"
 				android:layout_height="wrap_content"
 				android:paddingLeft="8dp"
-				android:text="Loading.."
-				android:textSize="18sp"
+				android:singleLine="true"
+				android:text="@string/ext_browser_loading_webtitle"
 				android:textColor="#03A9F4"
-				android:singleLine="true"/>
+				android:textSize="18sp" />
+
 			<TextView
 				android:id="@+id/weburl"
 				android:layout_width="wrap_content"
 				android:layout_height="wrap_content"
+				android:alpha="0.7"
 				android:paddingLeft="8dp"
-				android:text="Loading.."
-				android:textSize="12sp"
-				android:textColor="#000000"
 				android:singleLine="true"
-				android:alpha="0.7"/>
+				android:text="@string/ext_browser_loading_weburl"
+				android:textColor="#000000"
+				android:textSize="12sp" />
 		</LinearLayout>
 	</LinearLayout>
 	<ProgressBar
