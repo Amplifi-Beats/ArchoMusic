@@ -104,10 +104,10 @@ public class LyricsEditorActivity extends  AppCompatActivity  {
             try {
                 musicData.get(Integer.parseInt(getIntent().getStringExtra("songPosition"))).put("songLyrics", lyrics.getText().toString());
                 FileUtil.writeStringToFile(FileUtil.getPackageDir(this).concat("/song.json"), ListUtil.setArrayListToSharedJSON(musicData));
-                ApplicationUtil.toast("Lyrics saved successfully.", Toast.LENGTH_SHORT, this);
+                ApplicationUtil.toast(this, "Lyrics saved successfully.", Toast.LENGTH_SHORT);
                 finish();
             } catch (Exception e) {
-                ApplicationUtil.toast("Error saving lyrics.", Toast.LENGTH_SHORT, this);
+                ApplicationUtil.toast(this, "Error saving lyrics.", Toast.LENGTH_SHORT);
             }
         });
     }
