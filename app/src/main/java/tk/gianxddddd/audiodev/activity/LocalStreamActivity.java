@@ -112,7 +112,6 @@ public class LocalStreamActivity extends  AppCompatActivity  {
     public static ImageView miniplayerAlbumArt;
     public static TextView miniplayerSongTitle;
     public static TextView miniplayerSongArtist;
-    private AdView adView;
 
     private Timer timer;
     private TimerTask timerTask;
@@ -158,7 +157,6 @@ public class LocalStreamActivity extends  AppCompatActivity  {
         miniplayerSongArtist = findViewById(R.id.miniplayerSongArtist);
         repeat = findViewById(R.id.repeat);
         shuffle = findViewById(R.id.shuffle);
-        adView = findViewById(R.id.adView);
         timer = new Timer();
         runnableHandler = new Handler();
         songListLayoutManager = new LinearLayoutManager(this);
@@ -198,24 +196,6 @@ public class LocalStreamActivity extends  AppCompatActivity  {
             settingsData = ListUtil.getHashMapFromFile(FileUtil.getPackageDir(this).concat("/user/settings.pref"));
         } else {
             settingsData = new HashMap<>();
-        }
-        if (settingsData.containsKey("settingsAds")) {
-            if (settingsData.get("settingsAds").equals("true")) {
-                if (NetworkUtil.isNetworkConnected(this)) {
-                    AdRequest adRequest = new AdRequest.Builder().build();
-                    adView.loadAd(adRequest);
-                }
-            } else if (settingsData.get("settingsAds").equals("false")) {
-                // Then don't load the adView
-                adView.setVisibility(View.GONE);
-            }
-        } else {
-            settingsData.put("settingsAds", "true");
-            FileUtil.writeStringToFile(FileUtil.getPackageDir(this).concat("/user/settings.pref"), ListUtil.setHashMapToSharedJSON(settingsData));
-            if (NetworkUtil.isNetworkConnected(this)) {
-                AdRequest adRequest = new AdRequest.Builder().build();
-                adView.loadAd(adRequest);
-            }
         }
         if (settingsData.containsKey("settingsAnimation")) {
             if (settingsData.get("settingsAnimation").equals("true")) {
@@ -397,7 +377,6 @@ public class LocalStreamActivity extends  AppCompatActivity  {
                     miniplayerSeekbar.setBackgroundColor(Color.parseColor("#1A1A1A"));
                     miniplayerSongTitle.setTextColor(Color.parseColor("#FFFFFF"));
                     miniplayerSongArtist.setTextColor(Color.parseColor("#FFFFFF"));
-                    adView.setBackgroundColor(Color.parseColor("#1A1A1A"));
                     getWindow().setStatusBarColor(Color.parseColor("#1A1A1A"));
                     getWindow().setNavigationBarColor(Color.parseColor("#1A1A1A"));
                 }
