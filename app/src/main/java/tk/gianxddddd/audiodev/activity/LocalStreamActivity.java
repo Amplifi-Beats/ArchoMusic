@@ -18,6 +18,7 @@ import android.graphics.drawable.RippleDrawable;
 import android.media.AudioManager;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
 import android.os.IBinder;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -72,7 +73,6 @@ import de.hdodenhof.circleimageview.CircleImageView;
 
 public class LocalStreamActivity extends  AppCompatActivity  {
 
-    private final Timer timer = new Timer();
     private ArrayList<HashMap<String, Object>> musicData;
     private HashMap<String, Object> profileData;
     private HashMap<String, Object> sessionData;
@@ -80,7 +80,8 @@ public class LocalStreamActivity extends  AppCompatActivity  {
 
     private LocalPlaybackService playbackSrv;
     private Intent playIntent;
-    private boolean musicBound = false;
+    private boolean isHandlerRunning = false;
+    private boolean isMusicBounded = false;
 
     private LinearLayout top;
     private LinearLayout main;
@@ -92,6 +93,7 @@ public class LocalStreamActivity extends  AppCompatActivity  {
     private SwipeRefreshLayout listRefresh;
     private TextView listEmptyMsg;
     private LinearLayout player;
+    private Runnable playerDurationUpdater;
     private RecyclerView songList;
     public static ImageView albumArt;
     public static TextView songTitle;
@@ -112,7 +114,9 @@ public class LocalStreamActivity extends  AppCompatActivity  {
     public static TextView miniplayerSongArtist;
     private AdView adView;
 
+    private Timer timer;
     private TimerTask timerTask;
+    private Handler runnableHandler;
     private DatabaseReference liveStreamDatabase;
     private LinearLayoutManager songListLayoutManager;
 
@@ -155,6 +159,8 @@ public class LocalStreamActivity extends  AppCompatActivity  {
         repeat = findViewById(R.id.repeat);
         shuffle = findViewById(R.id.shuffle);
         adView = findViewById(R.id.adView);
+        timer = new Timer();
+        runnableHandler = new Handler();
         songListLayoutManager = new LinearLayoutManager(this);
         liveStreamDatabase = FirebaseDatabase.getInstance().getReference("live/");
         tabNavigation.addTab(tabNavigation.newTab().setIcon(R.drawable.ic_tabnav_library));
@@ -1434,34 +1440,32 @@ public class LocalStreamActivity extends  AppCompatActivity  {
                 setVolumeControlStream(AudioManager.STREAM_MUSIC);
                 playPause.setImageResource(R.drawable.ic_media_pause);
                 miniplayerPlayPause.setImageResource(R.drawable.ic_media_pause);
-                timerTask = new TimerTask() {
+                playerDurationUpdater = new Runnable() {
                     @Override
                     public void run() {
-                        runOnUiThread(new Runnable() {
-                            @Override
-                            public void run() {
-                                try {
-                                    seekbarDuration.setProgress(playbackSrv.getCurrentPosition());
-                                    miniplayerSeekbar.setProgress(playbackSrv.getCurrentPosition());
-                                    currentDuration.setText(String.valueOf((playbackSrv.getCurrentPosition() / 1000) / 60).concat(":".concat(new DecimalFormat("00").format((playbackSrv.getCurrentPosition() / 1000) % 60))));
-                                    musicData.get(Integer.parseInt(sessionData.get("sessionSongPosition").toString())).put("songCurrentDuration", String.valueOf(playbackSrv.getCurrentPosition()));
-                                    FileUtil.writeStringToFile(FileUtil.getPackageDir(LocalStreamActivity.this).concat("/song.json"), ListUtil.setArrayListToSharedJSON(musicData));
-                                } catch (Exception exception) {
-                                    Log.e("LocalPlaybackService", "Can't track current duration.");
-                                }
-                            }
-                        });
+                        try {
+                            seekbarDuration.setProgress(playbackSrv.getCurrentPosition());
+                            miniplayerSeekbar.setProgress(playbackSrv.getCurrentPosition());
+                            currentDuration.setText(String.valueOf((playbackSrv.getCurrentPosition() / 1000) / 60).concat(":".concat(new DecimalFormat("00").format((playbackSrv.getCurrentPosition() / 1000) % 60))));
+                            musicData.get(Integer.parseInt(sessionData.get("sessionSongPosition").toString())).put("songCurrentDuration", String.valueOf(playbackSrv.getCurrentPosition()));
+                            FileUtil.writeStringToFile(FileUtil.getPackageDir(LocalStreamActivity.this).concat("/song.json"), ListUtil.setArrayListToSharedJSON(musicData));
+                        } catch (Exception exception) {
+                            Log.e("LocalPlaybackService", "Can't track current duration.");
+                        }
+                        runnableHandler.postDelayed(this, 500);
                     }
                 };
-                timer.scheduleAtFixedRate(timerTask, 0, 1000);
+                runnableHandler.postDelayed(playerDurationUpdater, 500);
+                isHandlerRunning = true;
             } else {
                 playbackSrv.pause();
                 playbackSrv.loseAudioFocus();
                 playbackSrv.stopHeadphoneReceiving();
                 playPause.setImageResource(R.drawable.ic_media_play);
                 miniplayerPlayPause.setImageResource(R.drawable.ic_media_play);
-                if (timerTask != null) {
-                    timerTask.cancel();
+                if (isHandlerRunning) {
+                    runnableHandler.removeCallbacks(playerDurationUpdater);
+                    isHandlerRunning = false;
                 }
             }
         }
@@ -1543,7 +1547,7 @@ public class LocalStreamActivity extends  AppCompatActivity  {
             public void onServiceConnected(ComponentName name, IBinder service) {
                 LocalPlaybackService.MusicBinder binder = (LocalPlaybackService.MusicBinder) service;
                 playbackSrv = binder.getService();
-                musicBound = true;
+                isMusicBounded = true;
                 try {
                     if (playbackSrv.mp != null && playbackSrv.isPlaying()) {
                         playPause.setImageResource(R.drawable.ic_media_pause);
@@ -1555,12 +1559,12 @@ public class LocalStreamActivity extends  AppCompatActivity  {
                         miniplayerSongTitle.setText(musicData.get(Integer.parseInt(sessionData.get("sessionSongPosition").toString())).get("songTitle").toString());
                         miniplayerSongArtist.setText(musicData.get(Integer.parseInt(sessionData.get("sessionSongPosition").toString())).get("songArtist").toString());
                         playbackSrv.seek(Integer.parseInt(musicData.get(Integer.parseInt(sessionData.get("sessionSongPosition").toString())).get("songCurrentDuration").toString()));
+                        seekbarDuration.setMax(playbackSrv.getMaxDuration());
+                        seekbarDuration.setProgress(playbackSrv.getCurrentPosition());
                         miniplayerSeekbar.setMax(playbackSrv.getMaxDuration());
                         miniplayerSeekbar.setProgress(playbackSrv.getCurrentPosition());
                         maxDuration.setText(String.valueOf((playbackSrv.getMaxDuration() / 1000) / 60).concat(":".concat(new DecimalFormat("00").format((playbackSrv.getMaxDuration() / 1000) % 60))));
                         currentDuration.setText(String.valueOf((playbackSrv.getCurrentPosition() / 1000) / 60).concat(":".concat(new DecimalFormat("00").format((playbackSrv.getCurrentPosition() / 1000) % 60))));
-                        seekbarDuration.setMax(playbackSrv.getMaxDuration());
-                        seekbarDuration.setProgress(playbackSrv.getCurrentPosition());
                     } else {
                         if (sessionData.containsKey("sessionSongPosition")) {
                             playbackSrv.createLocalStream(Integer.parseInt(sessionData.get("sessionSongPosition").toString()));
@@ -1595,7 +1599,7 @@ public class LocalStreamActivity extends  AppCompatActivity  {
 
             @Override
             public void onServiceDisconnected(ComponentName name) {
-                musicBound = false;
+                isMusicBounded = false;
             }
         };
         if (playIntent == null) {
