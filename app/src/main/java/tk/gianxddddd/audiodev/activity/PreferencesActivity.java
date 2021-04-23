@@ -111,15 +111,7 @@ public class PreferencesActivity extends AppCompatActivity {
             finish();
         });
         disable_ads.setOnCheckedChangeListener((view, isChecked) -> {
-            if (isChecked) {
-                settingsData.put("settingsAds", "false");
-                FileUtil.writeStringToFile(FileUtil.getPackageDir(PreferencesActivity.this).concat("/user/settings.pref"), ListUtil.setHashMapToSharedJSON(settingsData));
-                ApplicationUtil.toast(PreferencesActivity.this, "Opt out of ads disabled.", Toast.LENGTH_SHORT);
-            } else {
-                settingsData.put("settingsAds", "true");
-                FileUtil.writeStringToFile(FileUtil.getPackageDir(PreferencesActivity.this).concat("/user/settings.pref"), ListUtil.setHashMapToSharedJSON(settingsData));
-                ApplicationUtil.toast(PreferencesActivity.this, "Opt out of ads enabled.", Toast.LENGTH_SHORT);
-            }
+            ApplicationUtil.toast(PreferencesActivity.this, "Ads have been removed, use the donation button.", Toast.LENGTH_SHORT);
         });
         dark_mode.setOnCheckedChangeListener((view, isChecked) -> {
             if (isChecked) {
