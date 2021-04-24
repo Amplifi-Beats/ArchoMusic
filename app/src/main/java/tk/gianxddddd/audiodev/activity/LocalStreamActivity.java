@@ -1804,16 +1804,19 @@ public class LocalStreamActivity extends  AppCompatActivity  {
                     EditText filename = dialogLayout1.findViewById(R.id.filename);
                     Button confirm = dialogLayout1.findViewById(R.id.confirm);
                     Button cancel = dialogLayout1.findViewById(R.id.cancel);
+                    filename.setEnabled(false);
+                    filename.setAlpha(0.5f);
                     title1.setTypeface(Typeface.createFromAsset(getAssets(),"fonts/roboto_medium.ttf"), Typeface.NORMAL);
                     song_name_title.setTypeface(Typeface.createFromAsset(getAssets(),"fonts/roboto_medium.ttf"), Typeface.NORMAL);
                     artist_name_title.setTypeface(Typeface.createFromAsset(getAssets(),"fonts/roboto_medium.ttf"), Typeface.NORMAL);
                     filename_title.setTypeface(Typeface.createFromAsset(getAssets(),"fonts/roboto_medium.ttf"), Typeface.NORMAL);
                     song_name.setText(musicData.get(position).get("songTitle").toString());
                     artist_name.setText(musicData.get(position).get("songArtist").toString());
-                    filename.setText(Base64Util.decode(Uri.parse(musicData.get(position).get("songData").toString()).getLastPathSegment()));
+                    filename.setText(Uri.parse(Base64Util.decode(musicData.get(position).get("songData").toString())).getLastPathSegment());
                     back.setOnClickListener(view18 -> {
                         RippleDrawable rippleButton17 = new RippleDrawable(new ColorStateList(new int[][]{new int[]{}}, new int[]{ Color.parseColor("#BDBDBD") }), null, null);
                         view18.setBackground(rippleButton17);
+                        renameDialog.dismiss();
                     });
                     song_name.addTextChangedListener(new TextWatcher() {
                         @Override
@@ -1823,27 +1826,11 @@ public class LocalStreamActivity extends  AppCompatActivity  {
 
                         @Override
                         public void onTextChanged(CharSequence charSequence, int start, int before, int count) {
-                            filename.setText(song_name.getText().toString().concat(FileUtil.getFileExtension(Base64Util.decode(musicData.get(position).get("songData").toString()))));
+                            filename.setText(song_name.getText().toString().concat(".".concat(FileUtil.getFileExtension(Base64Util.decode(musicData.get(position).get("songData").toString())))));
                         }
 
                         @Override
                         public void afterTextChanged(Editable editable) {
-
-                        }
-                    });
-                    filename.addTextChangedListener(new TextWatcher() {
-                        @Override
-                        public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-
-                        }
-
-                        @Override
-                        public void onTextChanged(CharSequence s, int start, int before, int count) {
-                            song_name.setText(filename.getText().toString().substring(filename.getText().toString().lastIndexOf(".")));
-                        }
-
-                        @Override
-                        public void afterTextChanged(Editable s) {
 
                         }
                     });
