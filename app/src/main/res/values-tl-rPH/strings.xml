@@ -51,8 +51,12 @@
     <string name="song_opts_remove_permanent">Tanggalin din mula sa aparato</string>
     <string name="song_opts_remove_btn_remove">Tanggalin</string>
     <string name="song_opts_remove_btn_cancel">Kanselahin</string>
-    <string name="song_opts_rename_input_hint">Ipasok ang pangalan ng kanta</string>
-    <string name="song_opts_rename_description">Mangyaring huwag magdagdag ng mga extension ng file o maaari itong basagin ang encoder ng Musika.</string>
+    <string name="song_opts_rename_song_name_title">Pangalan ng kanta</string>
+    <string name="song_opts_rename_song_name_input_hint">Ipasok ang pamagat ng kanta</string>
+    <string name="song_opts_rename_song_artist_title">Pangalan ng artista</string>
+    <string name="song_opts_rename_song_artist_input_hint">Ipasok ang pamagat ng artista</string>
+    <string name="song_opts_rename_filename_title">Filename</string>
+    <string name="song_opts_rename_filename_input_hint">Ipasok ang filename ng kanta</string>
     <string name="song_opts_rename_btn_confirm">Kumpirmahin</string>
     <string name="song_opts_rename_btn_cancel">Kanselahin</string>
     <string name="recyclerview_list_empty_msg">Walang nahanap na mga kanta.</string>

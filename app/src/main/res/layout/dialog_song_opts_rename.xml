@@ -29,34 +29,86 @@
 			android:background="#03A9F4"
 			android:orientation="horizontal"/>
 		<LinearLayout
-			android:id="@+id/freefunk"
 			android:layout_width="match_parent"
 			android:layout_height="wrap_content"
 			android:padding="8dp"
-			android:orientation="horizontal">
+			android:orientation="vertical">
+			<TextView
+				android:id="@+id/song_name_title"
+				android:focusable="false"
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:padding="8dp"
+				android:text="@string/song_opts_rename_song_name_title"
+				android:textSize="11sp"
+				android:textColor="#03A9F4" />
 			<EditText
-				android:id="@+id/rename"
+				android:id="@+id/song_name"
 				android:layout_width="match_parent"
 				android:layout_height="wrap_content"
 				android:padding="8dp"
 				android:background="#EEEEEE"
 				android:textSize="12sp"
 				android:textColor="#000000"
-				android:hint="@string/song_opts_rename_input_hint"
+				android:hint="@string/song_opts_rename_song_name_input_hint"
 				android:textColorHint="#607D8B"
 				android:singleLine="true"
 				android:imeOptions="actionDone"/>
 		</LinearLayout>
-		<TextView
-			android:id="@+id/desc"
-			android:focusable="false"
-			android:layout_width="wrap_content"
+		<LinearLayout
+			android:layout_width="match_parent"
 			android:layout_height="wrap_content"
 			android:padding="8dp"
-			android:text="@string/song_opts_rename_description"
-			android:textSize="12sp"
-			android:textColor="#000000"
-			android:alpha="0.7"/>
+			android:orientation="vertical">
+			<TextView
+				android:id="@+id/artist_name_title"
+				android:focusable="false"
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:padding="8dp"
+				android:text="@string/song_opts_rename_song_artist_title"
+				android:textSize="11sp"
+				android:textColor="#03A9F4" />
+			<EditText
+				android:id="@+id/artist_name"
+				android:layout_width="match_parent"
+				android:layout_height="wrap_content"
+				android:padding="8dp"
+				android:background="#EEEEEE"
+				android:textSize="12sp"
+				android:textColor="#000000"
+				android:hint="@string/song_opts_rename_song_artist_input_hint"
+				android:textColorHint="#607D8B"
+				android:singleLine="true"
+				android:imeOptions="actionDone"/>
+		</LinearLayout>
+		<LinearLayout
+			android:layout_width="match_parent"
+			android:layout_height="wrap_content"
+			android:padding="8dp"
+			android:orientation="vertical">
+			<TextView
+				android:id="@+id/filename_title"
+				android:focusable="false"
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:padding="8dp"
+				android:text="@string/song_opts_rename_filename_title"
+				android:textSize="11sp"
+				android:textColor="#03A9F4" />
+			<EditText
+				android:id="@+id/filename"
+				android:layout_width="match_parent"
+				android:layout_height="wrap_content"
+				android:padding="8dp"
+				android:background="#EEEEEE"
+				android:textSize="12sp"
+				android:textColor="#000000"
+				android:hint="@string/song_opts_rename_filename_input_hint"
+				android:textColorHint="#607D8B"
+				android:singleLine="true"
+				android:imeOptions="actionDone"/>
+		</LinearLayout>
 		<LinearLayout
 			android:id="@+id/aaa"
 			android:layout_width="match_parent"
