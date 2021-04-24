@@ -162,7 +162,7 @@ public class LocalStreamActivity extends  AppCompatActivity  {
         timer = new Timer();
         runnableHandler = new Handler();
         songListLayoutManager = new LinearLayoutManager(this);
-        liveStreamDatabase = FirebaseDatabase.getInstance().getReference("live/");
+        liveStreamDatabase = FirebaseDatabase.getInstance().getReference("webstreams/");
         tabNavigation.addTab(tabNavigation.newTab().setIcon(R.drawable.ic_tabnav_library));
         tabNavigation.addTab(tabNavigation.newTab().setIcon(R.drawable.ic_tabnav_nowplaying));
 
