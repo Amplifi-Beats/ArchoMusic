@@ -16,6 +16,7 @@ import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.GradientDrawable;
 import android.graphics.drawable.RippleDrawable;
 import android.media.AudioManager;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
@@ -1807,6 +1808,9 @@ public class LocalStreamActivity extends  AppCompatActivity  {
                     song_name_title.setTypeface(Typeface.createFromAsset(getAssets(),"fonts/roboto_medium.ttf"), Typeface.NORMAL);
                     artist_name_title.setTypeface(Typeface.createFromAsset(getAssets(),"fonts/roboto_medium.ttf"), Typeface.NORMAL);
                     filename_title.setTypeface(Typeface.createFromAsset(getAssets(),"fonts/roboto_medium.ttf"), Typeface.NORMAL);
+                    song_name.setText(musicData.get(position).get("songTitle").toString());
+                    artist_name.setText(musicData.get(position).get("songArtist").toString());
+                    filename.setText(Base64Util.decode(Uri.parse(musicData.get(position).get("songData").toString()).getLastPathSegment()));
                     back.setOnClickListener(view18 -> {
                         RippleDrawable rippleButton17 = new RippleDrawable(new ColorStateList(new int[][]{new int[]{}}, new int[]{ Color.parseColor("#BDBDBD") }), null, null);
                         view18.setBackground(rippleButton17);
@@ -1852,7 +1856,7 @@ public class LocalStreamActivity extends  AppCompatActivity  {
                     roundedCorners.setCornerRadii(new float[] {TopLeft, TopLeft, TopRight, TopRight, BottomRight,BottomRight, BottomLeft, BottomLeft});
                     GradientDrawable roundedCorners2 = new GradientDrawable();
                     roundedCorners2.setShape(GradientDrawable.RECTANGLE);
-                    roundedCorners2.setCornerRadius(20);
+                    roundedCorners2.setCornerRadius(10);
                     if (!settingsData.containsKey("settingsDarkMode")) {
                         roundedCorners.setColor(Color.parseColor("#FFFFFF"));
                         roundedCorners2.setColor(Color.parseColor("#EEEEEE"));
