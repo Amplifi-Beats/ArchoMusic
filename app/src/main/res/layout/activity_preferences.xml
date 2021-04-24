@@ -20,7 +20,7 @@
                 android:id="@+id/back"
                 android:layout_width="30dp"
                 android:layout_height="40dp"
-                android:src="@drawable/ic_extbrowser_back_key"
+                android:src="@drawable/ic_preferences_back_key"
                 android:scaleType="fitCenter"/>
             <TextView
                 android:id="@+id/title"
