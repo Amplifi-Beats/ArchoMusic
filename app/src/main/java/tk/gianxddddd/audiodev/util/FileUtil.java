@@ -2,6 +2,7 @@ package tk.gianxddddd.audiodev.util;
 
 import android.content.Context;
 import android.os.Environment;
+import android.webkit.MimeTypeMap;
 
 import java.io.File;
 import java.io.FileReader;
@@ -94,6 +95,22 @@ public class FileUtil {
         } else {
             throw new RuntimeException("Unable to delete file " + path);
         }
+    }
+
+    public static String getFileExtension(String path) {
+        String extension = MimeTypeMap.getFileExtensionFromUrl(path);
+
+        return extension;
+    }
+
+    public static String getMimeType(String path) {
+        String type = null;
+        String extension = MimeTypeMap.getFileExtensionFromUrl(path);
+        if (extension != null) {
+            type = MimeTypeMap.getSingleton().getMimeTypeFromExtension(extension);
+        }
+
+        return type;
     }
 
     public static String getExternalStorageDir() {
