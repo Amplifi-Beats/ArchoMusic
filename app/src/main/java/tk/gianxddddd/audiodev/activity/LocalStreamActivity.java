@@ -65,6 +65,7 @@ import com.google.firebase.database.FirebaseDatabase;
 
 import java.text.DecimalFormat;
 import java.util.ArrayList;
+import java.util.Base64;
 import java.util.HashMap;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -1787,6 +1788,99 @@ public class LocalStreamActivity extends  AppCompatActivity  {
                             view15.setBackground(rippleButton15);
                         }
                     }
+
+                    BottomSheetDialog renameDialog = new BottomSheetDialog(LocalStreamActivity.this);
+                    View dialogLayout1 = getLayoutInflater().inflate(R.layout.dialog_song_opts_rename, null);
+                    renameDialog.setContentView(dialogLayout1);
+                    LinearLayout main1 = dialogLayout1.findViewById(R.id.main);
+                    ImageView back = dialogLayout1.findViewById(R.id.back);
+                    TextView title1 = dialogLayout1.findViewById(R.id.title);
+                    TextView song_name_title = dialogLayout1.findViewById(R.id.song_name_title);
+                    TextView artist_name_title = dialogLayout1.findViewById(R.id.artist_name_title);
+                    TextView filename_title = dialogLayout1.findViewById(R.id.filename_title);
+                    EditText song_name = dialogLayout1.findViewById(R.id.song_name);
+                    EditText artist_name = dialogLayout1.findViewById(R.id.artist_name);
+                    EditText filename = dialogLayout1.findViewById(R.id.filename);
+                    Button confirm = dialogLayout1.findViewById(R.id.confirm);
+                    Button cancel = dialogLayout1.findViewById(R.id.cancel);
+                    title1.setTypeface(Typeface.createFromAsset(getAssets(),"fonts/roboto_medium.ttf"), Typeface.NORMAL);
+                    song_name_title.setTypeface(Typeface.createFromAsset(getAssets(),"fonts/roboto_medium.ttf"), Typeface.NORMAL);
+                    artist_name_title.setTypeface(Typeface.createFromAsset(getAssets(),"fonts/roboto_medium.ttf"), Typeface.NORMAL);
+                    filename_title.setTypeface(Typeface.createFromAsset(getAssets(),"fonts/roboto_medium.ttf"), Typeface.NORMAL);
+                    back.setOnClickListener(view18 -> {
+                        RippleDrawable rippleButton17 = new RippleDrawable(new ColorStateList(new int[][]{new int[]{}}, new int[]{ Color.parseColor("#BDBDBD") }), null, null);
+                        view18.setBackground(rippleButton17);
+                    });
+                    song_name.addTextChangedListener(new TextWatcher() {
+                        @Override
+                        public void beforeTextChanged(CharSequence charSequence, int start, int count, int after) {
+
+                        }
+
+                        @Override
+                        public void onTextChanged(CharSequence charSequence, int start, int before, int count) {
+                            filename.setText(song_name.getText().toString().concat(FileUtil.getFileExtension(Base64Util.decode(musicData.get(position).get("songData").toString()))));
+                        }
+
+                        @Override
+                        public void afterTextChanged(Editable editable) {
+
+                        }
+                    });
+                    filename.addTextChangedListener(new TextWatcher() {
+                        @Override
+                        public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+                        }
+
+                        @Override
+                        public void onTextChanged(CharSequence s, int start, int before, int count) {
+                            song_name.setText(filename.getText().toString().substring(filename.getText().toString().lastIndexOf(".")));
+                        }
+
+                        @Override
+                        public void afterTextChanged(Editable s) {
+
+                        }
+                    });
+                    float TopLeft = 20.0f;
+                    float TopRight = 20.0f;
+                    float BottomRight = 0.0f;
+                    float BottomLeft = 0.0f;
+                    GradientDrawable roundedCorners = new GradientDrawable();
+                    roundedCorners.setShape(GradientDrawable.RECTANGLE);
+                    roundedCorners.setCornerRadii(new float[] {TopLeft, TopLeft, TopRight, TopRight, BottomRight,BottomRight, BottomLeft, BottomLeft});
+                    GradientDrawable roundedCorners2 = new GradientDrawable();
+                    roundedCorners2.setShape(GradientDrawable.RECTANGLE);
+                    roundedCorners2.setCornerRadius(20);
+                    if (!settingsData.containsKey("settingsDarkMode")) {
+                        roundedCorners.setColor(Color.parseColor("#FFFFFF"));
+                        roundedCorners2.setColor(Color.parseColor("#EEEEEE"));
+                    } else {
+                        if (settingsData.get("settingsDarkMode").equals("true")) {
+                            roundedCorners.setColor(Color.parseColor("#1A1A1A"));
+                            roundedCorners2.setColor(Color.parseColor("#212121"));
+                            song_name.setTextColor(Color.parseColor("#FFFFFF"));
+                            song_name.setHintTextColor(Color.parseColor("#BDBDBD"));
+                            artist_name.setTextColor(Color.parseColor("#FFFFFF"));
+                            artist_name.setHintTextColor(Color.parseColor("#BDBDBD"));
+                            filename.setTextColor(Color.parseColor("#FFFFFF"));
+                            filename.setHintTextColor(Color.parseColor("#BDBDBD"));
+                        } else {
+                            roundedCorners.setColor(Color.parseColor("#FFFFFF"));
+                            roundedCorners2.setColor(Color.parseColor("#EEEEEE"));
+                        }
+                    }
+                    ((ViewGroup) dialogLayout1.getParent()).setBackground(roundedCorners);
+                    song_name.setBackground(roundedCorners2);
+                    artist_name.setBackground(roundedCorners2);
+                    filename.setBackground(roundedCorners2);
+                    GradientDrawable gradientButton = new GradientDrawable();
+                    gradientButton.setColor(Color.parseColor("#03A9F4"));
+                    gradientButton.setCornerRadius(10);
+                    confirm.setBackground(gradientButton);
+                    cancel.setBackground(gradientButton);
+                    renameDialog.show();
                 });
                 lyrics.setOnClickListener(view161 -> {
                     if (!settingsData.containsKey("settingsDarkMode")) {
@@ -1801,15 +1895,16 @@ public class LocalStreamActivity extends  AppCompatActivity  {
                             view161.setBackground(rippleButton16);
                         }
                     }
+
                     BottomSheetDialog lyricsDialog = new BottomSheetDialog(LocalStreamActivity.this);
-                    View dialogLayout1 = getLayoutInflater().inflate(R.layout.dialog_lyrics, null);
-                    lyricsDialog.setContentView(dialogLayout1);
-                    LinearLayout main1 = dialogLayout1.findViewById(R.id.main);
-                    ImageView back = dialogLayout1.findViewById(R.id.back);
-                    ImageView lyrics_edit = dialogLayout1.findViewById(R.id.lyrics_edit);
-                    TextView title1 = dialogLayout1.findViewById(R.id.title);
-                    TextView lyrics1 = dialogLayout1.findViewById(R.id.lyrics);
-                    title1.setTypeface(Typeface.createFromAsset(getAssets(),"fonts/roboto_medium.ttf"), Typeface.NORMAL);
+                    View dialogLayout2 = getLayoutInflater().inflate(R.layout.dialog_lyrics, null);
+                    lyricsDialog.setContentView(dialogLayout2);
+                    LinearLayout main2 = dialogLayout2.findViewById(R.id.main);
+                    ImageView back1 = dialogLayout2.findViewById(R.id.back);
+                    ImageView lyrics_edit = dialogLayout2.findViewById(R.id.lyrics_edit);
+                    TextView title2 = dialogLayout2.findViewById(R.id.title);
+                    TextView lyrics1 = dialogLayout2.findViewById(R.id.lyrics);
+                    title2.setTypeface(Typeface.createFromAsset(getAssets(),"fonts/roboto_medium.ttf"), Typeface.NORMAL);
                     if (musicData.get(position).containsKey("songLyrics")) {
                         if (musicData.get(position).get("songLyrics").toString().length() == 0) {
                             // Lyrics added with 0 letters
@@ -1819,7 +1914,7 @@ public class LocalStreamActivity extends  AppCompatActivity  {
                     } else {
                         // No Lyrics was found.
                     }
-                    back.setOnClickListener(view14 -> {
+                    back1.setOnClickListener(view14 -> {
                         RippleDrawable rippleButton14 = new RippleDrawable(new ColorStateList(new int[][]{new int[]{}}, new int[]{ Color.parseColor("#BDBDBD") }), null, null);
                         view14.setBackground(rippleButton14);
                         lyricsDialog.dismiss();
@@ -1851,7 +1946,7 @@ public class LocalStreamActivity extends  AppCompatActivity  {
                             roundedCorners.setColor(Color.parseColor("#FFFFFF"));
                         }
                     }
-                    ((ViewGroup) dialogLayout1.getParent()).setBackground(roundedCorners);
+                    ((ViewGroup) dialogLayout2.getParent()).setBackground(roundedCorners);
                     lyricsDialog.show();
                 });
                 share.setOnClickListener(view13 -> {
