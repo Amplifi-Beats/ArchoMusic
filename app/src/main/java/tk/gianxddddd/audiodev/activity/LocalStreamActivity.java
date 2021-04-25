@@ -16,6 +16,8 @@ import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.GradientDrawable;
 import android.graphics.drawable.RippleDrawable;
 import android.media.AudioManager;
+import android.media.MediaMetadata;
+import android.media.MediaMetadataEditor;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -64,6 +66,7 @@ import com.google.android.material.tabs.TabLayout;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
+import java.io.File;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Base64;
@@ -1834,6 +1837,50 @@ public class LocalStreamActivity extends  AppCompatActivity  {
 
                         }
                     });
+                    confirm.setOnClickListener(view19 -> {
+                        if (!settingsData.containsKey("settingsDarkMode")) {
+                            RippleDrawable rippleButton18 = new RippleDrawable(new ColorStateList(new int[][]{new int[]{}}, new int[]{ Color.parseColor("#BDBDBD") }), new ColorDrawable(Color.parseColor("#FFFFFF")), null);
+                            view19.setBackground(rippleButton18);
+                        } else {
+                            if (settingsData.get("settingsDarkMode").equals("true")) {
+                                RippleDrawable rippleButton18 = new RippleDrawable(new ColorStateList(new int[][]{new int[]{}}, new int[]{ Color.parseColor("#BDBDBD") }), new ColorDrawable(Color.parseColor("#1A1A1A")), null);
+                                view19.setBackground(rippleButton18);
+                            } else {
+                                RippleDrawable rippleButton18 = new RippleDrawable(new ColorStateList(new int[][]{new int[]{}}, new int[]{ Color.parseColor("#BDBDBD") }), new ColorDrawable(Color.parseColor("#FFFFFF")), null);
+                                view19.setBackground(rippleButton18);
+                            }
+                        }
+
+                        if (song_name.getText().toString().length() > 0) {
+                            String oldDecodedData = Base64Util.decode(data.get(position).get("songData").toString());
+                            data.get(position).put("songTitle", song_name.getText().toString());
+                            data.get(position).put("songArtist", artist_name.getText().toString());
+                            data.get(position).put("songData", Base64Util.decode(new File(Base64Util.decode(data.get(position).get("songData").toString())).getParent().concat("/".concat(filename.getText().toString()))));
+
+                            if (!songTitle.getText().toString().equals(song_name.getText().toString())
+                                    && !miniplayerSongTitle.getText().toString().equals(song_name.getText().toString())) {
+                                songTitle.setText(song_name.getText().toString());
+                                miniplayerSongTitle.setText(song_name.getText().toString());
+                            }
+                            if (!songArtist.getText().toString().equals(artist_name.getText().toString())
+                                    && miniplayerSongArtist.getText().toString().equals(artist_name.getText().toString())) {
+                                songArtist.setText(artist_name.getText().toString());
+                                miniplayerSongArtist.setText(artist_name.getText().toString());
+                            }
+                            if (FileUtil.doesExists(oldDecodedData)
+                                && FileUtil.isFile(oldDecodedData)) {
+                                FileUtil.renameFile(oldDecodedData, new File(oldDecodedData).getParent().concat("/".concat(filename.getText().toString())));
+                            }
+                            ApplicationUtil.toast(LocalStreamActivity.this, "Song renamed successfully.", Toast.LENGTH_SHORT);
+                            FileUtil.writeStringToFile(FileUtil.getPackageDir(LocalStreamActivity.this).concat("/song.json"), ListUtil.setArrayListToSharedJSON(data));
+                            songList.setAdapter(new SongListAdapter(data));
+                            songList.scrollToPosition(position);
+                            songOptsDialog.dismiss();
+                            renameDialog.dismiss();
+                        } else {
+                            song_name.setError("Song name should not be blank.");
+                        }
+                    });
                     float TopLeft = 20.0f;
                     float TopRight = 20.0f;
                     float BottomRight = 0.0f;
@@ -1896,11 +1943,11 @@ public class LocalStreamActivity extends  AppCompatActivity  {
                     TextView title2 = dialogLayout2.findViewById(R.id.title);
                     TextView lyrics1 = dialogLayout2.findViewById(R.id.lyrics);
                     title2.setTypeface(Typeface.createFromAsset(getAssets(),"fonts/roboto_medium.ttf"), Typeface.NORMAL);
-                    if (musicData.get(position).containsKey("songLyrics")) {
-                        if (musicData.get(position).get("songLyrics").toString().length() == 0) {
+                    if (data.get(position).containsKey("songLyrics")) {
+                        if (data.get(position).get("songLyrics").toString().length() == 0) {
                             // Lyrics added with 0 letters
                         } else {
-                            lyrics1.setText(musicData.get(position).get("songLyrics").toString());
+                            lyrics1.setText(data.get(position).get("songLyrics").toString());
                         }
                     } else {
                         // No Lyrics was found.
@@ -1919,13 +1966,13 @@ public class LocalStreamActivity extends  AppCompatActivity  {
                         lyricsDialog.dismiss();
                         songOptsDialog.dismiss();
                     });
-                    Double TopLeft = 20.0;
-                    Double TopRight = 20.0;
-                    Double BottomRight = 0.0;
-                    Double BottomLeft = 0.0;
+                    float TopLeft = 20.0f;
+                    float TopRight = 20.0f;
+                    float BottomRight = 0.0f;
+                    float BottomLeft = 0.0f;
                     GradientDrawable roundedCorners = new GradientDrawable();
                     roundedCorners.setShape(GradientDrawable.RECTANGLE);
-                    roundedCorners.setCornerRadii(new float[] {TopLeft.floatValue(),TopLeft.floatValue(), TopRight.floatValue(),TopRight.floatValue(), BottomRight.floatValue(),BottomRight.floatValue(), BottomLeft.floatValue(),BottomLeft.floatValue()});
+                    roundedCorners.setCornerRadii(new float[] {TopLeft, TopLeft, TopRight, TopRight, BottomRight, BottomRight, BottomLeft, BottomLeft});
                     if (!settingsData.containsKey("settingsDarkMode")) {
                         roundedCorners.setColor(Color.parseColor("#FFFFFF"));
                     } else {
