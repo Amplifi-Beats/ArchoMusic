@@ -103,7 +103,7 @@ public class FileUtil {
         return extension;
     }
 
-    public static String getMimeType(String path) {
+    public static String getFileMimeType(String path) {
         String type = null;
         String extension = MimeTypeMap.getFileExtensionFromUrl(path);
         if (extension != null) {
