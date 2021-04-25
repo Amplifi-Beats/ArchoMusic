@@ -84,7 +84,14 @@ public class FileUtil {
     }
 
     public static void renameFile(String originPath, String newPath) {
-        // Method not implemented yet.
+        File originFile = new File(originPath);
+        File renamedFile = new File(newPath);
+
+        try {
+            originFile.renameTo(renamedFile);
+        } catch (Exception exception) {
+            exception.printStackTrace();
+        }
     }
 
     public static void deleteFile(String path) {
