@@ -44,7 +44,7 @@
     <string name="song_opts_share_title">Bagikan</string>
     <string name="song_opts_more_info_title">Informasi lanjutan</string>
     <string name="song_opts_remove_title">Hapus dari pustaka</string>
-    <string name="song_opts_title_description">Apakah anda ingin menghapus lagu dari pustakamu?<string>
+    <string name="song_opts_title_description">Apakah anda ingin menghapus lagu dari pustakamu?</string>
     <string name="song_opts_remove_permanent">Juga hapus dari perangkat</string>
     <string name="song_opts_remove_btn_remove">Hapus</string>
     <string name="song_opts_remove_btn_cancel">Batalkan</string>
