@@ -19,6 +19,7 @@ import android.media.AudioManager;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Environment;
 import android.os.Handler;
 import android.os.IBinder;
 import android.text.Editable;
@@ -561,13 +562,13 @@ public class LocalStreamActivity extends  AppCompatActivity  {
                         }
                         pfpDialog.dismiss();
                     });
-                    Double TopLeft = 20.0;
-                    Double TopRight = 20.0;
-                    Double BottomRight = 0.0;
-                    Double BottomLeft = 0.0;
+                    float TopLeft = 20.0f;
+                    float TopRight = 20.0f;
+                    float BottomRight = 0.0f;
+                    float BottomLeft = 0.0f;
                     GradientDrawable roundedCorners = new GradientDrawable();
                     roundedCorners.setShape(GradientDrawable.RECTANGLE);
-                    roundedCorners.setCornerRadii(new float[] {TopLeft.floatValue(),TopLeft.floatValue(), TopRight.floatValue(),TopRight.floatValue(), BottomRight.floatValue(),BottomRight.floatValue(), BottomLeft.floatValue(),BottomLeft.floatValue()});
+                    roundedCorners.setCornerRadii(new float[] {TopLeft, TopLeft, TopRight, TopRight, BottomRight, BottomRight, BottomLeft, BottomLeft});
                     GradientDrawable roundedCorners2 = new GradientDrawable();
                     roundedCorners2.setShape(GradientDrawable.RECTANGLE);
                     roundedCorners2.setCornerRadius(20);
@@ -625,13 +626,13 @@ public class LocalStreamActivity extends  AppCompatActivity  {
                         profile_name1.setError("Profile name should not be blank.");
                     }
                 });
-                Double TopLeft = 20.0;
-                Double TopRight = 20.0;
-                Double BottomRight = 0.0;
-                Double BottomLeft = 0.0;
+                float TopLeft = 20.0f;
+                float TopRight = 20.0f;
+                float BottomRight = 0.0f;
+                float BottomLeft = 0.0f;
                 GradientDrawable roundedCorners = new GradientDrawable();
                 roundedCorners.setShape(GradientDrawable.RECTANGLE);
-                roundedCorners.setCornerRadii(new float[] {TopLeft.floatValue(),TopLeft.floatValue(), TopRight.floatValue(),TopRight.floatValue(), BottomRight.floatValue(),BottomRight.floatValue(), BottomLeft.floatValue(),BottomLeft.floatValue()});
+                roundedCorners.setCornerRadii(new float[] {TopLeft, TopLeft, TopRight, TopRight, BottomRight, BottomRight, BottomLeft, BottomLeft});
                 GradientDrawable roundedCorners2 = new GradientDrawable();
                 roundedCorners2.setShape(GradientDrawable.RECTANGLE);
                 roundedCorners2.setCornerRadius(20);
@@ -742,13 +743,13 @@ public class LocalStreamActivity extends  AppCompatActivity  {
                             ApplicationUtil.toast(LocalStreamActivity.this, "Visualizer not visible, please resume/play the song.", Toast.LENGTH_LONG);
                         }
                     }
-                    Double TopLeft = 20.0;
-                    Double TopRight = 20.0;
-                    Double BottomRight = 0.0;
-                    Double BottomLeft = 0.0;
+                    float TopLeft = 20.0f;
+                    float TopRight = 20.0f;
+                    float BottomRight = 0.0f;
+                    float BottomLeft = 0.0f;
                     GradientDrawable roundedCorners = new GradientDrawable();
                     roundedCorners.setShape(GradientDrawable.RECTANGLE);
-                    roundedCorners.setCornerRadii(new float[] {TopLeft.floatValue(),TopLeft.floatValue(), TopRight.floatValue(),TopRight.floatValue(), BottomRight.floatValue(),BottomRight.floatValue(), BottomLeft.floatValue(),BottomLeft.floatValue()});
+                    roundedCorners.setCornerRadii(new float[] {TopLeft, TopLeft, TopRight, TopRight, BottomRight, BottomRight, BottomLeft, BottomLeft});
                     roundedCorners.setColor(Color.parseColor("#000000"));
                     ((ViewGroup) dialogLayout12.getParent()).setBackground(roundedCorners);
                     visualizerDialog.setCancelable(false);
@@ -908,13 +909,13 @@ public class LocalStreamActivity extends  AppCompatActivity  {
                     intent.setClass(LocalStreamActivity.this, ExternalBrowserActivity.class);
                     startActivity(intent);
                 });
-                Double TopLeft = 20.0;
-                Double TopRight = 20.0;
-                Double BottomRight = 0.0;
-                Double BottomLeft = 0.0;
+                float TopLeft = 20.0f;
+                float TopRight = 20.0f;
+                float BottomRight = 0.0f;
+                float BottomLeft = 0.0f;
                 GradientDrawable roundedCorners = new GradientDrawable();
                 roundedCorners.setShape(GradientDrawable.RECTANGLE);
-                roundedCorners.setCornerRadii(new float[] {TopLeft.floatValue(),TopLeft.floatValue(), TopRight.floatValue(),TopRight.floatValue(), BottomRight.floatValue(),BottomRight.floatValue(), BottomLeft.floatValue(),BottomLeft.floatValue()});
+                roundedCorners.setCornerRadii(new float[] {TopLeft, TopLeft, TopRight, TopRight, BottomRight, BottomRight, BottomLeft, BottomLeft});
                 if (!settingsData.containsKey("settingsDarkMode")) {
                     roundedCorners.setColor(Color.parseColor("#FFFFFF"));
                 } else {
@@ -935,13 +936,13 @@ public class LocalStreamActivity extends  AppCompatActivity  {
                 ((ViewGroup) dialogLayout13.getParent()).setBackground(roundedCorners);
                 about1.show();
             });
-            Double TopLeft = 20.0;
-            Double TopRight = 20.0;
-            Double BottomRight = 0.0;
-            Double BottomLeft = 0.0;
+            float TopLeft = 20.0f;
+            float TopRight = 20.0f;
+            float BottomRight = 0.0f;
+            float BottomLeft = 0.0f;
             GradientDrawable roundedCorners = new GradientDrawable();
             roundedCorners.setShape(GradientDrawable.RECTANGLE);
-            roundedCorners.setCornerRadii(new float[] {TopLeft.floatValue(),TopLeft.floatValue(), TopRight.floatValue(),TopRight.floatValue(), BottomRight.floatValue(),BottomRight.floatValue(), BottomLeft.floatValue(),BottomLeft.floatValue()});
+            roundedCorners.setCornerRadii(new float[] {TopLeft, TopLeft, TopRight, TopRight, BottomRight, BottomRight, BottomLeft, BottomLeft});
             if (!settingsData.containsKey("settingsDarkMode")) {
                 roundedCorners.setColor(Color.parseColor("#FFFFFF"));
             } else {
@@ -1131,25 +1132,22 @@ public class LocalStreamActivity extends  AppCompatActivity  {
 
             }
         });
-        listRefresh.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
-            @Override
-            public void onRefresh() {
-                if (FileUtil.doesExists(FileUtil.getPackageDir(LocalStreamActivity.this).concat("/song.json")) && FileUtil.isFile(FileUtil.getPackageDir(LocalStreamActivity.this).concat("/song.json"))) {
-                    musicData = ListUtil.getArrayListFromFile(FileUtil.getPackageDir(LocalStreamActivity.this).concat("/song.json"));
-                    if (musicData != null && !musicData.isEmpty()) {
-                        songList.setAdapter(new SongListAdapter(musicData));
-                        listEmptyMsg.setVisibility(View.GONE);
-                        songList.setVisibility(View.VISIBLE);
-                    } else {
-                        listEmptyMsg.setVisibility(View.VISIBLE);
-                        songList.setVisibility(View.GONE);
-                    }
+        listRefresh.setOnRefreshListener(() -> {
+            if (FileUtil.doesExists(FileUtil.getPackageDir(LocalStreamActivity.this).concat("/song.json")) && FileUtil.isFile(FileUtil.getPackageDir(LocalStreamActivity.this).concat("/song.json"))) {
+                musicData = ListUtil.getArrayListFromFile(FileUtil.getPackageDir(LocalStreamActivity.this).concat("/song.json"));
+                if (musicData != null && !musicData.isEmpty()) {
+                    songList.setAdapter(new SongListAdapter(musicData));
+                    listEmptyMsg.setVisibility(View.GONE);
+                    songList.setVisibility(View.VISIBLE);
                 } else {
                     listEmptyMsg.setVisibility(View.VISIBLE);
                     songList.setVisibility(View.GONE);
                 }
-                listRefresh.setRefreshing(false);
+            } else {
+                listEmptyMsg.setVisibility(View.VISIBLE);
+                songList.setVisibility(View.GONE);
             }
+            listRefresh.setRefreshing(false);
         });
         seekbarDuration.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
@@ -1172,41 +1170,11 @@ public class LocalStreamActivity extends  AppCompatActivity  {
                 }
             }
         });
-        repeat.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                RippleDrawable rippleButton = new RippleDrawable(new ColorStateList(new int[][]{new int[]{}}, new int[]{ Color.parseColor("#BDBDBD") }), null, null);
-                view.setBackground(rippleButton);
-                if (sessionData.containsKey("sessionRepeatMode")) {
-                    if (sessionData.get("sessionRepeatMode").equals("0")) {
-                        if (Build.VERSION.SDK_INT >= 23) {
-                            repeat.setColorFilter(ContextCompat.getColor(LocalStreamActivity.this, R.color.colorPrimary), PorterDuff.Mode.SRC_IN);
-                        } else {
-                            repeat.setColorFilter(getResources().getColor(R.color.colorPrimary), PorterDuff.Mode.SRC_IN);
-                        }
-                        sessionData.put("sessionRepeatMode", "1");
-                        FileUtil.writeStringToFile(FileUtil.getPackageDir(LocalStreamActivity.this).concat("/user/session.pref"), ListUtil.setHashMapToSharedJSON(sessionData));
-                        if (sessionData.get("sessionShuffleMode").equals("1")) {
-                            if (Build.VERSION.SDK_INT >= 23) {
-                                shuffle.setColorFilter(ContextCompat.getColor(LocalStreamActivity.this, R.color.colorControlHighlight), PorterDuff.Mode.SRC_IN);
-                            } else {
-                                shuffle.setColorFilter(getResources().getColor(R.color.colorControlHighlight), PorterDuff.Mode.SRC_IN);
-                            }
-                            sessionData.put("sessionShuffleMode", "0");
-                            FileUtil.writeStringToFile(FileUtil.getPackageDir(LocalStreamActivity.this).concat("/user/session.pref"), ListUtil.setHashMapToSharedJSON(sessionData));
-                        }
-                        playbackSrv.updateOnCompletionListener();
-                    } else if (sessionData.get("sessionRepeatMode").equals("1")) {
-                        if (Build.VERSION.SDK_INT >= 23) {
-                            repeat.setColorFilter(ContextCompat.getColor(LocalStreamActivity.this, R.color.colorControlHighlight), PorterDuff.Mode.SRC_IN);
-                        } else {
-                            repeat.setColorFilter(getResources().getColor(R.color.colorControlHighlight), PorterDuff.Mode.SRC_IN);
-                        }
-                        sessionData.put("sessionRepeatMode", "0");
-                        FileUtil.writeStringToFile(FileUtil.getPackageDir(LocalStreamActivity.this).concat("/user/session.pref"), ListUtil.setHashMapToSharedJSON(sessionData));
-                    }
-                    playbackSrv.updateOnCompletionListener();
-                } else {
+        repeat.setOnClickListener(view -> {
+            RippleDrawable rippleButton = new RippleDrawable(new ColorStateList(new int[][]{new int[]{}}, new int[]{ Color.parseColor("#BDBDBD") }), null, null);
+            view.setBackground(rippleButton);
+            if (sessionData.containsKey("sessionRepeatMode")) {
+                if (sessionData.get("sessionRepeatMode").equals("0")) {
                     if (Build.VERSION.SDK_INT >= 23) {
                         repeat.setColorFilter(ContextCompat.getColor(LocalStreamActivity.this, R.color.colorPrimary), PorterDuff.Mode.SRC_IN);
                     } else {
@@ -1214,8 +1182,35 @@ public class LocalStreamActivity extends  AppCompatActivity  {
                     }
                     sessionData.put("sessionRepeatMode", "1");
                     FileUtil.writeStringToFile(FileUtil.getPackageDir(LocalStreamActivity.this).concat("/user/session.pref"), ListUtil.setHashMapToSharedJSON(sessionData));
+                    if (sessionData.get("sessionShuffleMode").equals("1")) {
+                        if (Build.VERSION.SDK_INT >= 23) {
+                            shuffle.setColorFilter(ContextCompat.getColor(LocalStreamActivity.this, R.color.colorControlHighlight), PorterDuff.Mode.SRC_IN);
+                        } else {
+                            shuffle.setColorFilter(getResources().getColor(R.color.colorControlHighlight), PorterDuff.Mode.SRC_IN);
+                        }
+                        sessionData.put("sessionShuffleMode", "0");
+                        FileUtil.writeStringToFile(FileUtil.getPackageDir(LocalStreamActivity.this).concat("/user/session.pref"), ListUtil.setHashMapToSharedJSON(sessionData));
+                    }
                     playbackSrv.updateOnCompletionListener();
+                } else if (sessionData.get("sessionRepeatMode").equals("1")) {
+                    if (Build.VERSION.SDK_INT >= 23) {
+                        repeat.setColorFilter(ContextCompat.getColor(LocalStreamActivity.this, R.color.colorControlHighlight), PorterDuff.Mode.SRC_IN);
+                    } else {
+                        repeat.setColorFilter(getResources().getColor(R.color.colorControlHighlight), PorterDuff.Mode.SRC_IN);
+                    }
+                    sessionData.put("sessionRepeatMode", "0");
+                    FileUtil.writeStringToFile(FileUtil.getPackageDir(LocalStreamActivity.this).concat("/user/session.pref"), ListUtil.setHashMapToSharedJSON(sessionData));
                 }
+                playbackSrv.updateOnCompletionListener();
+            } else {
+                if (Build.VERSION.SDK_INT >= 23) {
+                    repeat.setColorFilter(ContextCompat.getColor(LocalStreamActivity.this, R.color.colorPrimary), PorterDuff.Mode.SRC_IN);
+                } else {
+                    repeat.setColorFilter(getResources().getColor(R.color.colorPrimary), PorterDuff.Mode.SRC_IN);
+                }
+                sessionData.put("sessionRepeatMode", "1");
+                FileUtil.writeStringToFile(FileUtil.getPackageDir(LocalStreamActivity.this).concat("/user/session.pref"), ListUtil.setHashMapToSharedJSON(sessionData));
+                playbackSrv.updateOnCompletionListener();
             }
         });
 
@@ -1255,41 +1250,29 @@ public class LocalStreamActivity extends  AppCompatActivity  {
             skipNext();
         });
 
-        shuffle.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                RippleDrawable rippleButton = new RippleDrawable(new ColorStateList(new int[][]{new int[]{}}, new int[]{ Color.parseColor("#BDBDBD") }), null, null);
-                view.setBackground(rippleButton);
-                if (sessionData.containsKey("sessionShuffleMode")) {
-                    if (sessionData.get("sessionShuffleMode").equals("0")) {
-                        if (Build.VERSION.SDK_INT >= 23) {
-                            shuffle.setColorFilter(ContextCompat.getColor(LocalStreamActivity.this, R.color.colorPrimary), PorterDuff.Mode.SRC_IN);
-                        } else {
-                            shuffle.setColorFilter(getResources().getColor(R.color.colorPrimary), PorterDuff.Mode.SRC_IN);
-                        }
-                        sessionData.put("sessionShuffleMode", "1");
-                        FileUtil.writeStringToFile(FileUtil.getPackageDir(LocalStreamActivity.this).concat("/user/session.pref"), ListUtil.setHashMapToSharedJSON(sessionData));
-                        if (sessionData.get("sessionRepeatMode").equals("1")) {
-                            if (Build.VERSION.SDK_INT >= 23) {
-                                repeat.setColorFilter(ContextCompat.getColor(LocalStreamActivity.this, R.color.colorControlHighlight), PorterDuff.Mode.SRC_IN);
-                            } else {
-                                repeat.setColorFilter(getResources().getColor(R.color.colorControlHighlight), PorterDuff.Mode.SRC_IN);
-                            }
-                            sessionData.put("sessionRepeatMode", "0");
-                            FileUtil.writeStringToFile(FileUtil.getPackageDir(LocalStreamActivity.this).concat("/user/session.pref"), ListUtil.setHashMapToSharedJSON(sessionData));
-                        }
-                        playbackSrv.updateOnCompletionListener();
-                    } else if (sessionData.get("sessionShuffleMode").equals("1")) {
-                        if (Build.VERSION.SDK_INT >= 23) {
-                            shuffle.setColorFilter(ContextCompat.getColor(LocalStreamActivity.this, R.color.colorControlHighlight), PorterDuff.Mode.SRC_IN);
-                        } else {
-                            shuffle.setColorFilter(getResources().getColor(R.color.colorControlHighlight), PorterDuff.Mode.SRC_IN);
-                        }
-                        sessionData.put("sessionShuffleMode", "0");
-                        FileUtil.writeStringToFile(FileUtil.getPackageDir(LocalStreamActivity.this).concat("/user/session.pref"), ListUtil.setHashMapToSharedJSON(sessionData));
-                        playbackSrv.updateOnCompletionListener();
+        shuffle.setOnClickListener(view -> {
+            RippleDrawable rippleButton = new RippleDrawable(new ColorStateList(new int[][]{new int[]{}}, new int[]{ Color.parseColor("#BDBDBD") }), null, null);
+            view.setBackground(rippleButton);
+            if (sessionData.containsKey("sessionShuffleMode")) {
+                if (sessionData.get("sessionShuffleMode").equals("0")) {
+                    if (Build.VERSION.SDK_INT >= 23) {
+                        shuffle.setColorFilter(ContextCompat.getColor(LocalStreamActivity.this, R.color.colorPrimary), PorterDuff.Mode.SRC_IN);
+                    } else {
+                        shuffle.setColorFilter(getResources().getColor(R.color.colorPrimary), PorterDuff.Mode.SRC_IN);
                     }
-                } else {
+                    sessionData.put("sessionShuffleMode", "1");
+                    FileUtil.writeStringToFile(FileUtil.getPackageDir(LocalStreamActivity.this).concat("/user/session.pref"), ListUtil.setHashMapToSharedJSON(sessionData));
+                    if (sessionData.get("sessionRepeatMode").equals("1")) {
+                        if (Build.VERSION.SDK_INT >= 23) {
+                            repeat.setColorFilter(ContextCompat.getColor(LocalStreamActivity.this, R.color.colorControlHighlight), PorterDuff.Mode.SRC_IN);
+                        } else {
+                            repeat.setColorFilter(getResources().getColor(R.color.colorControlHighlight), PorterDuff.Mode.SRC_IN);
+                        }
+                        sessionData.put("sessionRepeatMode", "0");
+                        FileUtil.writeStringToFile(FileUtil.getPackageDir(LocalStreamActivity.this).concat("/user/session.pref"), ListUtil.setHashMapToSharedJSON(sessionData));
+                    }
+                    playbackSrv.updateOnCompletionListener();
+                } else if (sessionData.get("sessionShuffleMode").equals("1")) {
                     if (Build.VERSION.SDK_INT >= 23) {
                         shuffle.setColorFilter(ContextCompat.getColor(LocalStreamActivity.this, R.color.colorControlHighlight), PorterDuff.Mode.SRC_IN);
                     } else {
@@ -1299,12 +1282,21 @@ public class LocalStreamActivity extends  AppCompatActivity  {
                     FileUtil.writeStringToFile(FileUtil.getPackageDir(LocalStreamActivity.this).concat("/user/session.pref"), ListUtil.setHashMapToSharedJSON(sessionData));
                     playbackSrv.updateOnCompletionListener();
                 }
+            } else {
+                if (Build.VERSION.SDK_INT >= 23) {
+                    shuffle.setColorFilter(ContextCompat.getColor(LocalStreamActivity.this, R.color.colorControlHighlight), PorterDuff.Mode.SRC_IN);
+                } else {
+                    shuffle.setColorFilter(getResources().getColor(R.color.colorControlHighlight), PorterDuff.Mode.SRC_IN);
+                }
+                sessionData.put("sessionShuffleMode", "0");
+                FileUtil.writeStringToFile(FileUtil.getPackageDir(LocalStreamActivity.this).concat("/user/session.pref"), ListUtil.setHashMapToSharedJSON(sessionData));
+                playbackSrv.updateOnCompletionListener();
             }
         });
     }
 
     private void skipPrevious() {
-        if (playbackSrv != null) {
+        if (playbackSrv != null && playbackSrv.mp != null) {
             if (!sessionData.containsKey("sessionRepeatMode") || !profileData.containsKey("sessionShuffleMode")) {
                 try {
                     if (Integer.parseInt(sessionData.get("sessionSongPosition").toString()) - 1 < musicData.size()) {
@@ -1375,7 +1367,7 @@ public class LocalStreamActivity extends  AppCompatActivity  {
     }
 
     private void playPause() {
-        if (playbackSrv.mp != null) {
+        if (playbackSrv != null && playbackSrv.mp != null) {
             if (!playbackSrv.isPlaying()) {
                 playbackSrv.play();
                 playbackSrv.startAudioFocus();
@@ -1415,7 +1407,7 @@ public class LocalStreamActivity extends  AppCompatActivity  {
     }
 
     private void skipNext() {
-        if (playbackSrv != null) {
+        if (playbackSrv != null && playbackSrv.mp != null) {
             if (!sessionData.containsKey("sessionRepeatMode") || !sessionData.containsKey("sessionShuffleMode")) {
                 try {
                     if (Integer.parseInt(sessionData.get("sessionSongPosition").toString()) + 1 < musicData.size()) {
@@ -1529,7 +1521,7 @@ public class LocalStreamActivity extends  AppCompatActivity  {
                             }
                         }
                     }
-                } catch (Exception e) {
+                } catch (Exception exception) {
                     if (!musicData.isEmpty()) {
                         if (0 < musicData.size()) {
                             playbackSrv.createLocalStream(0);
@@ -1596,7 +1588,7 @@ public class LocalStreamActivity extends  AppCompatActivity  {
 
     @Override
     public void onBackPressed() {
-        if (playbackSrv.mp != null) {
+        if (playbackSrv != null && playbackSrv.mp != null) {
             if (playbackSrv.isPlaying()) {
                 if (settingsData.containsKey("settingsBackgroundAudio")) {
                     if (!settingsData.get("settingsBackgroundAudio").equals("true")) {
@@ -1619,8 +1611,10 @@ public class LocalStreamActivity extends  AppCompatActivity  {
         super.onPause();
         if (settingsData.containsKey("settingsBackgroundAudio")) {
             if (settingsData.get("settingsBackgroundAudio").equals("false")) {
-                if (playbackSrv.mp != null && playbackSrv.isPlaying()) {
-                    playPause();
+                if (playbackSrv != null) {
+                    if (playbackSrv.mp != null && playbackSrv.isPlaying()) {
+                        playPause();
+                    }
                 }
             }
         }
@@ -1674,10 +1668,12 @@ public class LocalStreamActivity extends  AppCompatActivity  {
     @Override
     public void onDestroy() {
         super.onDestroy();
-        if (playbackSrv.mp != null) {
-            if (!playbackSrv.mp.isPlaying()) {
-                playIntent = new Intent(this, LocalPlaybackService.class);
-                stopService(playIntent);
+        if (playbackSrv != null) {
+            if (playbackSrv.mp != null) {
+                if (!playbackSrv.mp.isPlaying()) {
+                    playIntent = new Intent(this, LocalPlaybackService.class);
+                    stopService(playIntent);
+                }
             }
         }
     }
@@ -1997,6 +1993,12 @@ public class LocalStreamActivity extends  AppCompatActivity  {
                             view13.setBackground(rippleButton13);
                         }
                     }
+
+                    Uri decodedUriData = Uri.parse(Base64Util.decode(data.get(position).get("songData").toString()));
+                    Intent shareIntent = new Intent(Intent.ACTION_SEND);
+                    shareIntent.setType("audio/*");
+                    shareIntent.putExtra(Intent.EXTRA_STREAM, decodedUriData);
+                    startActivity(Intent.createChooser(shareIntent, "Share this song to:"));
                 });
                 moreInformation.setOnClickListener(view1 -> {
                     if (!settingsData.containsKey("settingsDarkMode")) {
@@ -2026,13 +2028,13 @@ public class LocalStreamActivity extends  AppCompatActivity  {
                         }
                     }
                 });
-                Double TopLeft = 20.0;
-                Double TopRight = 20.0;
-                Double BottomRight = 0.0;
-                Double BottomLeft = 0.0;
+                float TopLeft = 20.0f;
+                float TopRight = 20.0f;
+                float BottomRight = 0.0f;
+                float BottomLeft = 0.0f;
                 GradientDrawable roundedCorners = new GradientDrawable();
                 roundedCorners.setShape(GradientDrawable.RECTANGLE);
-                roundedCorners.setCornerRadii(new float[] {TopLeft.floatValue(),TopLeft.floatValue(), TopRight.floatValue(),TopRight.floatValue(), BottomRight.floatValue(),BottomRight.floatValue(), BottomLeft.floatValue(),BottomLeft.floatValue()});
+                roundedCorners.setCornerRadii(new float[] {TopLeft, TopLeft, TopRight, TopRight, BottomRight, BottomRight, BottomLeft, BottomLeft});
                 if (!settingsData.containsKey("settingsDarkMode")) {
                     roundedCorners.setColor(Color.parseColor("#FFFFFF"));
                 } else {
