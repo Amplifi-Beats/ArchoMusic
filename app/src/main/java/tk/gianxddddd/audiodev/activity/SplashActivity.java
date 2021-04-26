@@ -18,15 +18,16 @@ import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import tk.gianxddddd.audiodev.R;
-import tk.gianxddddd.audiodev.util.FileUtil;
-import tk.gianxddddd.audiodev.util.ListUtil;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.firebase.FirebaseApp;
 
 import java.util.HashMap;
 import java.util.Timer;
 import java.util.TimerTask;
+
+import tk.gianxddddd.audiodev.R;
+import tk.gianxddddd.audiodev.util.FileUtil;
+import tk.gianxddddd.audiodev.util.ListUtil;
 
 public class SplashActivity extends AppCompatActivity {
 

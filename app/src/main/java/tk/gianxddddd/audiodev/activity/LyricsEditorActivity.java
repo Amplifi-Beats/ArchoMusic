@@ -17,14 +17,15 @@ import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import tk.gianxddddd.audiodev.R;
-import tk.gianxddddd.audiodev.util.ApplicationUtil;
-import tk.gianxddddd.audiodev.util.FileUtil;
-import tk.gianxddddd.audiodev.util.ListUtil;
 import com.google.firebase.FirebaseApp;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+
+import tk.gianxddddd.audiodev.R;
+import tk.gianxddddd.audiodev.util.ApplicationUtil;
+import tk.gianxddddd.audiodev.util.FileUtil;
+import tk.gianxddddd.audiodev.util.ListUtil;
 
 public class LyricsEditorActivity extends  AppCompatActivity  {
 

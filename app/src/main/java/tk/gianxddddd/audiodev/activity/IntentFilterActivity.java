@@ -18,14 +18,15 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
 
 import com.bumptech.glide.Glide;
-import tk.gianxddddd.audiodev.R;
-import tk.gianxddddd.audiodev.util.ApplicationUtil;
-import tk.gianxddddd.audiodev.util.ImageUtil;
 import com.google.firebase.FirebaseApp;
 
 import java.text.DecimalFormat;
 import java.util.Timer;
 import java.util.TimerTask;
+
+import tk.gianxddddd.audiodev.R;
+import tk.gianxddddd.audiodev.util.ApplicationUtil;
+import tk.gianxddddd.audiodev.util.ImageUtil;
 
 public class IntentFilterActivity extends AppCompatActivity {
 

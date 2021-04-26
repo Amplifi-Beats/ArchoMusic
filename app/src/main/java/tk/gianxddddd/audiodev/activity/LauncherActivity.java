@@ -13,13 +13,14 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 
-import tk.gianxddddd.audiodev.util.FileUtil;
-import tk.gianxddddd.audiodev.util.ListUtil;
-import tk.gianxddddd.audiodev.util.Base64Util;
 import com.google.android.gms.ads.MobileAds;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+
+import tk.gianxddddd.audiodev.util.Base64Util;
+import tk.gianxddddd.audiodev.util.FileUtil;
+import tk.gianxddddd.audiodev.util.ListUtil;
 
 public class LauncherActivity extends AppCompatActivity {
 
@@ -134,7 +135,11 @@ public class LauncherActivity extends AppCompatActivity {
                                 songDetails.put("songTitle", name);
                                 songDetails.put("songData", Base64Util.encode(data));
                                 songDetails.put("songArtist", artist);
-                                scanList.add(songDetails);
+                                /* Adds the item if the filepath does exist. */
+                                if (FileUtil.doesExists(Base64Util.decode(songDetails.get("songData").toString()))
+                                        && FileUtil.isFile(Base64Util.decode(songDetails.get("songData").toString()))) {
+                                    scanList.add(songDetails);
+                                }
                             }
                         } while (mediaCursor.moveToNext());
                     }

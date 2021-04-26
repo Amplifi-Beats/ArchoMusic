@@ -16,10 +16,11 @@ import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.gauravk.audiovisualizer.visualizer.BarVisualizer;
+import com.google.firebase.FirebaseApp;
+
 import tk.gianxddddd.audiodev.R;
 import tk.gianxddddd.audiodev.service.LocalPlaybackService;
 import tk.gianxddddd.audiodev.util.ApplicationUtil;
-import com.google.firebase.FirebaseApp;
 
 public class FullVisualizerActivity extends AppCompatActivity {
 
