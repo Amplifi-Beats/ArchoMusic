@@ -16,8 +16,6 @@ import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.GradientDrawable;
 import android.graphics.drawable.RippleDrawable;
 import android.media.AudioManager;
-import android.media.MediaMetadata;
-import android.media.MediaMetadataEditor;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -30,8 +28,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.CheckBox;
-import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -49,17 +45,6 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.bumptech.glide.Glide;
 import com.gauravk.audiovisualizer.visualizer.BarVisualizer;
-import tk.gianxddddd.audiodev.R;
-import tk.gianxddddd.audiodev.service.LocalPlaybackService;
-import tk.gianxddddd.audiodev.util.ApplicationUtil;
-import tk.gianxddddd.audiodev.util.FileUtil;
-import tk.gianxddddd.audiodev.util.ImageUtil;
-import tk.gianxddddd.audiodev.util.IntegerUtil;
-import tk.gianxddddd.audiodev.util.ListUtil;
-import tk.gianxddddd.audiodev.util.NetworkUtil;
-import tk.gianxddddd.audiodev.util.Base64Util;
-import com.google.android.gms.ads.AdRequest;
-import com.google.android.gms.ads.AdView;
 import com.google.android.gms.ads.MobileAds;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.android.material.tabs.TabLayout;
@@ -69,12 +54,19 @@ import com.google.firebase.database.FirebaseDatabase;
 import java.io.File;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
-import java.util.Base64;
 import java.util.HashMap;
 import java.util.Timer;
 import java.util.TimerTask;
 
 import de.hdodenhof.circleimageview.CircleImageView;
+import tk.gianxddddd.audiodev.R;
+import tk.gianxddddd.audiodev.service.LocalPlaybackService;
+import tk.gianxddddd.audiodev.util.ApplicationUtil;
+import tk.gianxddddd.audiodev.util.Base64Util;
+import tk.gianxddddd.audiodev.util.FileUtil;
+import tk.gianxddddd.audiodev.util.ImageUtil;
+import tk.gianxddddd.audiodev.util.IntegerUtil;
+import tk.gianxddddd.audiodev.util.ListUtil;
 
 public class LocalStreamActivity extends  AppCompatActivity  {
 
@@ -1722,7 +1714,11 @@ public class LocalStreamActivity extends  AppCompatActivity  {
                     songArtist.setTextColor(Color.parseColor("#FFFFFF"));
                 }
             }
-            Glide.with(LocalStreamActivity.this).asBitmap().load(ImageUtil.getAlbumArt(Base64Util.decode(data.get(position).get("songData").toString()), getResources(), getTheme())).into(albumArt);
+            /* Filepath is checked here before getting the album art of an item. */
+            if (FileUtil.doesExists(Base64Util.decode(data.get(position).get("songData").toString()))
+                   && FileUtil.isFile(Base64Util.decode(data.get(position).get("songData").toString()))) {
+                Glide.with(LocalStreamActivity.this).asBitmap().load(ImageUtil.getAlbumArt(Base64Util.decode(data.get(position).get("songData").toString()), getResources(), getTheme())).into(albumArt);
+            }
             songTitle.setText(data.get(position).get("songTitle").toString());
             songArtist.setText(data.get(position).get("songArtist").toString());
             main.setOnClickListener(view17 -> {
@@ -1739,21 +1735,22 @@ public class LocalStreamActivity extends  AppCompatActivity  {
                     main.setBackground(rippleButton);
                 }
                 if (!(position == Integer.parseInt(sessionData.get("sessionSongPosition").toString()))) {
-                    if (new java.io.File(Base64Util.decode(musicData.get(position).get("songData").toString())).exists()) {
+                    if (FileUtil.doesExists(Base64Util.decode(data.get(position).get("songData").toString()))
+                           && FileUtil.isFile(Base64Util.decode(data.get(position).get("songData").toString()))) {
                         try {
                             playbackSrv.createLocalStream(position);
                             sessionData.put("sessionSongPosition", String.valueOf(position));
                             FileUtil.writeStringToFile(FileUtil.getPackageDir(LocalStreamActivity.this).concat("/user/session.pref"), ListUtil.setHashMapToSharedJSON(sessionData));
                             playPause.performClick();
-                        } catch (Exception e) {
+                        } catch (Exception exception) {
                             ApplicationUtil.toast(LocalStreamActivity.this, "Error loading audio file.", Toast.LENGTH_SHORT);
                             skipForward.performClick();
                         }
                     } else {
-                        ApplicationUtil.toast(LocalStreamActivity.this, "Selected song does not exist.", Toast.LENGTH_SHORT);
+                        ApplicationUtil.toast(LocalStreamActivity.this, "The file path of this song does not exist.", Toast.LENGTH_SHORT);
                     }
                 } else {
-                    ApplicationUtil.toast(LocalStreamActivity.this, "Selected song is currently playing.", Toast.LENGTH_SHORT);
+                    ApplicationUtil.toast(LocalStreamActivity.this, "This song is currently played.", Toast.LENGTH_SHORT);
                 }
             });
             more.setOnClickListener(view16 -> {
