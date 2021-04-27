@@ -116,45 +116,37 @@ public class PreferencesActivity extends AppCompatActivity {
                 settingsData.put("settingsDarkMode", "true");
                 FileUtil.writeStringToFile(FileUtil.getPackageDir(PreferencesActivity.this).concat("/user/settings.pref"), ListUtil.setHashMapToSharedJSON(settingsData));
                 initializeLogic();
-                ApplicationUtil.toast(PreferencesActivity.this, "Dark mode is enabled.", Toast.LENGTH_SHORT);
             } else {
                 settingsData.put("settingsDarkMode", "false");
                 FileUtil.writeStringToFile(FileUtil.getPackageDir(PreferencesActivity.this).concat("/user/settings.pref"), ListUtil.setHashMapToSharedJSON(settingsData));
                 initializeLogic();
-                ApplicationUtil.toast(PreferencesActivity.this,"Dark mode is disabled.", Toast.LENGTH_SHORT);
             }
         });
         disable_anim.setOnCheckedChangeListener((view, isChecked) -> {
             if (isChecked) {
                 settingsData.put("settingsAnimation", "false");
                 FileUtil.writeStringToFile(FileUtil.getPackageDir(PreferencesActivity.this).concat("/user/settings.pref"), ListUtil.setHashMapToSharedJSON(settingsData));
-                ApplicationUtil.toast(PreferencesActivity.this, "Animations are disabled.", Toast.LENGTH_SHORT);
             } else {
                 settingsData.put("settingsAnimation", "true");
                 FileUtil.writeStringToFile(FileUtil.getPackageDir(PreferencesActivity.this).concat("/user/settings.pref"), ListUtil.setHashMapToSharedJSON(settingsData));
-                ApplicationUtil.toast(PreferencesActivity.this, "Animations are enabled.", Toast.LENGTH_SHORT);
             }
         });
         background_play.setOnCheckedChangeListener((view, isChecked) -> {
             if (isChecked) {
                 settingsData.put("settingsBackgroundAudio", "true");
                 FileUtil.writeStringToFile(FileUtil.getPackageDir(PreferencesActivity.this).concat("/user/settings.pref"), ListUtil.setHashMapToSharedJSON(settingsData));
-                ApplicationUtil.toast(PreferencesActivity.this, "Audio will be played while in background.", Toast.LENGTH_SHORT);
             } else {
                 settingsData.put("settingsBackgroundAudio", "false");
                 FileUtil.writeStringToFile(FileUtil.getPackageDir(PreferencesActivity.this).concat("/user/settings.pref"), ListUtil.setHashMapToSharedJSON(settingsData));
-                ApplicationUtil.toast(PreferencesActivity.this, "Audio will NOT be played while in background.", Toast.LENGTH_SHORT);
             }
         });
         capture_error.setOnCheckedChangeListener((view, isChecked) -> {
             if (isChecked) {
                 settingsData.put("settingsCaptureError", "true");
                 FileUtil.writeStringToFile(FileUtil.getPackageDir(PreferencesActivity.this).concat("/user/settings.pref"), ListUtil.setHashMapToSharedJSON(settingsData));
-                ApplicationUtil.toast(PreferencesActivity.this, "Capturing errors are enabled.", Toast.LENGTH_SHORT);
             } else {
                 settingsData.put("settingsCaptureError", "false");
                 FileUtil.writeStringToFile(FileUtil.getPackageDir(PreferencesActivity.this).concat("/user/settings.pref"), ListUtil.setHashMapToSharedJSON(settingsData));
-                ApplicationUtil.toast(PreferencesActivity.this, "Capturing errors are disabled.", Toast.LENGTH_SHORT);
             }
         });
 
