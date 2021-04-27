@@ -1710,11 +1710,7 @@ public class LocalStreamActivity extends  AppCompatActivity  {
                     songArtist.setTextColor(Color.parseColor("#FFFFFF"));
                 }
             }
-            /* Filepath is checked here before getting the album art of an item. */
-            if (FileUtil.doesExists(Base64Util.decode(data.get(position).get("songData").toString()))
-                   && FileUtil.isFile(Base64Util.decode(data.get(position).get("songData").toString()))) {
-                Glide.with(LocalStreamActivity.this).asBitmap().load(ImageUtil.getAlbumArt(Base64Util.decode(data.get(position).get("songData").toString()), getResources(), getTheme())).into(albumArt);
-            }
+            Glide.with(LocalStreamActivity.this).asBitmap().load(ImageUtil.getAlbumArt(Base64Util.decode(data.get(position).get("songData").toString()), getResources(), getTheme())).into(albumArt);
             songTitle.setText(data.get(position).get("songTitle").toString());
             songArtist.setText(data.get(position).get("songArtist").toString());
             main.setOnClickListener(view17 -> {
