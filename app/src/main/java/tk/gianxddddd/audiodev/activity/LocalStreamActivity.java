@@ -706,54 +706,7 @@ public class LocalStreamActivity extends  AppCompatActivity  {
                 if (ContextCompat.checkSelfPermission(LocalStreamActivity.this, Manifest.permission.RECORD_AUDIO) == PackageManager.PERMISSION_DENIED) {
                     ActivityCompat.requestPermissions(LocalStreamActivity.this, new String[]{"android.permission.RECORD_AUDIO"}, 1);
                 } else {
-                    BottomSheetDialog visualizerDialog = new BottomSheetDialog(LocalStreamActivity.this);
-                    View dialogLayout12 = getLayoutInflater().inflate(R.layout.dialog_visualizer, null);
-                    visualizerDialog.setContentView(dialogLayout12);
-                    ImageView back = dialogLayout12.findViewById(R.id.back);
-                    ImageView fullscreen = dialogLayout12.findViewById(R.id.fullscreen);
-                    BarVisualizer visualizer1 = dialogLayout12.findViewById(R.id.visualizer);
-                    back.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View view17) {
-                            RippleDrawable rippleButton17 = new RippleDrawable(new ColorStateList(new int[][]{new int[]{}}, new int[]{ Color.parseColor("#BDBDBD") }), null, null);
-                            view17.setBackground(rippleButton17);
-                            if (playbackSrv.mp != null && visualizerDialog != null) {
-                                visualizer1.release();
-                            }
-                            visualizerDialog.dismiss();
-                        }
-                    });
-                    fullscreen.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View view17) {
-                            RippleDrawable rippleButton17 = new RippleDrawable(new ColorStateList(new int[][]{new int[]{}}, new int[]{ Color.parseColor("#BDBDBD") }), null, null);
-                            view17.setBackground(rippleButton17);
-                            if (playbackSrv.mp != null && visualizerDialog != null) {
-                                visualizer1.release();
-                            }
-                            startActivity(new Intent(LocalStreamActivity.this, FullVisualizerActivity.class));
-                            visualizerDialog.dismiss();
-                            menuDialog.dismiss();
-                        }});
-                    if (playbackSrv.mp != null) {
-                        if (playbackSrv.mp.getAudioSessionId() != -1) {
-                            visualizer1.setAudioSessionId(playbackSrv.mp.getAudioSessionId());
-                        }
-                        if (!playbackSrv.isPlaying()) {
-                            ApplicationUtil.toast(LocalStreamActivity.this, "Visualizer not visible, please resume/play the song.", Toast.LENGTH_LONG);
-                        }
-                    }
-                    float TopLeft = 10.0f;
-                    float TopRight = 10.0f;
-                    float BottomRight = 0.0f;
-                    float BottomLeft = 0.0f;
-                    GradientDrawable roundedCorners = new GradientDrawable();
-                    roundedCorners.setShape(GradientDrawable.RECTANGLE);
-                    roundedCorners.setCornerRadii(new float[] {TopLeft, TopLeft, TopRight, TopRight, BottomRight, BottomRight, BottomLeft, BottomLeft});
-                    roundedCorners.setColor(Color.parseColor("#000000"));
-                    ((ViewGroup) dialogLayout12.getParent()).setBackground(roundedCorners);
-                    visualizerDialog.setCancelable(false);
-                    visualizerDialog.show();
+                    startActivity(new Intent(LocalStreamActivity.this, FullVisualizerActivity.class));
                 }
             });
             about.setOnClickListener(view18 -> {
@@ -1570,9 +1523,9 @@ public class LocalStreamActivity extends  AppCompatActivity  {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         if (requestCode == 1) {
             if (ContextCompat.checkSelfPermission(this, Manifest.permission.RECORD_AUDIO) == PackageManager.PERMISSION_GRANTED) {
-                // Do nothing here.
+               startActivity(new Intent(LocalStreamActivity.this, FullVisualizerActivity.class));
             } else {
-                ApplicationUtil.toast(this, "Record permission was denied, Visualizer will not run unless you allow it.", Toast.LENGTH_SHORT);
+                ApplicationUtil.toast(this, "Record permission was denied, Visualizer cannot unless you allow the permission again.", Toast.LENGTH_SHORT);
             }
         }
     }
