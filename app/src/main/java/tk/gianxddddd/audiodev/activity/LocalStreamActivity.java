@@ -1765,6 +1765,7 @@ public class LocalStreamActivity extends  AppCompatActivity  {
                 LinearLayout moreInformation = dialogLayout.findViewById(R.id.moreInformation);
                 LinearLayout remove = dialogLayout.findViewById(R.id.remove);
                 title.setTypeface(Typeface.createFromAsset(getAssets(), "fonts/roboto_medium.ttf"), Typeface.NORMAL);
+                songTitle1.setTypeface(Typeface.createFromAsset(getAssets(), "fonts/roboto_medium.ttf"), Typeface.NORMAL);
                 Glide.with(LocalStreamActivity.this).asBitmap().load(ImageUtil.getAlbumArt(Base64Util.decode(data.get(position).get("songData").toString()), getResources(), getTheme())).into(albumArt1);
                 songTitle1.setText(musicData.get(position).get("songTitle").toString());
                 songArtist1.setText(musicData.get(position).get("songArtist").toString());
