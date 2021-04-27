@@ -243,13 +243,13 @@ public class LocalStreamActivity extends  AppCompatActivity  {
                     introDialog.dismiss();
                 }
             });
-            Double TopLeft = 20.0;
-            Double TopRight = 20.0;
-            Double BottomRight = 0.0;
-            Double BottomLeft = 0.0;
+            float TopLeft = 10.0f;
+            float TopRight = 10.0f;
+            float BottomRight = 0.0f;
+            float BottomLeft = 0.0f;
             GradientDrawable roundedCorners = new GradientDrawable();
             roundedCorners.setShape(GradientDrawable.RECTANGLE);
-            roundedCorners.setCornerRadii(new float[] {TopLeft.floatValue(),TopLeft.floatValue(), TopRight.floatValue(),TopRight.floatValue(), BottomRight.floatValue(),BottomRight.floatValue(), BottomLeft.floatValue(),BottomLeft.floatValue()});
+            roundedCorners.setCornerRadii(new float[] {TopLeft, TopLeft, TopRight, TopRight, BottomRight, BottomRight, BottomLeft, BottomLeft});
             if (!settingsData.containsKey("settingsDarkMode")) {
                 roundedCorners.setColor(Color.parseColor("#FFFFFF"));
             } else {
@@ -562,8 +562,8 @@ public class LocalStreamActivity extends  AppCompatActivity  {
                         }
                         pfpDialog.dismiss();
                     });
-                    float TopLeft = 20.0f;
-                    float TopRight = 20.0f;
+                    float TopLeft = 10.0f;
+                    float TopRight = 10.0f;
                     float BottomRight = 0.0f;
                     float BottomLeft = 0.0f;
                     GradientDrawable roundedCorners = new GradientDrawable();
@@ -626,8 +626,8 @@ public class LocalStreamActivity extends  AppCompatActivity  {
                         profile_name1.setError("Profile name should not be blank.");
                     }
                 });
-                float TopLeft = 20.0f;
-                float TopRight = 20.0f;
+                float TopLeft = 10.0f;
+                float TopRight = 10.0f;
                 float BottomRight = 0.0f;
                 float BottomLeft = 0.0f;
                 GradientDrawable roundedCorners = new GradientDrawable();
@@ -743,8 +743,8 @@ public class LocalStreamActivity extends  AppCompatActivity  {
                             ApplicationUtil.toast(LocalStreamActivity.this, "Visualizer not visible, please resume/play the song.", Toast.LENGTH_LONG);
                         }
                     }
-                    float TopLeft = 20.0f;
-                    float TopRight = 20.0f;
+                    float TopLeft = 10.0f;
+                    float TopRight = 10.0f;
                     float BottomRight = 0.0f;
                     float BottomLeft = 0.0f;
                     GradientDrawable roundedCorners = new GradientDrawable();
@@ -909,8 +909,8 @@ public class LocalStreamActivity extends  AppCompatActivity  {
                     intent.setClass(LocalStreamActivity.this, ExternalBrowserActivity.class);
                     startActivity(intent);
                 });
-                float TopLeft = 20.0f;
-                float TopRight = 20.0f;
+                float TopLeft = 10.0f;
+                float TopRight = 10.0f;
                 float BottomRight = 0.0f;
                 float BottomLeft = 0.0f;
                 GradientDrawable roundedCorners = new GradientDrawable();
@@ -936,8 +936,8 @@ public class LocalStreamActivity extends  AppCompatActivity  {
                 ((ViewGroup) dialogLayout13.getParent()).setBackground(roundedCorners);
                 about1.show();
             });
-            float TopLeft = 20.0f;
-            float TopRight = 20.0f;
+            float TopLeft = 10.0f;
+            float TopRight = 10.0f;
             float BottomRight = 0.0f;
             float BottomLeft = 0.0f;
             GradientDrawable roundedCorners = new GradientDrawable();
@@ -1871,8 +1871,8 @@ public class LocalStreamActivity extends  AppCompatActivity  {
                             song_name.setError("Song name should not be blank.");
                         }
                     });
-                    float TopLeft = 20.0f;
-                    float TopRight = 20.0f;
+                    float TopLeft = 10.0f;
+                    float TopRight = 10.0f;
                     float BottomRight = 0.0f;
                     float BottomLeft = 0.0f;
                     GradientDrawable roundedCorners = new GradientDrawable();
@@ -1956,8 +1956,8 @@ public class LocalStreamActivity extends  AppCompatActivity  {
                         lyricsDialog.dismiss();
                         songOptsDialog.dismiss();
                     });
-                    float TopLeft = 20.0f;
-                    float TopRight = 20.0f;
+                    float TopLeft = 10.0f;
+                    float TopRight = 10.0f;
                     float BottomRight = 0.0f;
                     float BottomLeft = 0.0f;
                     GradientDrawable roundedCorners = new GradientDrawable();
@@ -2029,8 +2029,8 @@ public class LocalStreamActivity extends  AppCompatActivity  {
                     View dialogLayout3 = getLayoutInflater().inflate(R.layout.dialog_song_opts_remove, null);
                     removeDialog.setContentView(dialogLayout3);
                 });
-                float TopLeft = 20.0f;
-                float TopRight = 20.0f;
+                float TopLeft = 10.0f;
+                float TopRight = 10.0f;
                 float BottomRight = 0.0f;
                 float BottomLeft = 0.0f;
                 GradientDrawable roundedCorners = new GradientDrawable();

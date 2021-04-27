@@ -149,8 +149,8 @@ public class SplashActivity extends AppCompatActivity {
                             }
                         });
 
-                        float TopLeft = 20.0f;
-                        float TopRight = 20.0f;
+                        float TopLeft = 10.0f;
+                        float TopRight = 10.0f;
                         float BottomRight = 0.0f;
                         float BottomLeft = 0.0f;
 
