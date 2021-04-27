@@ -1502,13 +1502,16 @@ public class LocalStreamActivity extends  AppCompatActivity  {
                         currentDuration.setText(String.valueOf((playbackSrv.getCurrentPosition() / 1000) / 60).concat(":".concat(new DecimalFormat("00").format((playbackSrv.getCurrentPosition() / 1000) % 60))));
                     } else {
                         if (sessionData.containsKey("sessionSongPosition")) {
-                            playbackSrv.createLocalStream(Integer.parseInt(sessionData.get("sessionSongPosition").toString()));
-                            if (musicData.get(Integer.parseInt(sessionData.get("sessionSongPosition").toString())).containsKey("songCurrentDuration")) {
-                                if (!musicData.get(Integer.parseInt(sessionData.get("sessionSongPosition").toString())).get("songCurrentDuration").equals(playbackSrv.getCurrentPosition())) {
-                                    playbackSrv.seek(Integer.parseInt(musicData.get(Integer.parseInt(sessionData.get("sessionSongPosition").toString())).get("songCurrentDuration").toString()));
-                                    miniplayerSeekbar.setProgress(Integer.parseInt(musicData.get(Integer.parseInt(sessionData.get("sessionSongPosition").toString())).get("songCurrentDuration").toString()));
-                                    currentDuration.setText(String.valueOf(((Integer.parseInt(musicData.get(Integer.parseInt(sessionData.get("sessionSongPosition").toString())).get("songCurrentDuration").toString()) / 1000) / 60)).concat(":".concat(new DecimalFormat("00").format((Integer.parseInt(musicData.get(Integer.parseInt(sessionData.get("sessionSongPosition").toString())).get("songCurrentDuration").toString()) / 1000) % 60))));
-                                    seekbarDuration.setProgress(Integer.parseInt(musicData.get(Integer.parseInt(sessionData.get("sessionSongPosition").toString())).get("songCurrentDuration").toString()));
+                            if (FileUtil.doesExists(Base64Util.decode(musicData.get(Integer.parseInt(sessionData.get("sessionSongPosition").toString())).get("songData").toString()))
+                                  && FileUtil.isFile(Base64Util.decode(musicData.get(Integer.parseInt(sessionData.get("sessionSongPosition").toString())).get("songData").toString()))) {
+                                playbackSrv.createLocalStream(Integer.parseInt(sessionData.get("sessionSongPosition").toString()));
+                                if (musicData.get(Integer.parseInt(sessionData.get("sessionSongPosition").toString())).containsKey("songCurrentDuration")) {
+                                    if (!musicData.get(Integer.parseInt(sessionData.get("sessionSongPosition").toString())).get("songCurrentDuration").equals(playbackSrv.getCurrentPosition())) {
+                                        playbackSrv.seek(Integer.parseInt(musicData.get(Integer.parseInt(sessionData.get("sessionSongPosition").toString())).get("songCurrentDuration").toString()));
+                                        miniplayerSeekbar.setProgress(Integer.parseInt(musicData.get(Integer.parseInt(sessionData.get("sessionSongPosition").toString())).get("songCurrentDuration").toString()));
+                                        currentDuration.setText(String.valueOf(((Integer.parseInt(musicData.get(Integer.parseInt(sessionData.get("sessionSongPosition").toString())).get("songCurrentDuration").toString()) / 1000) / 60)).concat(":".concat(new DecimalFormat("00").format((Integer.parseInt(musicData.get(Integer.parseInt(sessionData.get("sessionSongPosition").toString())).get("songCurrentDuration").toString()) / 1000) % 60))));
+                                        seekbarDuration.setProgress(Integer.parseInt(musicData.get(Integer.parseInt(sessionData.get("sessionSongPosition").toString())).get("songCurrentDuration").toString()));
+                                    }
                                 }
                             }
                         } else {
