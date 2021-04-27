@@ -2024,6 +2024,10 @@ public class LocalStreamActivity extends  AppCompatActivity  {
                             view12.setBackground(rippleButton12);
                         }
                     }
+
+                    BottomSheetDialog removeDialog = new BottomSheetDialog(LocalStreamActivity.this);
+                    View dialogLayout3 = getLayoutInflater().inflate(R.layout.dialog_song_opts_remove, null);
+                    removeDialog.setContentView(dialogLayout3);
                 });
                 float TopLeft = 20.0f;
                 float TopRight = 20.0f;
