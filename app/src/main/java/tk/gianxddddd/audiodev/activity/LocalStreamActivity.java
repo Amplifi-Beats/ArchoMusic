@@ -17,6 +17,7 @@ import android.graphics.drawable.GradientDrawable;
 import android.graphics.drawable.RippleDrawable;
 import android.media.AudioManager;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
@@ -26,6 +27,7 @@ import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
@@ -37,6 +39,7 @@ import android.widget.SeekBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
@@ -1102,6 +1105,12 @@ public class LocalStreamActivity extends  AppCompatActivity  {
             }
             listRefresh.setRefreshing(false);
         });
+        songList.addOnScrollListener(new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
+                super.onScrolled(recyclerView, dx, dy);
+            }
+        });
         seekbarDuration.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean idk) {
@@ -1446,7 +1455,6 @@ public class LocalStreamActivity extends  AppCompatActivity  {
                         songArtist.setText(musicData.get(Integer.parseInt(sessionData.get("sessionSongPosition").toString())).get("songArtist").toString());
                         miniplayerSongTitle.setText(musicData.get(Integer.parseInt(sessionData.get("sessionSongPosition").toString())).get("songTitle").toString());
                         miniplayerSongArtist.setText(musicData.get(Integer.parseInt(sessionData.get("sessionSongPosition").toString())).get("songArtist").toString());
-                        playbackSrv.seek(Integer.parseInt(musicData.get(Integer.parseInt(sessionData.get("sessionSongPosition").toString())).get("songCurrentDuration").toString()));
                         seekbarDuration.setMax(playbackSrv.getMaxDuration());
                         seekbarDuration.setProgress(playbackSrv.getCurrentPosition());
                         miniplayerSeekbar.setMax(playbackSrv.getMaxDuration());
@@ -1544,13 +1552,16 @@ public class LocalStreamActivity extends  AppCompatActivity  {
 
     @Override
     public void onBackPressed() {
+        if (settingsData.containsKey("settingsBackgroundAudio")) {
+            if (!settingsData.get("settingsBackgroundAudio").equals("true")) {
+                if (playbackSrv != null && playbackSrv.mp != null
+                       && playbackSrv.isPlaying()) {
+                    playPause();
+                }
+            }
+        }
         if (playbackSrv != null && playbackSrv.mp != null) {
             if (playbackSrv.isPlaying()) {
-                if (settingsData.containsKey("settingsBackgroundAudio")) {
-                    if (!settingsData.get("settingsBackgroundAudio").equals("true")) {
-                        playPause();
-                    }
-                }
                 moveTaskToBack(true);
             } else {
                 if (!playbackSrv.isPlaying()) {
@@ -1559,6 +1570,8 @@ public class LocalStreamActivity extends  AppCompatActivity  {
                     finishAffinity();
                 }
             }
+        } else {
+            finishAffinity();
         }
     }
 
@@ -1656,9 +1669,9 @@ public class LocalStreamActivity extends  AppCompatActivity  {
             View view = holder.itemView;
             LinearLayout main = view.findViewById(R.id.main);
             ImageView more = view.findViewById(R.id.more);
-            ImageView albumArt = view.findViewById(R.id.albumArt);
             TextView songTitle = view.findViewById(R.id.songTitle);
             TextView songArtist = view.findViewById(R.id.songArtist);
+            ImageView albumArt = view.findViewById(R.id.albumArt);
             if (settingsData.containsKey("settingsDarkMode")) {
                 if (settingsData.get("settingsDarkMode").equals("true")) {
                     main.setBackgroundColor(Color.parseColor("#1A1A1A"));
@@ -2032,5 +2045,7 @@ public class LocalStreamActivity extends  AppCompatActivity  {
                 super(view);
             }
         }
+
     }
+
 }

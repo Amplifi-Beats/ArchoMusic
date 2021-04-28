@@ -208,7 +208,6 @@ public class LocalPlaybackService extends Service {
         }
         if (FileUtil.doesExists(FileUtil.getPackageDir(this).concat("/user/session.pref")) && FileUtil.isFile(FileUtil.getPackageDir(this).concat("/user/session.pref"))) {
             sessionData = ListUtil.getHashMapFromFile(FileUtil.getPackageDir(this).concat("/user/session.pref"));
-
         } else {
             sessionData = new HashMap<>();
         }
