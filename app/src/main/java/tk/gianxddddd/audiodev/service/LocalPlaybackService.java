@@ -23,6 +23,7 @@ import com.bumptech.glide.Glide;
 import tk.gianxddddd.audiodev.R;
 import tk.gianxddddd.audiodev.activity.LocalStreamActivity;
 import tk.gianxddddd.audiodev.receiver.HeadphonesReceiver;
+import tk.gianxddddd.audiodev.receiver.NotificationReceiver;
 import tk.gianxddddd.audiodev.util.ApplicationUtil;
 import tk.gianxddddd.audiodev.util.FileUtil;
 import tk.gianxddddd.audiodev.util.ImageUtil;
@@ -175,6 +176,36 @@ public class LocalPlaybackService extends Service {
             startForeground(NOTIFY_ID, notification);
 
         } else {
+            Intent repeatIntent = new Intent(this, NotificationReceiver.class);
+            repeatIntent.putExtra("onClick", "repeat");
+            /* Set up a dummy intent action */
+            repeatIntent.setAction(Long.toString(System.currentTimeMillis()));
+            PendingIntent pendingRepeatIntent = PendingIntent.getBroadcast(this, 0, repeatIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+
+            Intent skipPreviousIntent = new Intent(this, NotificationReceiver.class);
+            skipPreviousIntent.putExtra("onClick", "previous");
+            /* Set up a dummy intent action */
+            skipPreviousIntent.setAction(Long.toString(System.currentTimeMillis()));
+            PendingIntent pendingSkipPreviousIntent = PendingIntent.getBroadcast(this, 0, skipPreviousIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+
+            Intent playPauseIntent = new Intent(this, NotificationReceiver.class);
+            playPauseIntent.putExtra("onClick", "playpause");
+            /* Set up a dummy intent action */
+            playPauseIntent.setAction(Long.toString(System.currentTimeMillis()));
+            PendingIntent pendingPlayPauseIntent = PendingIntent.getBroadcast(this, 0, playPauseIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+
+            Intent skipNextIntent = new Intent(this, NotificationReceiver.class);
+            skipNextIntent.putExtra("onClick", "next");
+            /* Set up a dummy intent action */
+            skipNextIntent.setAction(Long.toString(System.currentTimeMillis()));
+            PendingIntent pendingSkipNextIntent = PendingIntent.getBroadcast(this, 0, skipNextIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+
+            Intent shuffleIntent = new Intent(this, NotificationReceiver.class);
+            shuffleIntent.putExtra("onClick", "shuffle");
+            /* Set up a dummy intent action */
+            shuffleIntent.setAction(Long.toString(System.currentTimeMillis()));
+            PendingIntent pendingShuffleIntent = PendingIntent.getBroadcast(this, 0, shuffleIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+
             NotificationCompat.Builder notificationBuilder = new NotificationCompat.Builder(this, "libaudiodev");
 
             notificationChannel = new NotificationChannel("libaudiodev", "Music Player", NotificationManager.IMPORTANCE_LOW);
@@ -188,10 +219,17 @@ public class LocalPlaybackService extends Service {
                     .setPriority(NotificationManager.IMPORTANCE_LOW)
                     .setNumber(0)
                     .setCategory(Notification.CATEGORY_SERVICE)
-                    .setSmallIcon(R.drawable.ic_media_notification)
-                    .setLargeIcon(ImageUtil.getAlbumArt(Base64Util.decode(musicData.get(position).get("songData").toString()), resources, theme))
                     .setContentText("by ".concat(musicData.get(position).get("songArtist").toString()))
                     .setContentTitle(musicData.get(position).get("songTitle").toString())
+                    .setSmallIcon(R.drawable.ic_media_notification)
+                    .setLargeIcon(ImageUtil.getAlbumArt(Base64Util.decode(musicData.get(position).get("songData").toString()), resources, theme))
+                    .addAction(R.drawable.ic_media_notification_repeat, "Repeat", pendingRepeatIntent)
+                    .addAction(R.drawable.ic_media_notification_skip_previous, "Skip previous", pendingSkipPreviousIntent)
+                    .addAction(R.drawable.ic_media_notification_play_pause, "Play/Pause", pendingPlayPauseIntent)
+                    .addAction(R.drawable.ic_media_notification_skip_next, "Skip next", pendingSkipNextIntent)
+                    .addAction(R.drawable.ic_media_notification_shuffle, "Shuffle", pendingShuffleIntent)
+                    .setStyle(new androidx.media.app.NotificationCompat.MediaStyle()
+                            .setShowActionsInCompactView(1, 2, 3))
                     .build();
 
             startForeground(NOTIFY_ID, notification);
