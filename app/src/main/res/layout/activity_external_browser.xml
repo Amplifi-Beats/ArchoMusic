@@ -47,6 +47,12 @@
 				android:textColor="#000000"
 				android:textSize="12sp" />
 		</LinearLayout>
+		<ImageView
+			android:id="@+id/options"
+			android:layout_width="30dp"
+			android:layout_height="40dp"
+			android:src="@drawable/ic_extbrowser_opt_key"
+			android:scaleType="fitCenter"/>
 	</LinearLayout>
 	<ProgressBar
 		android:id="@+id/loadbar"
