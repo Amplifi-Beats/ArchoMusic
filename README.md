@@ -3,9 +3,9 @@
 [![build](https://github.com/gianxddddd/ArchoMusic/actions/workflows/gradle.yml/badge.svg)](https://github.com/gianxddddd/ArchoMusic/actions/workflows/gradle.yml)
 
 
-[DEPRECATED: Archo Music is no longer maintained and no longer receiving updates.]
+[ANNOUNCEMENT: Archo Music has been announced for rewriting the whole application using Kotlin!]
 
-# Archo Music
+## Archo Music
 Archo Music is an open-sourced Android music player application written in Java, Created and developed by GianXD.
 
 
