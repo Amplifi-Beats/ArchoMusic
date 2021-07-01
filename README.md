@@ -1,6 +1,6 @@
 <img src="https://cdn.discordapp.com/attachments/803677887496060999/826646596430725160/ar_music_github_logo.png" width="255" height="150"/>
 
-[![build](https://github.com/gianxddddd/ArchoMusic/actions/workflows/gradle.yml/badge.svg)](https://github.com/gianxddddd/ArchoMusic/actions/workflows/gradle.yml)
+[![build](https://github.com/gianxddddd/ArchoMusic/actions/workflows/android.yml/badge.svg)](https://github.com/gianxddddd/ArchoMusic/actions/workflows/android.yml)
 
 
 ## Archo Music
