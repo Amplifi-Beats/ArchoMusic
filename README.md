@@ -3,7 +3,7 @@
 [![build](https://github.com/gianxddddd/ArchoMusic/actions/workflows/gradle.yml/badge.svg)](https://github.com/gianxddddd/ArchoMusic/actions/workflows/gradle.yml)
 
 
-[master-java: This is the old Archo Music written on Java, you may migrate to the new Archo Music with Kotlin codebase.]
+[`master-java`: This is the old Archo Music written on Java, you may migrate to the new Archo Music with Kotlin codebase.]
 
 ## Archo Music
 Archo Music is an open-sourced Android music player application, Made by GianXD.
@@ -20,11 +20,6 @@ Archo Music is an open-sourced Android music player application, Made by GianXD.
 [Gson](https://github.com/google/gson) by Google
 
 [Glide](https://github.com/bumptech/glide) by Bumptech
-
-
-## Branches
-
-master - Main branch, stable development of Archo Music
 
 
 ## Download
