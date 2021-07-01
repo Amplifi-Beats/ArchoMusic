@@ -1,0 +1,481 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/music_home_layout"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/colorBackground"
+    android:orientation="vertical"
+    tools:context=".fragment.MusicHomeFragment">
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:scrollbars="none">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:padding="4dp">
+
+                <TextView
+                    android:id="@+id/music_home_title"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:padding="24dp"
+                    android:singleLine="true"
+                    android:text="Home"
+                    android:textColor="@color/colorBackgroundText"
+                    android:textSize="24sp" />
+
+                <de.hdodenhof.circleimageview.CircleImageView
+                    android:id="@+id/music_home_profile_image"
+                    android:layout_width="100dp"
+                    android:layout_height="80dp"
+                    android:layout_gravity="center"
+                    android:layout_marginEnd="16dp"
+                    android:layout_weight="1"
+                    android:src="@drawable/music_default_avatar" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical"
+                android:padding="16dp">
+
+                <androidx.cardview.widget.CardView
+                    android:layout_width="match_parent"
+                    android:layout_height="120dp"
+                    app:cardCornerRadius="8dp">
+
+                    <FrameLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent">
+
+                        <ImageView
+                            android:id="@+id/music_home_art_image"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:scaleType="centerCrop"
+                            android:src="@drawable/music_default_song_art" />
+
+                        <LinearLayout
+                            android:id="@+id/music_home_art_layout"
+                            android:layout_width="fill_parent"
+                            android:layout_height="fill_parent"
+                            android:background="?android:attr/selectableItemBackground"
+                            android:gravity="bottom"
+                            android:orientation="horizontal">
+
+                            <TextView
+                                android:id="@+id/music_home_art_text"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:background="@drawable/layer_gradient_art_bg"
+                                android:padding="8dp"
+                                android:text="@string/music_home_art_text"
+                                android:textColor="@color/colorArtText"
+                                android:textSize="16sp" />
+
+                        </LinearLayout>
+                    </FrameLayout>
+                </androidx.cardview.widget.CardView>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:id="@+id/music_home_albums_title"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="4dp"
+                        android:layout_weight="1"
+                        android:padding="16dp"
+                        android:text="@string/music_home_album_header"
+                        android:textColor="@color/colorBackgroundText"
+                        android:textSize="18sp" />
+
+                    <TextView
+                        android:id="@+id/music_home_albums_more"
+                        android:layout_width="120dp"
+                        android:layout_height="50dp"
+                        android:layout_gravity="center"
+                        android:layout_weight="1"
+                        android:background="?android:attr/selectableItemBackgroundBorderless"
+                        android:alpha="0.5"
+                        android:gravity="center"
+                        android:text="@string/music_home_more_holder"
+                        android:textColor="@color/colorBackgroundText"
+                        android:textSize="12sp" />
+
+                </LinearLayout>
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/music_home_albums_grid"
+                    android:layout_width="match_parent"
+                    android:layout_height="140dp"
+                    android:orientation="horizontal"
+                    android:scrollbars="none" />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:id="@+id/music_home_artists_title"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="4dp"
+                        android:layout_weight="1"
+                        android:padding="16dp"
+                        android:text="@string/music_home_artists_header"
+                        android:textColor="@color/colorBackgroundText"
+                        android:textSize="18sp" />
+
+                    <TextView
+                        android:id="@+id/music_home_artists_more"
+                        android:layout_width="120dp"
+                        android:layout_height="50dp"
+                        android:layout_gravity="center"
+                        android:layout_weight="1"
+                        android:background="?android:attr/selectableItemBackgroundBorderless"
+                        android:alpha="0.5"
+                        android:gravity="center"
+                        android:text="@string/music_home_more_holder"
+                        android:textColor="@color/colorBackgroundText"
+                        android:textSize="12sp" />
+
+                </LinearLayout>
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/music_home_artists_grid"
+                    android:layout_width="match_parent"
+                    android:layout_height="120dp"
+                    android:scrollbars="none" />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:id="@+id/music_home_songs_title"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="4dp"
+                        android:layout_weight="1"
+                        android:padding="16dp"
+                        android:text="@string/music_home_song_header"
+                        android:textColor="@color/colorBackgroundText"
+                        android:textSize="18sp" />
+
+                    <TextView
+                        android:id="@+id/music_home_songs_more"
+                        android:layout_width="120dp"
+                        android:layout_height="50dp"
+                        android:layout_gravity="center"
+                        android:layout_weight="1"
+                        android:background="?android:attr/selectableItemBackgroundBorderless"
+                        android:alpha="0.5"
+                        android:gravity="center"
+                        android:text="@string/music_home_more_holder"
+                        android:textColor="@color/colorBackgroundText"
+                        android:textSize="12sp" />
+
+                </LinearLayout>
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/music_home_songs_grid"
+                    android:layout_width="match_parent"
+                    android:layout_height="140dp"
+                    android:scrollbars="none" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="30dp"
+                android:orientation="horizontal"
+                android:gravity="center">
+
+                <TextView
+                    android:id="@+id/music_home_menu_settings"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:background="?android:attr/selectableItemBackgroundBorderless"
+                    android:text="@string/music_home_menu_settings"
+                    android:textColor="#03A9F4"
+                    android:textSize="12sp" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:paddingStart="3dp"
+                    android:paddingEnd="3dp"
+                    android:text="@string/music_home_menu_line"
+                    android:textSize="12sp" />
+
+                <TextView
+                    android:id="@+id/music_home_menu_about"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:background="?android:attr/selectableItemBackgroundBorderless"
+                    android:text="@string/music_home_menu_about"
+                    android:textColor="#03A9F4"
+                    android:textSize="12sp" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:paddingStart="3dp"
+                    android:paddingEnd="3dp"
+                    android:text="@string/music_home_menu_line"
+                    android:textSize="12sp" />
+
+                <TextView
+                    android:id="@+id/music_home_menu_help"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:background="?android:attr/selectableItemBackgroundBorderless"
+                    android:text="@string/music_home_menu_help"
+                    android:textColor="#03A9F4"
+                    android:textSize="12sp" />
+
+            </LinearLayout>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:padding="4dp"
+                android:text="@string/app_music_info"
+                android:textSize="12sp" />
+
+        </LinearLayout>
+    </ScrollView>
+
+    <LinearLayout
+        android:id="@+id/music_home_explayer_layout_minimized"
+        android:background="?android:attr/selectableItemBackground"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal" >
+
+        <TextView
+            android:id="@+id/music_home_explayer_title_minimized"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:paddingTop="16dp"
+            android:paddingStart="16dp"
+            android:paddingEnd="4dp"
+            android:paddingBottom="16dp"
+            android:text="@string/explayer_title"
+            android:textColor="@color/colorBackgroundText"
+            android:textSize="14sp" />
+
+        <LinearLayout
+            android:orientation="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1" >
+
+            <TextView
+                android:id="@+id/music_home_explayer_subtitle_minimized"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:alpha="0.5"
+                android:paddingTop="19dp"
+                android:paddingEnd="16dp"
+                android:paddingStart="4dp"
+                android:paddingBottom="16dp"
+                android:focusable="true"
+                android:singleLine="true"
+                android:ellipsize="marquee"
+                android:marqueeRepeatLimit="marquee_forever"
+                android:text="@string/explayer_song_label_combined_placeholder"
+                android:textColor="@color/colorBackgroundText"
+                android:textSize="12sp" />
+        </LinearLayout>
+
+        <ImageView
+            android:id="@+id/music_home_explayer_button_expandmore"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:layout_gravity="center"
+            android:paddingTop="20dp"
+            android:paddingBottom="16dp"
+            android:background="?android:attr/selectableItemBackgroundBorderless"
+            android:src="@drawable/ic_expand_more" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/music_home_explayer_layout"
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" >
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal" >
+
+            <TextView
+                android:id="@+id/music_home_explayer_title"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:layout_marginTop="4dp"
+                android:padding="16dp"
+                android:text="@string/explayer_title"
+                android:textColor="@color/colorBackgroundText"
+                android:textSize="18sp" />
+
+            <ImageView
+                android:id="@+id/music_home_explayer_button_expandless"
+                android:layout_width="80dp"
+                android:layout_height="50dp"
+                android:layout_gravity="center"
+                android:layout_marginTop="4dp"
+                android:padding="8dp"
+                android:background="?android:attr/selectableItemBackgroundBorderless"
+                android:src="@drawable/ic_expand_less" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:padding="8dp" >
+
+            <androidx.cardview.widget.CardView
+                android:layout_width="150dp"
+                android:layout_height="95dp"
+                app:cardCornerRadius="8dp">
+
+                <FrameLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent">
+
+                    <ImageView
+                        android:id="@+id/music_home_explayer_song_art"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:scaleType="centerCrop"
+                        android:src="@drawable/music_default_song_art" />
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:gravity="bottom"
+                        android:orientation="horizontal">
+
+                        <ProgressBar
+                            android:id="@+id/music_home_explayer_song_progress"
+                            style="?android:attr/progressBarStyleHorizontal"
+                            android:layout_width="match_parent"
+                            android:layout_height="2dp"
+                            android:progress="100"
+                            android:progressDrawable="@color/colorProgressColor" />
+
+                    </LinearLayout>
+                </FrameLayout>
+            </androidx.cardview.widget.CardView>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical" >
+
+                <LinearLayout
+                    android:orientation="vertical"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1" >
+
+                    <TextView
+                        android:id="@+id/music_home_explayer_song_title"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:paddingStart="8dp"
+                        android:paddingTop="8dp"
+                        android:paddingEnd="8dp"
+                        android:focusable="true"
+                        android:singleLine="true"
+                        android:ellipsize="marquee"
+                        android:marqueeRepeatLimit="marquee_forever"
+                        android:text="@string/explayer_song_title_placeholder"
+                        android:textColor="@color/colorBackgroundText"
+                        android:textSize="14sp" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:orientation="vertical"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1" >
+
+                    <TextView
+                        android:id="@+id/music_home_explayer_song_subtitle"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:alpha="0.5"
+                        android:paddingStart="8dp"
+                        android:paddingBottom="8dp"
+                        android:paddingEnd="8dp"
+                        android:focusable="true"
+                        android:singleLine="true"
+                        android:ellipsize="marquee"
+                        android:marqueeRepeatLimit="marquee_forever"
+                        android:text="@string/explayer_song_subtitle_placeholder"
+                        android:textColor="@color/colorBackgroundText"
+                        android:textSize="12sp" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:padding="4dp" >
+
+                    <ImageView
+                        android:id="@+id/music_home_explayer_button_skip_previous"
+                        android:layout_width="0dp"
+                        android:layout_height="30dp"
+                        android:layout_weight="1"
+                        android:src="@drawable/ic_skip_previous"/>
+
+                    <ImageView
+                        android:id="@+id/music_home_explayer_button_playback"
+                        android:layout_width="0dp"
+                        android:layout_height="30dp"
+                        android:layout_weight="1"
+                        android:src="@drawable/ic_pause_circle"/>
+
+                    <ImageView
+                        android:id="@+id/music_home_explayer_button_skip_next"
+                        android:layout_width="0dp"
+                        android:layout_height="30dp"
+                        android:layout_weight="1"
+                        android:src="@drawable/ic_skip_next"/>
+
+                </LinearLayout>
+            </LinearLayout>
+        </LinearLayout>
+    </LinearLayout>
+</LinearLayout>

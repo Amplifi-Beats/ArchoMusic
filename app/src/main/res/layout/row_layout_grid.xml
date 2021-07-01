@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/grid_item_layout"
+    android:layout_width="wrap_content"
+    android:layout_height="match_parent"
+    android:layout_weight="1"
+    android:background="@color/colorBackground"
+    android:orientation="vertical"
+    android:padding="8dp">
+
+    <androidx.cardview.widget.CardView
+        android:layout_width="80dp"
+        android:layout_height="80dp"
+        app:cardCornerRadius="16dp">
+
+        <ImageView
+            android:id="@+id/grid_item_art"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:foreground="?android:attr/selectableItemBackground"
+            android:scaleType="fitCenter"
+            android:src="@drawable/music_default_song_art" />
+    </androidx.cardview.widget.CardView>
+
+    <TextView
+        android:id="@+id/grid_item_title"
+        android:layout_width="80dp"
+        android:layout_height="wrap_content"
+        android:paddingStart="8dp"
+        android:paddingTop="8dp"
+        android:paddingEnd="8dp"
+        android:singleLine="true"
+        android:textColor="@color/colorBackgroundText"
+        android:textSize="12sp" />
+
+    <TextView
+        android:id="@+id/grid_item_subtitle"
+        android:layout_width="80dp"
+        android:layout_height="wrap_content"
+        android:alpha="0.5"
+        android:paddingStart="8dp"
+        android:singleLine="true"
+        android:textColor="@color/colorBackgroundText"
+        android:textSize="10sp" />
+
+</LinearLayout>

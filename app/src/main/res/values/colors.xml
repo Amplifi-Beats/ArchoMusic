@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Main brands -->
+    <color name="colorPrimary">#03A9F4</color>
+    <color name="colorPrimaryDark">#2196F3</color>
+    <color name="colorAccent">#00BCD4</color>
+    <!-- Text brands -->
+    <color name="colorBackgroundText">#000000</color>
+    <color name="colorPrimaryText">#FFFFFF</color>
+    <color name="colorHint">#A8A8A8</color>
+    <color name="colorBackground">#FFFFFF</color>
+    <color name="colorAccentText">#FFFFFF</color>
+    <color name="colorControlHighlight">#40000000</color>
+    <!-- Misc brands -->
+    <color name="colorPrimaryTint">#FFFFFF</color>
+    <color name="colorBackgroundCard">#03A9F4</color>
+    <color name="colorPrimaryCard">#03A9F4</color>
+    <color name="colorPrimaryCardText">#FFFFFF</color>
+    <color name="colorBackgroundTint">#000000</color>
+    <color name="colorBackgroundCardTint">#FFFFFF</color>
+    <color name="colorPrimaryCardTint">#FFFFFF</color>
+    <color name="colorBackgroundCardText">#FFFFFF</color>
+    <!-- Art brands -->
+    <color name="colorArtOpacity">#CC000000</color>
+    <color name="colorArtText">#FFFFFF</color>
+    <!-- Dialog brands -->
+    <color name="colorDialog">#03A9F4</color>
+    <color name="colorDialogText">#FFFFFF</color>
+    <color name="colorDialogTint">#FFFFFF</color>
+    <!-- Progress brands -->
+    <color name="colorProgressColor">#000000</color>
+</resources>

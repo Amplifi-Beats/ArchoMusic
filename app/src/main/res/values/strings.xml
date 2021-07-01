@@ -1,0 +1,20 @@
+<resources>
+    <string name="app_name">Archo Music</string>
+    <string name="app_version">3.22</string>
+    <string name="app_music_info">Archo Music, version 3.22</string>
+    <string name="music_home_title">Home</string>
+    <string name="music_home_album_header">Albums</string>
+    <string name="music_home_artists_header">Artists</string>
+    <string name="music_home_song_header">Songs</string>
+    <string name="music_home_more_holder">More</string>
+    <string name="music_home_art_text">Last Played</string>
+    <string name="music_home_menu_settings">Settings</string>
+    <string name="music_home_menu_line">|</string>
+    <string name="music_home_menu_about">About</string>
+    <string name="music_home_menu_help">Help</string>
+    <string name="explayer_title">Now Playing</string>
+    <string name="explayer_song_title_placeholder">Explayer Song</string>
+    <string name="explayer_song_subtitle_placeholder">Explayer subtitle</string>
+    <string name="explayer_song_label_combined_placeholder">Explayer song - Explayer artist - Explayer album</string>
+    <string name="unicode_black_filled">●</string>
+</resources>
