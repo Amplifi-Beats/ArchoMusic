@@ -2,7 +2,7 @@
 <resources>
     <!-- Main brands -->
     <color name="colorPrimary">#03A9F4</color>
-    <color name="colorPrimaryDark">#2196F3</color>
+    <color name="colorPrimaryDark">#FFFFFF</color>
     <color name="colorAccent">#00BCD4</color>
     <!-- Text brands -->
     <color name="colorBackgroundText">#000000</color>
