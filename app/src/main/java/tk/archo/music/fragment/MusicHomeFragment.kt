@@ -287,14 +287,10 @@ class MusicHomeFragment : Fragment() {
                     val binder = service as ExoPlayerService.ExoServiceBinder
                     exoService = binder.getService()
                     isExoServiceBound = true
-
-                    AppUtil.toast(context!!, "amogus sus connected", Toast.LENGTH_LONG)
                 }
 
                 override fun onServiceDisconnected(name: ComponentName) {
                     isExoServiceBound = false
-
-                    AppUtil.toast(context!!, "amogus sus disconnected", Toast.LENGTH_LONG)
                 }
             }
         }
