@@ -72,6 +72,16 @@ class MusicHomeFragment : Fragment() {
         super.onCreate(savedInstanceState)
     }
 
+    override fun onStart() {
+        super.onStart()
+        bindFragmentToExoService()
+    }
+
+    override fun onStop() {
+        super.onStop()
+        unbindFragmentFromExoService()
+    }
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -83,9 +93,6 @@ class MusicHomeFragment : Fragment() {
     }
 
     fun initializeViews(fragmentView: View) {
-        /* Bind this fragment to ExoPlayerService */
-        bindFragmentToExoService()
-
         /* Find their views by IDs from layout */
         music_home_layout = fragmentView.findViewById(R.id.music_home_layout)
         music_home_profile_image = fragmentView.findViewById(R.id.music_home_profile_image)
@@ -245,7 +252,6 @@ class MusicHomeFragment : Fragment() {
             // functionality Soon
         }
         music_home_explayer_layout_minimized.setOnClickListener {
-            unbindFragmentFromExoService()
             (activity as MusicActivity).changeFragment(MusicPlayerFragment(), "playerFrag")
         }
         music_home_explayer_layout.setOnClickListener {
