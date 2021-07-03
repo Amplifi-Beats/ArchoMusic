@@ -1,7 +1,13 @@
 package tk.archo.music.fragment
 
+import android.app.Service
+import android.content.ComponentName
+import android.content.Context
+import android.content.Intent
+import android.content.ServiceConnection
 import android.graphics.Typeface
 import android.os.Bundle
+import android.os.IBinder
 import android.transition.AutoTransition
 import android.transition.TransitionManager
 import android.view.LayoutInflater
@@ -16,8 +22,15 @@ import de.hdodenhof.circleimageview.CircleImageView
 import tk.archo.music.R
 import tk.archo.music.activity.MusicActivity
 import tk.archo.music.data.SongItem
+import tk.archo.music.service.ExoPlayerService
+import tk.archo.music.util.AppUtil
 
 class MusicHomeFragment : Fragment() {
+    lateinit var intentExoService: Intent
+    lateinit var exoService: ExoPlayerService
+    lateinit var exoServiceConn: ServiceConnection
+    var isExoServiceBound: Boolean = false
+
     lateinit var music_home_layout: LinearLayout
     lateinit var music_home_profile_image: CircleImageView
     lateinit var music_home_title: TextView
@@ -70,6 +83,9 @@ class MusicHomeFragment : Fragment() {
     }
 
     fun initializeViews(fragmentView: View) {
+        /* Bind this fragment to ExoPlayerService */
+        bindFragmentToExoService()
+
         /* Find their views by IDs from layout */
         music_home_layout = fragmentView.findViewById(R.id.music_home_layout)
         music_home_profile_image = fragmentView.findViewById(R.id.music_home_profile_image)
@@ -229,7 +245,14 @@ class MusicHomeFragment : Fragment() {
             // functionality Soon
         }
         music_home_explayer_layout_minimized.setOnClickListener {
+            unbindFragmentFromExoService()
             (activity as MusicActivity).changeFragment(MusicPlayerFragment(), "playerFrag")
+        }
+        music_home_explayer_layout.setOnClickListener {
+            /* The minimized player and this expanded player has the same
+               functionality so it will performing a click on the minimized player.
+             */
+            music_home_explayer_layout_minimized.performClick()
         }
         music_home_explayer_button_expandmore.setOnClickListener {
             TransitionManager.beginDelayedTransition(music_home_layout,
@@ -243,6 +266,39 @@ class MusicHomeFragment : Fragment() {
                 AutoTransition())
             music_home_explayer_layout.visibility = View.GONE
             music_home_explayer_layout_minimized.visibility = View.VISIBLE
+        }
+    }
+
+    fun bindFragmentToExoService() {
+        if (!this::intentExoService.isInitialized) {
+            intentExoService = Intent()
+            intentExoService.setClass(requireContext(), ExoPlayerService::class.java)
+            activity?.startService(intentExoService)
+        }
+        if (!this::exoServiceConn.isInitialized) {
+            exoServiceConn = object : ServiceConnection {
+                override fun onServiceConnected(name: ComponentName, service: IBinder) {
+                    val binder = service as ExoPlayerService.ExoServiceBinder
+                    exoService = binder.getService()
+                    isExoServiceBound = true
+
+                    AppUtil.toast(context!!, "amogus sus connected", Toast.LENGTH_LONG)
+                }
+
+                override fun onServiceDisconnected(name: ComponentName) {
+                    isExoServiceBound = false
+
+                    AppUtil.toast(context!!, "amogus sus disconnected", Toast.LENGTH_LONG)
+                }
+            }
+        }
+
+        activity?.bindService(intentExoService, exoServiceConn, Context.BIND_AUTO_CREATE)
+    }
+
+    fun unbindFragmentFromExoService() {
+        if (isExoServiceBound) {
+            activity?.unbindService(exoServiceConn)
         }
     }
 

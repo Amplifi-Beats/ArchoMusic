@@ -326,6 +326,7 @@
     <LinearLayout
         android:id="@+id/music_home_explayer_layout"
         android:orientation="vertical"
+        android:background="?android:attr/selectableItemBackground"
         android:layout_width="match_parent"
         android:layout_height="wrap_content" >
 
