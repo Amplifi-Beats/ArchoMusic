@@ -1,6 +1,5 @@
 package tk.archo.music.fragment
 
-import android.app.Service
 import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
@@ -14,6 +13,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.*
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.*
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -23,7 +23,7 @@ import tk.archo.music.R
 import tk.archo.music.activity.MusicActivity
 import tk.archo.music.data.SongItem
 import tk.archo.music.service.ExoPlayerService
-import tk.archo.music.util.AppUtil
+import java.util.*
 
 class MusicHomeFragment : Fragment() {
     lateinit var intentExoService: Intent
@@ -41,12 +41,15 @@ class MusicHomeFragment : Fragment() {
 
     lateinit var music_home_albums_title: TextView
     lateinit var music_home_albums_more: TextView
+    lateinit var music_home_albums_progress: ProgressBar
     lateinit var music_home_albums_grid: RecyclerView
     lateinit var music_home_artists_title: TextView
     lateinit var music_home_artists_more: TextView
+    lateinit var music_home_artists_progress: ProgressBar
     lateinit var music_home_artists_grid: RecyclerView
     lateinit var music_home_songs_title: TextView
     lateinit var music_home_songs_more: TextView
+    lateinit var music_home_songs_progress: ProgressBar
     lateinit var music_home_songs_grid: RecyclerView
 
     lateinit var music_home_menu_settings: TextView
@@ -104,12 +107,15 @@ class MusicHomeFragment : Fragment() {
 
         music_home_albums_title = fragmentView.findViewById(R.id.music_home_albums_title)
         music_home_albums_more = fragmentView.findViewById(R.id.music_home_albums_more)
+        music_home_albums_progress = fragmentView.findViewById(R.id.music_home_albums_progress)
         music_home_albums_grid = fragmentView.findViewById(R.id.music_home_albums_grid)
         music_home_artists_title = fragmentView.findViewById(R.id.music_home_artists_title)
         music_home_artists_more = fragmentView.findViewById(R.id.music_home_artists_more)
+        music_home_artists_progress = fragmentView.findViewById(R.id.music_home_artists_progress)
         music_home_artists_grid = fragmentView.findViewById(R.id.music_home_artists_grid)
         music_home_songs_title = fragmentView.findViewById(R.id.music_home_songs_title)
         music_home_songs_more = fragmentView.findViewById(R.id.music_home_songs_more)
+        music_home_songs_progress = fragmentView.findViewById(R.id.music_home_songs_progress)
         music_home_songs_grid = fragmentView.findViewById(R.id.music_home_songs_grid)
 
         music_home_menu_settings = fragmentView.findViewById(R.id.music_home_menu_settings)
@@ -150,6 +156,10 @@ class MusicHomeFragment : Fragment() {
         /* Set elevation to views */
         music_home_explayer_layout_minimized.elevation = 10f
         music_home_explayer_layout.elevation = 10f
+
+        music_home_albums_progress.visibility = View.GONE
+        music_home_artists_progress.visibility = View.GONE
+        music_home_songs_progress.visibility = View.GONE
 
         /* Set fonts for TextViews */
         music_home_title.setTypeface(
@@ -216,18 +226,12 @@ class MusicHomeFragment : Fragment() {
         music_home_songs_grid.layoutManager = GridLayoutManager(context, 1,
             LinearLayoutManager.HORIZONTAL, false)
 
-        /* Add items to an empty ArrayList, set some HashMap settings ,and set the adapters. */
-        var items: ArrayList<SongItem> = arrayListOf()
-        items.add(SongItem("sus", "nglZ","impostor"))
-        items.add(SongItem("Machine Gun (16bit remix)", "Noisia", "Unknown"))
-        items.add(SongItem("AMOGN", "sus", "aiermogus"))
-        items.add(SongItem("wat", "nub","more nub"))
-        items.add(SongItem("yu mogus", "waht", "that sus ngl"))
-        items.add(SongItem("OK LAMO HAKCER", "saa", "4132"))
-
-        music_home_albums_grid.adapter = AlbumAdapter(items)
-        music_home_artists_grid.adapter = ArtistAdapter(items)
-        music_home_songs_grid.adapter = SongAdapter(items)
+        music_home_albums_grid.adapter = AlbumAdapter(requireArguments()
+            .getParcelableArrayList("songItems")!!)
+        music_home_artists_grid.adapter = ArtistAdapter(requireArguments()
+            .getParcelableArrayList("songItems")!!)
+        music_home_songs_grid.adapter = SongAdapter(requireArguments()
+            .getParcelableArrayList("songItems")!!)
 
         /* Set onClick Listeners */
         music_home_art_layout.setOnClickListener {
@@ -252,7 +256,7 @@ class MusicHomeFragment : Fragment() {
             // functionality Soon
         }
         music_home_explayer_layout_minimized.setOnClickListener {
-            (activity as MusicActivity).changeFragment(MusicPlayerFragment(), "playerFrag")
+            (activity as MusicActivity).changeFragmentToPlayer()
         }
         music_home_explayer_layout.setOnClickListener {
             /* The minimized player and this expanded player has the same
@@ -272,6 +276,23 @@ class MusicHomeFragment : Fragment() {
                 AutoTransition())
             music_home_explayer_layout.visibility = View.GONE
             music_home_explayer_layout_minimized.visibility = View.VISIBLE
+        }
+        music_home_explayer_button_skip_previous.setOnClickListener {
+            exoService.previous()
+        }
+        music_home_explayer_button_playback.setOnClickListener {view ->
+            if (!exoService.isPlaying()) {
+                (view as ImageView).setImageDrawable(ContextCompat
+                    .getDrawable(requireContext(), R.drawable.ic_pause_circle))
+                exoService.play()
+            } else {
+                (view as ImageView).setImageDrawable(ContextCompat
+                    .getDrawable(requireContext(), R.drawable.ic_play_circle))
+                exoService.pause()
+            }
+        }
+        music_home_explayer_button_skip_next.setOnClickListener {
+            exoService.next()
         }
     }
 
@@ -340,6 +361,12 @@ class MusicHomeFragment : Fragment() {
                         .plus(getString(R.string.unicode_black_filled))
                         .plus(" ")
                         .plus(musicList[position].getSongAlbum())
+
+                exoService.seekTo(position, 0)
+                if (!exoService.isPlaying()) {
+                    exoService.prepare()
+                    exoService.play()
+                }
             }
         }
 
@@ -398,6 +425,12 @@ class MusicHomeFragment : Fragment() {
                         .plus(getString(R.string.unicode_black_filled))
                         .plus(" ")
                         .plus(musicList[position].getSongAlbum())
+
+                exoService.seekTo(position, 0)
+                if (!exoService.isPlaying()) {
+                    exoService.prepare()
+                    exoService.play()
+                }
             }
         }
 
@@ -456,6 +489,12 @@ class MusicHomeFragment : Fragment() {
                         .plus(getString(R.string.unicode_black_filled))
                         .plus(" ")
                         .plus(musicList[position].getSongAlbum())
+
+                exoService.seekTo(position, 0)
+                if (!exoService.isPlaying()) {
+                    exoService.prepare()
+                    exoService.play()
+                }
             }
         }
 

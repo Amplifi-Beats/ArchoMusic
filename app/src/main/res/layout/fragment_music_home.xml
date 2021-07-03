@@ -123,6 +123,13 @@
 
                 </LinearLayout>
 
+                <ProgressBar
+                    android:id="@+id/music_home_albums_progress"
+                    style="?android:attr/progressBarStyle"
+                    android:layout_width="match_parent"
+                    android:layout_height="50dp"
+                    android:indeterminate="true" />
+
                 <androidx.recyclerview.widget.RecyclerView
                     android:id="@+id/music_home_albums_grid"
                     android:layout_width="match_parent"
@@ -161,6 +168,13 @@
 
                 </LinearLayout>
 
+                <ProgressBar
+                    android:id="@+id/music_home_artists_progress"
+                    style="?android:attr/progressBarStyle"
+                    android:layout_width="match_parent"
+                    android:layout_height="50dp"
+                    android:indeterminate="true" />
+
                 <androidx.recyclerview.widget.RecyclerView
                     android:id="@+id/music_home_artists_grid"
                     android:layout_width="match_parent"
@@ -197,6 +211,13 @@
                         android:textSize="12sp" />
 
                 </LinearLayout>
+
+                <ProgressBar
+                    android:id="@+id/music_home_songs_progress"
+                    style="?android:attr/progressBarStyle"
+                    android:layout_width="match_parent"
+                    android:layout_height="50dp"
+                    android:indeterminate="true" />
 
                 <androidx.recyclerview.widget.RecyclerView
                     android:id="@+id/music_home_songs_grid"
@@ -459,6 +480,7 @@
                         android:layout_width="0dp"
                         android:layout_height="30dp"
                         android:layout_weight="1"
+                        android:background="?android:attr/selectableItemBackgroundBorderless"
                         android:src="@drawable/ic_skip_previous"/>
 
                     <ImageView
@@ -466,6 +488,7 @@
                         android:layout_width="0dp"
                         android:layout_height="30dp"
                         android:layout_weight="1"
+                        android:background="?android:attr/selectableItemBackgroundBorderless"
                         android:src="@drawable/ic_pause_circle"/>
 
                     <ImageView
@@ -473,6 +496,7 @@
                         android:layout_width="0dp"
                         android:layout_height="30dp"
                         android:layout_weight="1"
+                        android:background="?android:attr/selectableItemBackgroundBorderless"
                         android:src="@drawable/ic_skip_next"/>
 
                 </LinearLayout>

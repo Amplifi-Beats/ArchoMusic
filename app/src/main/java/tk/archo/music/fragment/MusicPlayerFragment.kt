@@ -31,7 +31,7 @@ class MusicPlayerFragment : Fragment() {
         sus = fragmentView.findViewById(R.id.sus)
 
         sus.setOnClickListener {
-            (activity as MusicActivity).changeFragment(MusicHomeFragment(), "mainFrag")
+            (activity as MusicActivity).changeFragmentToHome()
         }
     }
 

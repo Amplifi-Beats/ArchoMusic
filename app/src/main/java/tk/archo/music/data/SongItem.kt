@@ -3,12 +3,15 @@ package tk.archo.music.data
 import android.os.Parcel
 import android.os.Parcelable
 
-data class SongItem(val title: String?, val artist: String?, val album: String?): Parcelable {
+data class SongItem(val title: String?, val data: String?,
+                    val artist: String?, val album: String?): Parcelable {
     val itemtitle: String = title!!
+    val itemdata: String = title!!
     val itemartist: String = artist!!
     val itemalbum: String = album!!
 
     constructor(parcel: Parcel) : this(
+        parcel.readString(),
         parcel.readString(),
         parcel.readString(),
         parcel.readString()
@@ -16,6 +19,10 @@ data class SongItem(val title: String?, val artist: String?, val album: String?)
 
     fun getSongTitle(): String {
         return itemtitle
+    }
+
+    fun getSongData(): String {
+        return itemdata
     }
 
     fun getSongArtist(): String {
@@ -28,6 +35,7 @@ data class SongItem(val title: String?, val artist: String?, val album: String?)
 
     override fun writeToParcel(parcel: Parcel, flags: Int) {
         parcel.writeString(title)
+        parcel.writeString(data)
         parcel.writeString(artist)
         parcel.writeString(album)
     }

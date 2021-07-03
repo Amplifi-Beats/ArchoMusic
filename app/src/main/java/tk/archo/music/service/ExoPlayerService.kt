@@ -9,6 +9,7 @@ import android.os.IBinder
 import android.widget.Toast
 import com.google.android.exoplayer2.*
 import com.google.android.exoplayer2.ui.PlayerNotificationManager
+import tk.archo.music.data.SongItem
 import tk.archo.music.util.AppUtil
 
 class ExoPlayerService(): Service() {
@@ -88,6 +89,10 @@ class ExoPlayerService(): Service() {
         player.seekTo(duration)
     }
 
+    fun seekTo(index: Int, duration: Long) {
+        player.seekTo(index, duration)
+    }
+
     fun setRepeatMode(mode: Int) {
         player.repeatMode = mode
     }
@@ -108,6 +113,14 @@ class ExoPlayerService(): Service() {
         return player.currentPosition
     }
 
+    fun isInitialized(): Boolean {
+        return this::player.isInitialized
+    }
+
+    fun isPlaying(): Boolean {
+        return player.isPlaying
+    }
+
     fun addListener(listener: Player.Listener) {
         player.addListener(listener)
     }
@@ -116,24 +129,24 @@ class ExoPlayerService(): Service() {
         player.removeListener(listener)
     }
 
-    fun addSongItem(context: Context, string: String) {
+    fun addSongItem(context: Context, data: String) {
         check_exoplayer_init(context, STR_ERR_ITEM_NON_INIT)
 
         try {
-            if (string != null) {
-                player.addMediaItem(MediaItem.fromUri(string))
+            if (data != null) {
+                player.addMediaItem(MediaItem.fromUri(data))
             }
         } catch (error: Exception) {
             throw ExoServiceException(STR_ERR_ITEM_ADD_FAILED)
         }
     }
 
-    fun addSongItemAtIndex(context: Context, index: Int, string: String) {
+    fun addSongItemAtIndex(context: Context, index: Int, data: String) {
         check_exoplayer_init(context, STR_ERR_ITEM_NON_INIT)
 
         try {
-            if (string != null) {
-                player.addMediaItem(index, MediaItem.fromUri(string))
+            if (data != null) {
+                player.addMediaItem(index, MediaItem.fromUri(data))
             }
         } catch (error: Exception) {
             AppUtil.toast(context, STR_ERR_ITEM_ADD_FAILED, Toast.LENGTH_LONG)
@@ -147,6 +160,16 @@ class ExoPlayerService(): Service() {
             if (string != null) {
                 player.setMediaItem(MediaItem.fromUri(string))
             }
+        } catch (error: Exception) {
+            AppUtil.toast(context, STR_ERR_ITEM_ADD_FAILED, Toast.LENGTH_LONG)
+        }
+    }
+
+    fun addSongItems(context: Context, mutableList: MutableList<MediaItem>) {
+        check_exoplayer_init(context, STR_ERR_ITEM_NON_INIT)
+
+        try {
+            player.addMediaItems(mutableList)
         } catch (error: Exception) {
             AppUtil.toast(context, STR_ERR_ITEM_ADD_FAILED, Toast.LENGTH_LONG)
         }
@@ -173,5 +196,4 @@ class ExoPlayerService(): Service() {
     }
 
     inner class ExoServiceException(error: String) : RuntimeException(error)
-
 }
