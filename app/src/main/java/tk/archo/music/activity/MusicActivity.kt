@@ -7,11 +7,14 @@ import android.content.Intent
 import android.content.ServiceConnection
 import android.database.Cursor
 import android.graphics.Color
+import android.media.MediaMetadataRetriever
 import android.media.browse.MediaBrowser
+import android.net.Uri
 import android.os.AsyncTask
 import android.os.Bundle
 import android.os.IBinder
 import android.provider.MediaStore
+import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentTransaction
@@ -23,6 +26,7 @@ import tk.archo.music.data.SongItem
 import tk.archo.music.fragment.MusicHomeFragment
 import tk.archo.music.fragment.MusicPlayerFragment
 import tk.archo.music.service.ExoPlayerService
+import java.io.File
 
 class MusicActivity : AppCompatActivity() {
     lateinit var exoService: ExoPlayerService
@@ -120,15 +124,14 @@ class MusicActivity : AppCompatActivity() {
     }
 
     @SuppressLint("Deprecation", "StaticFieldLeak")
-    inner class AudioScanner(): AsyncTask<Void, Void, Void>() {
+    inner class AudioScanner: AsyncTask<Void, Void, Void>() {
         @SuppressLint("InlinedApi")
         override fun doInBackground(vararg path: Void?): Void? {
             val mediaProjection = arrayOf(
-                MediaStore.Audio.Media.ARTIST,
-                MediaStore.Audio.Media.ALBUM,
                 MediaStore.Audio.Media.DATA,
                 MediaStore.Audio.Media.TITLE,
-                MediaStore.Audio.Media.ALBUM_ID
+                MediaStore.Audio.Media.ARTIST,
+                MediaStore.Audio.Media.ALBUM
             )
             val orderBy = " " + MediaStore.MediaColumns.DISPLAY_NAME
             val cursor: Cursor? = applicationContext.contentResolver.query(
@@ -140,32 +143,67 @@ class MusicActivity : AppCompatActivity() {
             )
             try {
                 if (cursor!!.moveToFirst()) {
-                    var name: String
+                    val metadata = MediaMetadataRetriever()
                     var data: String?
+                    var name: String
                     var artist: String
                     var album: String
                     do {
-                        name =
-                            cursor.getString(cursor.getColumnIndexOrThrow(
-                                MediaStore.Audio.Media.TITLE))
                         data =
                             cursor.getString(cursor.getColumnIndexOrThrow(
                                 MediaStore.Audio.Media.DATA))
+                        try {
+                            metadata.setDataSource(data!!)
+                        } catch (error: Exception) {
+                            cursor.moveToNext()
+                        }
+
+                        name =
+                            metadata.extractMetadata(MediaMetadataRetriever.METADATA_KEY_TITLE)
+                                .toString()
+                        if (name == "null") {
+                            name =
+                                cursor.getString(cursor.getColumnIndexOrThrow(
+                                    MediaStore.Audio.Media.TITLE))
+                        }
+
                         artist =
-                            cursor.getString(cursor.getColumnIndexOrThrow(
-                                MediaStore.Audio.Media.ARTIST))
+                            metadata.extractMetadata(MediaMetadataRetriever.METADATA_KEY_ARTIST)
+                                .toString()
+                        if (artist == "null") {
+                            artist =
+                                cursor.getString(cursor.getColumnIndexOrThrow(
+                                    MediaStore.Audio.Media.ARTIST))
+
+                            if (artist == "<unknown>") {
+                                artist = "Unknown Artist"
+                            }
+                        }
+
                         album =
-                            cursor.getString(cursor.getColumnIndexOrThrow(
-                                MediaStore.Audio.Media.ALBUM))
+                            metadata
+                                .extractMetadata(MediaMetadataRetriever.METADATA_KEY_ALBUM)
+                                .toString()
+                        if (album == "null") {
+                            album =
+                                cursor.getString(cursor.getColumnIndexOrThrow(
+                                    MediaStore.Audio.Media.ALBUM))
+
+                            if (album == "<unknown>") {
+                                album = "Unknown Album"
+                            }
+                        }
                         run {
-                            songItems.add(SongItem(name, data, artist, album))
-                            exoItems.add(MediaItem.fromUri(data))
+                            if (File(data!!).exists()) {
+                                songItems.add(SongItem(name, data, artist, album))
+                                exoItems.add(MediaItem.fromUri(data))
+                            }
                         }
                     } while (cursor.moveToNext())
                 }
                 cursor.close()
-            } catch (exception: Exception) {
-                exception.printStackTrace()
+            } catch (error: Exception) {
+                error.printStackTrace()
             }
 
             return null
