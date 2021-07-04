@@ -7,6 +7,7 @@ import android.content.Intent
 import android.content.ServiceConnection
 import android.graphics.Typeface
 import android.os.Bundle
+import android.os.Handler
 import android.os.IBinder
 import android.transition.AutoTransition
 import android.transition.TransitionManager
@@ -19,7 +20,6 @@ import androidx.fragment.app.*
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.google.android.exoplayer2.MediaItem
 import com.google.android.exoplayer2.Player
 import de.hdodenhof.circleimageview.CircleImageView
 import tk.archo.music.R
@@ -260,12 +260,8 @@ class MusicHomeFragment : Fragment() {
             // functionality Soon
         }
         music_home_explayer_layout_minimized.setOnClickListener {
-            var playerBundle = Bundle()
-            playerBundle.putParcelableArrayList("songItems",
-                requireArguments().getParcelableArrayList("songItems")!!)
-
-            (activity as MusicActivity).changeFragmentWithBundle(MusicPlayerFragment(),
-                playerBundle)
+            (activity as MusicActivity).changeFragment((activity as MusicActivity)
+                .FRAGMENT_PLAYER_INT)
         }
         music_home_explayer_button_expandmore.setOnClickListener {
             TransitionManager.beginDelayedTransition(music_home_layout,
@@ -342,13 +338,13 @@ class MusicHomeFragment : Fragment() {
 
                             override fun onIsPlayingChanged(isPlaying: Boolean) {
                                 if (isPlaying) {
-                                    music_home_explayer_button_playback.setImageDrawable(
-                                        ContextCompat.getDrawable(
-                                            context!!, R.drawable.ic_pause_circle))
+                                    music_home_explayer_button_playback.setImageResource(
+                                        resources.getIdentifier("@drawable/ic_pause_circle",
+                                            "drawable", activity!!.packageName))
                                 } else {
-                                    music_home_explayer_button_playback.setImageDrawable(
-                                        ContextCompat.getDrawable(
-                                            context!!, R.drawable.ic_play_circle))
+                                    music_home_explayer_button_playback.setImageResource(
+                                        resources.getIdentifier("@drawable/ic_play_circle",
+                                            "drawable", activity!!.packageName))
                                 }
                             }
                         })

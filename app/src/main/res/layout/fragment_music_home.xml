@@ -410,7 +410,7 @@
                             android:id="@+id/music_home_explayer_song_progress"
                             style="?android:attr/progressBarStyleHorizontal"
                             android:layout_width="match_parent"
-                            android:layout_height="2dp"
+                            android:layout_height="3dp"
                             android:progress="100"
                             android:progressDrawable="@color/colorProgressColor" />
 

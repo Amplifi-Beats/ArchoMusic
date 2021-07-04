@@ -31,10 +31,8 @@ class MusicPlayerFragment : Fragment() {
         sus = fragmentView.findViewById(R.id.sus)
 
         sus.setOnClickListener {
-            var homeBundle = Bundle()
-            homeBundle.putParcelableArrayList("songItems",
-                requireArguments().getParcelableArrayList("songItems")!!)
-            (activity as MusicActivity).changeFragmentWithBundle(MusicHomeFragment(), homeBundle)
+            (activity as MusicActivity).changeFragment((activity as MusicActivity)
+                .FRAGMENT_HOME_INT)
         }
     }
 

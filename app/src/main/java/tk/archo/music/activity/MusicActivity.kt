@@ -8,17 +8,13 @@ import android.content.ServiceConnection
 import android.database.Cursor
 import android.graphics.Color
 import android.media.MediaMetadataRetriever
-import android.media.browse.MediaBrowser
-import android.net.Uri
 import android.os.AsyncTask
 import android.os.Bundle
 import android.os.IBinder
 import android.provider.MediaStore
-import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentTransaction
-import androidx.fragment.app.add
 import androidx.fragment.app.commit
 import com.google.android.exoplayer2.MediaItem
 import tk.archo.music.R
@@ -34,8 +30,14 @@ class MusicActivity : AppCompatActivity() {
     lateinit var intentExoService: Intent
     var isExoServiceBound: Boolean = false
 
+    lateinit var homeFragment: MusicHomeFragment
+    lateinit var playerFragment: MusicPlayerFragment
+
     val songItems: ArrayList<SongItem> = arrayListOf()
     val exoItems: MutableList<MediaItem> = mutableListOf()
+
+    val FRAGMENT_HOME_INT = 0
+    val FRAGMENT_PLAYER_INT = 1
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -47,7 +49,8 @@ class MusicActivity : AppCompatActivity() {
             var fragHomeBundle = Bundle()
             fragHomeBundle.putParcelableArrayList("songItems", songItems)
 
-            var homeFragment = MusicHomeFragment()
+            playerFragment = MusicPlayerFragment()
+            homeFragment = MusicHomeFragment()
             homeFragment.arguments = fragHomeBundle
 
             supportFragmentManager.commit {
@@ -67,20 +70,34 @@ class MusicActivity : AppCompatActivity() {
         finishAffinity()
     }
 
-    fun changeFragment(fragment: Fragment) {
+    fun changeFragment(fragmentInt: Int) {
+        lateinit var fragmentIntAsFragment: Fragment
+        if (fragmentInt == FRAGMENT_HOME_INT) {
+            fragmentIntAsFragment = homeFragment
+        } else if (fragmentInt == FRAGMENT_PLAYER_INT) {
+            fragmentIntAsFragment = playerFragment
+        }
+
         supportFragmentManager.commit {
             setReorderingAllowed(true)
             setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE)
-            replace(R.id.music_main_fragment, fragment)
+            replace(R.id.music_main_fragment, fragmentIntAsFragment)
         }
     }
 
-    fun changeFragmentWithBundle(fragment: Fragment, bundle: Bundle) {
-        fragment.arguments = bundle
+    fun changeFragmentWithBundle(fragmentInt: Int, bundle: Bundle) {
+        lateinit var fragmentIntAsFragment: Fragment
+        if (fragmentInt == FRAGMENT_HOME_INT) {
+            fragmentIntAsFragment = homeFragment
+        } else if (fragmentInt == FRAGMENT_PLAYER_INT) {
+            fragmentIntAsFragment = playerFragment
+        }
+
+        fragmentIntAsFragment.arguments = bundle
         supportFragmentManager.commit {
             setReorderingAllowed(true)
             setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE)
-            replace(R.id.music_main_fragment, fragment)
+            replace(R.id.music_main_fragment, fragmentIntAsFragment)
         }
     }
 
