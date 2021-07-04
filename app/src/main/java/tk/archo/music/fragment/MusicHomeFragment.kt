@@ -259,7 +259,12 @@ class MusicHomeFragment : Fragment() {
             // functionality Soon
         }
         music_home_explayer_layout_minimized.setOnClickListener {
-            (activity as MusicActivity).changeFragmentToPlayer()
+            var playerBundle = Bundle()
+            playerBundle.putParcelableArrayList("songItems",
+                requireArguments().getParcelableArrayList("songItems")!!)
+
+            (activity as MusicActivity).changeFragmentWithBundle(MusicPlayerFragment(),
+                playerBundle)
         }
         music_home_explayer_button_expandmore.setOnClickListener {
             TransitionManager.beginDelayedTransition(music_home_layout,
@@ -294,7 +299,7 @@ class MusicHomeFragment : Fragment() {
 
     fun bindFragmentToExoService() {
         if (!this::intentExoService.isInitialized) {
-            intentExoService = Intent(requireContext(), ExoPlayerService::class.java)
+            intentExoService = Intent(context!!, ExoPlayerService::class.java)
         }
         if (!this::exoServiceConn.isInitialized) {
             exoServiceConn = object : ServiceConnection {
@@ -306,7 +311,7 @@ class MusicHomeFragment : Fragment() {
                     isExoServiceBound = true
 
                     if (exoService.isInitialized()) {
-                        exoService.addListener(requireContext(), object: Player.Listener {
+                        exoService.addListener(context!!, object: Player.Listener {
                             override fun onPlaybackStateChanged(state: Int) {
                                 if (state == Player.STATE_IDLE) {
                                     TransitionManager.beginDelayedTransition(music_home_layout,
@@ -335,11 +340,13 @@ class MusicHomeFragment : Fragment() {
 
                             override fun onIsPlayingChanged(isPlaying: Boolean) {
                                 if (isPlaying) {
-                                    music_home_explayer_button_playback.setImageDrawable(ContextCompat
-                                        .getDrawable(requireContext(), R.drawable.ic_pause_circle))
+                                    music_home_explayer_button_playback.setImageDrawable(
+                                        ContextCompat.getDrawable(
+                                            context!!, R.drawable.ic_pause_circle))
                                 } else {
-                                    music_home_explayer_button_playback.setImageDrawable(ContextCompat
-                                        .getDrawable(requireContext(), R.drawable.ic_play_circle))
+                                    music_home_explayer_button_playback.setImageDrawable(
+                                        ContextCompat.getDrawable(
+                                            context!!, R.drawable.ic_play_circle))
                                 }
                             }
                         })
