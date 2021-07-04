@@ -1,5 +1,6 @@
 package tk.archo.music.fragment
 
+import android.annotation.SuppressLint
 import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
@@ -297,6 +298,7 @@ class MusicHomeFragment : Fragment() {
         }
     }
 
+    @SuppressLint("UseRequireInsteadOfGet")
     fun bindFragmentToExoService() {
         if (!this::intentExoService.isInitialized) {
             intentExoService = Intent(context!!, ExoPlayerService::class.java)
