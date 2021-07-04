@@ -25,18 +25,19 @@ import tk.archo.music.fragment.MusicPlayerFragment
 import tk.archo.music.service.ExoPlayerService
 
 class MusicActivity : AppCompatActivity() {
-    lateinit var intentExoService: Intent
     lateinit var exoService: ExoPlayerService
     lateinit var exoServiceConn: ServiceConnection
+    lateinit var intentExoService: Intent
     var isExoServiceBound: Boolean = false
 
-    lateinit var songItems: ArrayList<SongItem>
-    lateinit var exoItems: MutableList<MediaItem>
+    val songItems: ArrayList<SongItem> = arrayListOf()
+    val exoItems: MutableList<MediaItem> = mutableListOf()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_music)
         (AudioScanner()).execute()
+        bindActivityToExoService()
 
         if (savedInstanceState == null) {
             var fragHomeBundle = Bundle()
@@ -51,20 +52,14 @@ class MusicActivity : AppCompatActivity() {
                 add(R.id.music_main_fragment, homeFragment, "homeFrag")
             }
         }
-
-        bindActivityToExoService()
-    }
-
-    override fun onDestroy() {
-        super.onDestroy()
-
-        if (isExoServiceBound) {
-            exoService.release()
-            unbindActivityFromExoService()
-        }
     }
 
     override fun onBackPressed() {
+        if (isExoServiceBound) {
+            unbindActivityFromExoService()
+            stopService(intentExoService)
+        }
+
         finishAffinity()
     }
 
@@ -91,10 +86,8 @@ class MusicActivity : AppCompatActivity() {
     }
 
     fun bindActivityToExoService() {
-        if (!this::intentExoService.isInitialized) {
-            intentExoService = Intent()
-            intentExoService.setClass(applicationContext, ExoPlayerService::class.java)
-            startService(intentExoService)
+        if (!this::exoServiceConn.isInitialized) {
+            intentExoService = Intent(applicationContext, ExoPlayerService::class.java)
         }
         if (!this::exoServiceConn.isInitialized) {
             exoServiceConn = object : ServiceConnection {
@@ -118,7 +111,6 @@ class MusicActivity : AppCompatActivity() {
 
     fun unbindActivityFromExoService() {
         if (isExoServiceBound) {
-            stopService(intentExoService)
             unbindService(exoServiceConn)
         }
     }
@@ -127,15 +119,9 @@ class MusicActivity : AppCompatActivity() {
         getWindow().statusBarColor = Color.parseColor(colorStr)
     }
 
-    @SuppressLint("StaticFieldLeak")
-    @Deprecated("AsyncTask is deprecated.")
+    @SuppressLint("Deprecation", "StaticFieldLeak")
     inner class AudioScanner(): AsyncTask<Void, Void, Void>() {
-        override fun onPreExecute() {
-            songItems = arrayListOf()
-            exoItems = mutableListOf()
-        }
-
-        @SuppressLint("InlinedApi", "Recycle")
+        @SuppressLint("InlinedApi")
         override fun doInBackground(vararg path: Void?): Void? {
             val mediaProjection = arrayOf(
                 MediaStore.Audio.Media.ARTIST,

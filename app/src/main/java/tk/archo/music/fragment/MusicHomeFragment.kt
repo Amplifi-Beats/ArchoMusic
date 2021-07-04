@@ -18,12 +18,15 @@ import androidx.fragment.app.*
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.google.android.exoplayer2.MediaItem
+import com.google.android.exoplayer2.Player
 import de.hdodenhof.circleimageview.CircleImageView
 import tk.archo.music.R
 import tk.archo.music.activity.MusicActivity
 import tk.archo.music.data.SongItem
 import tk.archo.music.service.ExoPlayerService
 import java.util.*
+import kotlin.collections.ArrayList
 
 class MusicHomeFragment : Fragment() {
     lateinit var intentExoService: Intent
@@ -258,12 +261,6 @@ class MusicHomeFragment : Fragment() {
         music_home_explayer_layout_minimized.setOnClickListener {
             (activity as MusicActivity).changeFragmentToPlayer()
         }
-        music_home_explayer_layout.setOnClickListener {
-            /* The minimized player and this expanded player has the same
-               functionality so it will performing a click on the minimized player.
-             */
-            music_home_explayer_layout_minimized.performClick()
-        }
         music_home_explayer_button_expandmore.setOnClickListener {
             TransitionManager.beginDelayedTransition(music_home_layout,
                 AutoTransition())
@@ -280,14 +277,13 @@ class MusicHomeFragment : Fragment() {
         music_home_explayer_button_skip_previous.setOnClickListener {
             exoService.previous()
         }
-        music_home_explayer_button_playback.setOnClickListener {view ->
+        music_home_explayer_button_playback.setOnClickListener {
+            if (!exoService.isInitialized()) {
+                return@setOnClickListener
+            }
             if (!exoService.isPlaying()) {
-                (view as ImageView).setImageDrawable(ContextCompat
-                    .getDrawable(requireContext(), R.drawable.ic_pause_circle))
                 exoService.play()
             } else {
-                (view as ImageView).setImageDrawable(ContextCompat
-                    .getDrawable(requireContext(), R.drawable.ic_play_circle))
                 exoService.pause()
             }
         }
@@ -298,16 +294,87 @@ class MusicHomeFragment : Fragment() {
 
     fun bindFragmentToExoService() {
         if (!this::intentExoService.isInitialized) {
-            intentExoService = Intent()
-            intentExoService.setClass(requireContext(), ExoPlayerService::class.java)
-            activity?.startService(intentExoService)
+            intentExoService = Intent(requireContext(), ExoPlayerService::class.java)
         }
         if (!this::exoServiceConn.isInitialized) {
             exoServiceConn = object : ServiceConnection {
                 override fun onServiceConnected(name: ComponentName, service: IBinder) {
                     val binder = service as ExoPlayerService.ExoServiceBinder
+                    val arrayItems = requireArguments()
+                        .getParcelableArrayList<SongItem>("songItems")!!
                     exoService = binder.getService()
                     isExoServiceBound = true
+
+                    if (exoService.isInitialized()) {
+                        exoService.addListener(requireContext(), object: Player.Listener {
+                            override fun onPlaybackStateChanged(state: Int) {
+                                if (state == Player.STATE_IDLE) {
+                                    TransitionManager.beginDelayedTransition(music_home_layout,
+                                        AutoTransition())
+                                    music_home_explayer_layout_minimized
+                                        .visibility = View.GONE
+                                } else if (state == Player.STATE_ENDED) {
+                                    music_home_explayer_subtitle_minimized.text =
+                                        arrayItems[exoService.getIndex()].getSongTitle().plus(" ")
+                                            .plus(getString(R.string.unicode_black_filled))
+                                            .plus(" ")
+                                            .plus(arrayItems[exoService.getIndex()].getSongArtist())
+                                            .plus(" ")
+                                            .plus(getString(R.string.unicode_black_filled))
+                                            .plus(" ")
+                                            .plus(arrayItems[exoService.getIndex()].getSongAlbum())
+                                    music_home_explayer_song_title.text =
+                                        arrayItems[exoService.getIndex()].getSongTitle()
+                                    music_home_explayer_song_subtitle.text =
+                                        arrayItems[exoService.getIndex()].getSongArtist().plus(" ")
+                                            .plus(getString(R.string.unicode_black_filled))
+                                            .plus(" ")
+                                            .plus(arrayItems[exoService.getIndex()].getSongAlbum())
+                                }
+                            }
+
+                            override fun onIsPlayingChanged(isPlaying: Boolean) {
+                                if (isPlaying) {
+                                    music_home_explayer_button_playback.setImageDrawable(ContextCompat
+                                        .getDrawable(requireContext(), R.drawable.ic_pause_circle))
+                                } else {
+                                    music_home_explayer_button_playback.setImageDrawable(ContextCompat
+                                        .getDrawable(requireContext(), R.drawable.ic_play_circle))
+                                }
+                            }
+                        })
+                    }
+                    if (exoService.isInitialized()
+                        && exoService.isPlaying()) {
+                        if (music_home_explayer_layout.visibility ==
+                            View.GONE) {
+                            TransitionManager.beginDelayedTransition(music_home_layout,
+                                AutoTransition())
+                            music_home_explayer_layout_minimized.visibility = View.VISIBLE
+                        }
+
+                        music_home_explayer_subtitle_minimized.text =
+                            arrayItems[exoService.getIndex()].getSongTitle().plus(" ")
+                                .plus(getString(R.string.unicode_black_filled))
+                                .plus(" ")
+                                .plus(arrayItems[exoService.getIndex()].getSongArtist())
+                                .plus(" ")
+                                .plus(getString(R.string.unicode_black_filled))
+                                .plus(" ")
+                                .plus(arrayItems[exoService.getIndex()].getSongAlbum())
+                        music_home_explayer_song_title.text =
+                            arrayItems[exoService.getIndex()].getSongTitle()
+                        music_home_explayer_song_subtitle.text =
+                            arrayItems[exoService.getIndex()].getSongArtist().plus(" ")
+                                .plus(getString(R.string.unicode_black_filled))
+                                .plus(" ")
+                                .plus(arrayItems[exoService.getIndex()].getSongAlbum())
+                    } else {
+                        TransitionManager.beginDelayedTransition(music_home_layout,
+                            AutoTransition())
+                        music_home_explayer_layout_minimized
+                            .visibility = View.GONE
+                    }
                 }
 
                 override fun onServiceDisconnected(name: ComponentName) {
@@ -345,28 +412,6 @@ class MusicHomeFragment : Fragment() {
             holder.grid_item_subtitle.text = musicList[position].getSongArtist()
             holder.grid_item_layout.setOnClickListener {
                 holder.grid_item_art.performClick()
-                music_home_explayer_subtitle_minimized.text =
-                    musicList[position].getSongTitle().plus(" ")
-                        .plus(getString(R.string.unicode_black_filled))
-                        .plus(" ")
-                        .plus(musicList[position].getSongArtist())
-                        .plus(" ")
-                        .plus(getString(R.string.unicode_black_filled))
-                        .plus(" ")
-                        .plus(musicList[position].getSongAlbum())
-                music_home_explayer_song_title.text =
-                    musicList[position].getSongTitle()
-                music_home_explayer_song_subtitle.text =
-                    musicList[position].getSongArtist().plus(" ")
-                        .plus(getString(R.string.unicode_black_filled))
-                        .plus(" ")
-                        .plus(musicList[position].getSongAlbum())
-
-                exoService.seekTo(position, 0)
-                if (!exoService.isPlaying()) {
-                    exoService.prepare()
-                    exoService.play()
-                }
             }
         }
 
@@ -409,28 +454,6 @@ class MusicHomeFragment : Fragment() {
             holder.grid_item_subtitle.visibility = View.GONE
             holder.grid_item_layout.setOnClickListener {
                 holder.grid_item_art.performClick()
-                music_home_explayer_subtitle_minimized.text =
-                    musicList[position].getSongTitle().plus(" ")
-                        .plus(getString(R.string.unicode_black_filled))
-                        .plus(" ")
-                        .plus(musicList[position].getSongArtist())
-                        .plus(" ")
-                        .plus(getString(R.string.unicode_black_filled))
-                        .plus(" ")
-                        .plus(musicList[position].getSongAlbum())
-                music_home_explayer_song_title.text =
-                    musicList[position].getSongTitle()
-                music_home_explayer_song_subtitle.text =
-                    musicList[position].getSongArtist().plus(" ")
-                        .plus(getString(R.string.unicode_black_filled))
-                        .plus(" ")
-                        .plus(musicList[position].getSongAlbum())
-
-                exoService.seekTo(position, 0)
-                if (!exoService.isPlaying()) {
-                    exoService.prepare()
-                    exoService.play()
-                }
             }
         }
 
@@ -491,6 +514,11 @@ class MusicHomeFragment : Fragment() {
                         .plus(musicList[position].getSongAlbum())
 
                 exoService.seekTo(position, 0)
+                if (music_home_explayer_layout.visibility == View.GONE) {
+                    TransitionManager.beginDelayedTransition(music_home_layout,
+                        AutoTransition())
+                    music_home_explayer_layout_minimized.visibility = View.VISIBLE
+                }
                 if (!exoService.isPlaying()) {
                     exoService.prepare()
                     exoService.play()

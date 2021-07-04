@@ -37,6 +37,15 @@ class ExoPlayerService(): Service() {
         super.onCreate()
     }
 
+    override fun onDestroy() {
+        super.onDestroy()
+
+        if (this::player.isInitialized) {
+            stop()
+            release()
+        }
+    }
+
     override fun onBind(intent: Intent): IBinder {
         return serviceBinder
     }
@@ -125,11 +134,13 @@ class ExoPlayerService(): Service() {
         return player.isPlaying
     }
 
-    fun addListener(listener: Player.Listener) {
+    fun addListener(context: Context, listener: Player.Listener) {
+        check_exoplayer_init(context, STR_ERR_INIT_NONE)
         player.addListener(listener)
     }
 
-    fun removeListener(listener: Player.Listener) {
+    fun removeListener(context: Context, listener: Player.Listener) {
+        check_exoplayer_init(context, STR_ERR_INIT_NONE)
         player.removeListener(listener)
     }
 
@@ -190,7 +201,7 @@ class ExoPlayerService(): Service() {
     }
 
     private fun check_exoplayer_init(context: Context, err_str: String) {
-        if (player == null) {
+        if (!this::player.isInitialized) {
             AppUtil.toast(context, err_str, Toast.LENGTH_LONG)
         }
     }
