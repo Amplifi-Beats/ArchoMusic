@@ -113,6 +113,10 @@ class ExoPlayerService(): Service() {
         return player.currentPosition
     }
 
+    fun getIndex(): Int {
+        return player.currentWindowIndex
+    }
+
     fun isInitialized(): Boolean {
         return this::player.isInitialized
     }
