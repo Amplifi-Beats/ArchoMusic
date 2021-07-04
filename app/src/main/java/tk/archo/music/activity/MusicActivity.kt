@@ -53,7 +53,7 @@ class MusicActivity : AppCompatActivity() {
             supportFragmentManager.commit {
                 setReorderingAllowed(true)
                 setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE)
-                add(R.id.music_main_fragment, homeFragment, "homeFrag")
+                add(R.id.music_main_fragment, homeFragment)
             }
         }
     }
@@ -67,25 +67,20 @@ class MusicActivity : AppCompatActivity() {
         finishAffinity()
     }
 
-    fun changeFragmentToHome() {
-        var fragHomeBundle = Bundle()
-        fragHomeBundle.putParcelableArrayList("songItems", songItems)
-
-        var homeFragment = MusicHomeFragment()
-        homeFragment.arguments = fragHomeBundle
-
+    fun changeFragment(fragment: Fragment) {
         supportFragmentManager.commit {
             setReorderingAllowed(true)
             setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE)
-            replace(R.id.music_main_fragment, homeFragment, "homeFrag")
+            replace(R.id.music_main_fragment, fragment)
         }
     }
 
-    fun changeFragmentToPlayer() {
+    fun changeFragmentWithBundle(fragment: Fragment, bundle: Bundle) {
+        fragment.arguments = bundle
         supportFragmentManager.commit {
             setReorderingAllowed(true)
             setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE)
-            replace(R.id.music_main_fragment, MusicPlayerFragment(), "playerFrag")
+            replace(R.id.music_main_fragment, fragment)
         }
     }
 
