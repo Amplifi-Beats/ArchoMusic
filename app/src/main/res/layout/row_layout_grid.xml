@@ -5,14 +5,13 @@
     android:layout_width="wrap_content"
     android:layout_height="match_parent"
     android:layout_weight="1"
-    android:background="@color/colorBackground"
     android:orientation="vertical"
     android:padding="8dp">
 
     <androidx.cardview.widget.CardView
         android:layout_width="80dp"
         android:layout_height="80dp"
-        app:cardCornerRadius="16dp">
+        app:cardCornerRadius="6dp">
 
         <ImageView
             android:id="@+id/grid_item_art"
