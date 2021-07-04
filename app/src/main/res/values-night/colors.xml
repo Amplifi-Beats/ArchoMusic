@@ -28,4 +28,5 @@
     <color name="colorDialogTint">#FFFFFF</color>
     <!-- Progress brands -->
     <color name="colorProgressColor">#FFFFFF</color>
+    <bool name="useLightStatusBar">false</bool>
 </resources>
