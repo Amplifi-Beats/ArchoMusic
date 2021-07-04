@@ -5,7 +5,6 @@
     android:id="@+id/music_home_layout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/colorBackground"
     android:orientation="vertical"
     tools:context=".fragment.MusicHomeFragment">
 
@@ -114,8 +113,8 @@
                         android:layout_height="50dp"
                         android:layout_gravity="center"
                         android:layout_weight="1"
-                        android:background="?android:attr/selectableItemBackgroundBorderless"
                         android:alpha="0.5"
+                        android:background="?android:attr/selectableItemBackgroundBorderless"
                         android:gravity="center"
                         android:text="@string/music_home_more_holder"
                         android:textColor="@color/colorBackgroundText"
@@ -159,8 +158,8 @@
                         android:layout_height="50dp"
                         android:layout_gravity="center"
                         android:layout_weight="1"
-                        android:background="?android:attr/selectableItemBackgroundBorderless"
                         android:alpha="0.5"
+                        android:background="?android:attr/selectableItemBackgroundBorderless"
                         android:gravity="center"
                         android:text="@string/music_home_more_holder"
                         android:textColor="@color/colorBackgroundText"
@@ -203,8 +202,8 @@
                         android:layout_height="50dp"
                         android:layout_gravity="center"
                         android:layout_weight="1"
-                        android:background="?android:attr/selectableItemBackgroundBorderless"
                         android:alpha="0.5"
+                        android:background="?android:attr/selectableItemBackgroundBorderless"
                         android:gravity="center"
                         android:text="@string/music_home_more_holder"
                         android:textColor="@color/colorBackgroundText"
@@ -230,8 +229,8 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="30dp"
-                android:orientation="horizontal"
-                android:gravity="center">
+                android:gravity="center"
+                android:orientation="horizontal">
 
                 <TextView
                     android:id="@+id/music_home_menu_settings"
@@ -291,17 +290,17 @@
 
     <LinearLayout
         android:id="@+id/music_home_explayer_layout_minimized"
-        android:background="?android:attr/selectableItemBackground"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal" >
+        android:background="?android:attr/selectableItemBackground"
+        android:orientation="horizontal">
 
         <TextView
             android:id="@+id/music_home_explayer_title_minimized"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:paddingTop="16dp"
             android:paddingStart="16dp"
+            android:paddingTop="16dp"
             android:paddingEnd="4dp"
             android:paddingBottom="16dp"
             android:text="@string/explayer_title"
@@ -309,24 +308,24 @@
             android:textSize="14sp" />
 
         <LinearLayout
-            android:orientation="vertical"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_weight="1" >
+            android:layout_weight="1"
+            android:orientation="vertical">
 
             <TextView
                 android:id="@+id/music_home_explayer_subtitle_minimized"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:alpha="0.5"
+                android:ellipsize="marquee"
+                android:focusable="true"
+                android:marqueeRepeatLimit="marquee_forever"
+                android:paddingStart="4dp"
                 android:paddingTop="18dp"
                 android:paddingEnd="16dp"
-                android:paddingStart="4dp"
                 android:paddingBottom="16dp"
-                android:focusable="true"
                 android:singleLine="true"
-                android:ellipsize="marquee"
-                android:marqueeRepeatLimit="marquee_forever"
                 android:text="@string/explayer_song_label_combined_placeholder"
                 android:textColor="@color/colorBackgroundText"
                 android:textSize="12sp" />
@@ -337,31 +336,31 @@
             android:layout_width="50dp"
             android:layout_height="50dp"
             android:layout_gravity="center"
+            android:background="?android:attr/selectableItemBackgroundBorderless"
             android:paddingTop="20dp"
             android:paddingBottom="16dp"
-            android:background="?android:attr/selectableItemBackgroundBorderless"
             android:src="@drawable/ic_expand_more" />
 
     </LinearLayout>
 
     <LinearLayout
         android:id="@+id/music_home_explayer_layout"
-        android:orientation="vertical"
-        android:background="?android:attr/selectableItemBackground"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content" >
+        android:layout_height="wrap_content"
+        android:background="?android:attr/selectableItemBackground"
+        android:orientation="vertical">
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal" >
+            android:orientation="horizontal">
 
             <TextView
                 android:id="@+id/music_home_explayer_title"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
                 android:layout_marginTop="4dp"
+                android:layout_weight="1"
                 android:padding="16dp"
                 android:text="@string/explayer_title"
                 android:textColor="@color/colorBackgroundText"
@@ -373,8 +372,8 @@
                 android:layout_height="50dp"
                 android:layout_gravity="center"
                 android:layout_marginTop="4dp"
-                android:padding="8dp"
                 android:background="?android:attr/selectableItemBackgroundBorderless"
+                android:padding="8dp"
                 android:src="@drawable/ic_expand_less" />
 
         </LinearLayout>
@@ -383,7 +382,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
-            android:padding="8dp" >
+            android:padding="8dp">
 
             <androidx.cardview.widget.CardView
                 android:layout_width="150dp"
@@ -422,48 +421,48 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:orientation="vertical" >
+                android:orientation="vertical">
 
                 <LinearLayout
-                    android:orientation="vertical"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_weight="1" >
+                    android:layout_weight="1"
+                    android:orientation="vertical">
 
                     <TextView
                         android:id="@+id/music_home_explayer_song_title"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
+                        android:ellipsize="marquee"
+                        android:focusable="true"
+                        android:marqueeRepeatLimit="marquee_forever"
                         android:paddingStart="8dp"
                         android:paddingTop="8dp"
                         android:paddingEnd="8dp"
-                        android:focusable="true"
                         android:singleLine="true"
-                        android:ellipsize="marquee"
-                        android:marqueeRepeatLimit="marquee_forever"
                         android:text="@string/explayer_song_title_placeholder"
                         android:textColor="@color/colorBackgroundText"
                         android:textSize="14sp" />
                 </LinearLayout>
 
                 <LinearLayout
-                    android:orientation="vertical"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_weight="1" >
+                    android:layout_weight="1"
+                    android:orientation="vertical">
 
                     <TextView
                         android:id="@+id/music_home_explayer_song_subtitle"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:alpha="0.5"
-                        android:paddingStart="8dp"
-                        android:paddingBottom="8dp"
-                        android:paddingEnd="8dp"
-                        android:focusable="true"
-                        android:singleLine="true"
                         android:ellipsize="marquee"
+                        android:focusable="true"
                         android:marqueeRepeatLimit="marquee_forever"
+                        android:paddingStart="8dp"
+                        android:paddingEnd="8dp"
+                        android:paddingBottom="8dp"
+                        android:singleLine="true"
                         android:text="@string/explayer_song_subtitle_placeholder"
                         android:textColor="@color/colorBackgroundText"
                         android:textSize="12sp" />
@@ -473,7 +472,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="horizontal"
-                    android:padding="4dp" >
+                    android:padding="4dp">
 
                     <ImageView
                         android:id="@+id/music_home_explayer_button_skip_previous"
@@ -481,7 +480,7 @@
                         android:layout_height="30dp"
                         android:layout_weight="1"
                         android:background="?android:attr/selectableItemBackgroundBorderless"
-                        android:src="@drawable/ic_skip_previous"/>
+                        android:src="@drawable/ic_skip_previous" />
 
                     <ImageView
                         android:id="@+id/music_home_explayer_button_playback"
@@ -489,7 +488,7 @@
                         android:layout_height="30dp"
                         android:layout_weight="1"
                         android:background="?android:attr/selectableItemBackgroundBorderless"
-                        android:src="@drawable/ic_pause_circle"/>
+                        android:src="@drawable/ic_pause_circle" />
 
                     <ImageView
                         android:id="@+id/music_home_explayer_button_skip_next"
@@ -497,7 +496,7 @@
                         android:layout_height="30dp"
                         android:layout_weight="1"
                         android:background="?android:attr/selectableItemBackgroundBorderless"
-                        android:src="@drawable/ic_skip_next"/>
+                        android:src="@drawable/ic_skip_next" />
 
                 </LinearLayout>
             </LinearLayout>
