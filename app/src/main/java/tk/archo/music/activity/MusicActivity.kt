@@ -189,7 +189,10 @@ class MusicActivity : AppCompatActivity() {
                                 cursor.getString(cursor.getColumnIndexOrThrow(
                                     MediaStore.Audio.Media.ALBUM))
 
-                            if (album == "<unknown>") {
+                            if (File(data!!).parentFile!!.name
+                                == album) {
+                                album = "Unknown Album"
+                            } else if (album == "<unknown>") {
                                 album = "Unknown Album"
                             }
                         }
