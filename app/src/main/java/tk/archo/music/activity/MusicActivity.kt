@@ -1,6 +1,8 @@
 package tk.archo.music.activity
 
 import android.annotation.SuppressLint
+import android.app.AlarmManager
+import android.app.PendingIntent
 import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
@@ -13,7 +15,6 @@ import android.os.AsyncTask
 import android.os.Bundle
 import android.os.IBinder
 import android.provider.MediaStore
-import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentTransaction
@@ -24,8 +25,8 @@ import tk.archo.music.data.SongItem
 import tk.archo.music.fragment.MusicHomeFragment
 import tk.archo.music.fragment.MusicPlayerFragment
 import tk.archo.music.service.ExoPlayerService
-import tk.archo.music.util.AppUtil
 import java.io.File
+import kotlin.system.exitProcess
 
 class MusicActivity : AppCompatActivity() {
     lateinit var exoService: ExoPlayerService
@@ -62,9 +63,6 @@ class MusicActivity : AppCompatActivity() {
                 setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE)
                 add(R.id.music_main_fragment, homeFragment)
             }
-        } else {
-            homeFragment.retainInstance = true
-            homeFragment.retainInstance = true
         }
     }
 
@@ -79,16 +77,11 @@ class MusicActivity : AppCompatActivity() {
 
     override fun onConfigurationChanged(newConfig: Configuration) {
         super.onConfigurationChanged(newConfig)
-        if (isExoServiceBound) {
-            unbindActivityFromExoService()
-            stopService(intentExoService)
-        }
-
-        val restartIntent = Intent(applicationContext, MusicActivity::class.java)
-        restartIntent.flags = Intent.FLAG_ACTIVITY_NO_ANIMATION
+        val restartIntent = Intent(applicationContext, MainActivity::class.java)
         startActivity(restartIntent)
-        finishAffinity()
+        exitProcess(0)
     }
+
 
     fun changeFragment(fragmentInt: Int) {
         lateinit var fragmentIntAsFragment: Fragment
@@ -158,7 +151,7 @@ class MusicActivity : AppCompatActivity() {
         getWindow().statusBarColor = Color.parseColor(colorStr)
     }
 
-    @SuppressLint("StaticFieldLeak")
+    @SuppressLint("Deprecation", "StaticFieldLeak")
     @Suppress("DEPRECATION")
     inner class AudioScanner: AsyncTask<Void, Void, Void>() {
         @SuppressLint("InlinedApi")
