@@ -134,6 +134,8 @@
                     android:layout_width="match_parent"
                     android:layout_height="140dp"
                     android:orientation="horizontal"
+                    android:requiresFadingEdge="horizontal"
+                    android:fadingEdgeLength="10dp"
                     android:scrollbars="none" />
 
                 <LinearLayout
@@ -178,6 +180,9 @@
                     android:id="@+id/music_home_artists_grid"
                     android:layout_width="match_parent"
                     android:layout_height="120dp"
+                    android:orientation="horizontal"
+                    android:requiresFadingEdge="horizontal"
+                    android:fadingEdgeLength="10dp"
                     android:scrollbars="none" />
 
                 <LinearLayout
@@ -222,6 +227,9 @@
                     android:id="@+id/music_home_songs_grid"
                     android:layout_width="match_parent"
                     android:layout_height="140dp"
+                    android:orientation="horizontal"
+                    android:requiresFadingEdge="horizontal"
+                    android:fadingEdgeLength="10dp"
                     android:scrollbars="none" />
 
             </LinearLayout>
