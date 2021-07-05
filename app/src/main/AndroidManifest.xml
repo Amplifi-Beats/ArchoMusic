@@ -2,7 +2,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="tk.archo.music">
 
-    <uses-permission-sdk-23 android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission-sdk-23 android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
 
     <application
@@ -14,7 +14,8 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.ArchoMusic">
         <activity
-            android:name=".activity.MusicActivity">
+            android:name=".activity.MusicActivity"
+            android:configChanges="uiMode">
         </activity>
         <activity android:name=".activity.MainActivity">
             <intent-filter>
