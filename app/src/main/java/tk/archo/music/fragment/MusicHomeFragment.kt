@@ -20,7 +20,10 @@ import androidx.fragment.app.*
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.google.android.exoplayer2.MediaItem
 import com.google.android.exoplayer2.Player
+import com.google.android.exoplayer2.source.TrackGroupArray
+import com.google.android.exoplayer2.trackselection.TrackSelectionArray
 import de.hdodenhof.circleimageview.CircleImageView
 import tk.archo.music.R
 import tk.archo.music.activity.MusicActivity
@@ -316,36 +319,48 @@ class MusicHomeFragment : Fragment() {
                                         AutoTransition())
                                     music_home_explayer_layout_minimized
                                         .visibility = View.GONE
-                                } else if (state == Player.STATE_ENDED) {
-                                    music_home_explayer_subtitle_minimized.text =
-                                        arrayItems[exoService.getIndex()].getSongTitle().plus(" ")
-                                            .plus(getString(R.string.unicode_black_filled))
-                                            .plus(" ")
-                                            .plus(arrayItems[exoService.getIndex()].getSongArtist())
-                                            .plus(" ")
-                                            .plus(getString(R.string.unicode_black_filled))
-                                            .plus(" ")
-                                            .plus(arrayItems[exoService.getIndex()].getSongAlbum())
-                                    music_home_explayer_song_title.text =
-                                        arrayItems[exoService.getIndex()].getSongTitle()
-                                    music_home_explayer_song_subtitle.text =
-                                        arrayItems[exoService.getIndex()].getSongArtist().plus(" ")
-                                            .plus(getString(R.string.unicode_black_filled))
-                                            .plus(" ")
-                                            .plus(arrayItems[exoService.getIndex()].getSongAlbum())
+                                } else if (state == Player.STATE_BUFFERING) {
+
                                 }
                             }
 
                             override fun onIsPlayingChanged(isPlaying: Boolean) {
                                 if (isPlaying) {
                                     music_home_explayer_button_playback.setImageResource(
-                                        resources.getIdentifier("@drawable/ic_pause_circle",
-                                            "drawable", activity!!.packageName))
+                                        resources.getIdentifier(
+                                            "@drawable/ic_pause_circle",
+                                            "drawable", activity!!.packageName
+                                        )
+                                    )
                                 } else {
                                     music_home_explayer_button_playback.setImageResource(
-                                        resources.getIdentifier("@drawable/ic_play_circle",
-                                            "drawable", activity!!.packageName))
+                                        resources.getIdentifier(
+                                            "@drawable/ic_play_circle",
+                                            "drawable", activity!!.packageName
+                                        )
+                                    )
                                 }
+                            }
+
+                            override fun onPositionDiscontinuity(oldPosition: Player.PositionInfo,
+                                                                 newPosition: Player.PositionInfo,
+                                                                 reason: Int) {
+                                music_home_explayer_subtitle_minimized.text =
+                                    arrayItems[exoService.getIndex()].getSongTitle().plus(" ")
+                                        .plus(getString(R.string.unicode_black_filled))
+                                        .plus(" ")
+                                        .plus(arrayItems[exoService.getIndex()].getSongArtist())
+                                        .plus(" ")
+                                        .plus(getString(R.string.unicode_black_filled))
+                                        .plus(" ")
+                                        .plus(arrayItems[exoService.getIndex()].getSongAlbum())
+                                music_home_explayer_song_title.text =
+                                    arrayItems[exoService.getIndex()].getSongTitle()
+                                music_home_explayer_song_subtitle.text =
+                                    arrayItems[exoService.getIndex()].getSongArtist().plus(" ")
+                                        .plus(getString(R.string.unicode_black_filled))
+                                        .plus(" ")
+                                        .plus(arrayItems[exoService.getIndex()].getSongAlbum())
                             }
                         })
                     }
