@@ -39,6 +39,7 @@ class MusicActivity : AppCompatActivity() {
     val FRAGMENT_HOME_INT = 0
     val FRAGMENT_PLAYER_INT = 1
 
+    @Suppress("DEPRECATION")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_music)
@@ -46,7 +47,7 @@ class MusicActivity : AppCompatActivity() {
         bindActivityToExoService()
 
         if (savedInstanceState == null) {
-            var fragHomeBundle = Bundle()
+            val fragHomeBundle = Bundle()
             fragHomeBundle.putParcelableArrayList("songItems", songItems)
 
             playerFragment = MusicPlayerFragment()
@@ -68,6 +69,11 @@ class MusicActivity : AppCompatActivity() {
         }
 
         finishAffinity()
+    }
+
+    @Suppress("DEPRECATION")
+    override fun onNightModeChanged(mode: Int) {
+        playerFragment.retainInstance = true
     }
 
     fun changeFragment(fragmentInt: Int) {
@@ -110,8 +116,11 @@ class MusicActivity : AppCompatActivity() {
                 override fun onServiceConnected(name: ComponentName, service: IBinder) {
                     val binder = service as ExoPlayerService.ExoServiceBinder
                     exoService = binder.getService()
-                    exoService.initializePlayer(applicationContext)
-                    exoService.addSongItems(applicationContext, exoItems)
+                    if (!exoService.isInitialized()) {
+                        exoService.initializePlayer(applicationContext)
+                        exoService.addSongItems(applicationContext, exoItems)
+                    }
+
                     isExoServiceBound = true
                 }
 
@@ -135,7 +144,8 @@ class MusicActivity : AppCompatActivity() {
         getWindow().statusBarColor = Color.parseColor(colorStr)
     }
 
-    @SuppressLint("Deprecation", "StaticFieldLeak")
+    @SuppressLint("StaticFieldLeak")
+    @Suppress("DEPRECATION")
     inner class AudioScanner: AsyncTask<Void, Void, Void>() {
         @SuppressLint("InlinedApi")
         override fun doInBackground(vararg path: Void?): Void? {
