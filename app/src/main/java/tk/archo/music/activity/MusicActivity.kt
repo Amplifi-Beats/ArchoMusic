@@ -13,6 +13,7 @@ import android.graphics.Color
 import android.media.MediaMetadataRetriever
 import android.os.AsyncTask
 import android.os.Bundle
+import android.os.Handler
 import android.os.IBinder
 import android.provider.MediaStore
 import androidx.appcompat.app.AppCompatActivity
@@ -36,6 +37,7 @@ class MusicActivity : AppCompatActivity() {
 
     lateinit var homeFragment: MusicHomeFragment
     lateinit var playerFragment: MusicPlayerFragment
+    lateinit var threadHandler: Handler
 
     val songItems: ArrayList<SongItem> = arrayListOf()
     val exoItems: MutableList<MediaItem> = mutableListOf()
@@ -49,6 +51,7 @@ class MusicActivity : AppCompatActivity() {
         setContentView(R.layout.activity_music)
         (AudioScanner()).execute()
         bindActivityToExoService()
+        threadHandler = Handler()
 
         if (savedInstanceState == null) {
             val fragHomeBundle = Bundle()
@@ -82,7 +85,6 @@ class MusicActivity : AppCompatActivity() {
         exitProcess(0)
     }
 
-
     fun changeFragment(fragmentInt: Int) {
         lateinit var fragmentIntAsFragment: Fragment
         if (fragmentInt == FRAGMENT_HOME_INT) {
@@ -112,6 +114,14 @@ class MusicActivity : AppCompatActivity() {
             setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE)
             replace(R.id.music_main_fragment, fragmentIntAsFragment)
         }
+    }
+
+    fun startUiThread(action: Runnable) {
+        threadHandler.postDelayed(action, 0)
+    }
+
+    fun cancelUiThread(action: Runnable) {
+        threadHandler.removeCallbacksAndMessages(action)
     }
 
     fun bindActivityToExoService() {

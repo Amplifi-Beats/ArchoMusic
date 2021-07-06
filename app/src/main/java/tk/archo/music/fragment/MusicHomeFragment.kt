@@ -15,15 +15,11 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.*
-import androidx.core.content.ContextCompat
 import androidx.fragment.app.*
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.google.android.exoplayer2.MediaItem
 import com.google.android.exoplayer2.Player
-import com.google.android.exoplayer2.source.TrackGroupArray
-import com.google.android.exoplayer2.trackselection.TrackSelectionArray
 import de.hdodenhof.circleimageview.CircleImageView
 import tk.archo.music.R
 import tk.archo.music.activity.MusicActivity
@@ -63,6 +59,7 @@ class MusicHomeFragment : Fragment() {
     lateinit var music_home_menu_about: TextView
     lateinit var music_home_menu_help: TextView
 
+    lateinit var music_home_explayer_song_progress: ProgressBar
     lateinit var music_home_explayer_layout: LinearLayout
     lateinit var music_home_explayer_layout_minimized: LinearLayout
     lateinit var music_home_explayer_title_minimized: TextView
@@ -71,7 +68,6 @@ class MusicHomeFragment : Fragment() {
     lateinit var music_home_explayer_title: TextView
     lateinit var music_home_explayer_button_expandmore: ImageView
     lateinit var music_home_explayer_song_art: ImageView
-    lateinit var music_home_explayer_song_progress: ProgressBar
     lateinit var music_home_explayer_song_title: TextView
     lateinit var music_home_explayer_song_subtitle: TextView
     lateinit var music_home_explayer_button_skip_previous: ImageView
@@ -102,6 +98,7 @@ class MusicHomeFragment : Fragment() {
         return fragmentView
     }
 
+    @Suppress("DEPRECATION")
     fun initializeViews(fragmentView: View) {
         /* Find their views by IDs from layout */
         music_home_layout = fragmentView.findViewById(R.id.music_home_layout)
@@ -129,6 +126,8 @@ class MusicHomeFragment : Fragment() {
         music_home_menu_about = fragmentView.findViewById(R.id.music_home_menu_about)
         music_home_menu_help = fragmentView.findViewById(R.id.music_home_menu_help)
 
+        music_home_explayer_song_progress = fragmentView.findViewById(R.id
+            .music_home_explayer_song_progress)
         music_home_explayer_layout = fragmentView.findViewById(R.id.music_home_explayer_layout)
         music_home_explayer_layout_minimized = fragmentView.findViewById(R.id
             .music_home_explayer_layout_minimized)
@@ -142,8 +141,6 @@ class MusicHomeFragment : Fragment() {
         music_home_explayer_button_expandmore = fragmentView.findViewById(R.id
             .music_home_explayer_button_expandmore)
         music_home_explayer_song_art = fragmentView.findViewById(R.id.music_home_explayer_song_art)
-        music_home_explayer_song_progress = fragmentView.findViewById(R.id
-            .music_home_explayer_song_progress)
         music_home_explayer_song_title = fragmentView.findViewById(R.id
             .music_home_explayer_song_title)
         music_home_explayer_song_subtitle = fragmentView.findViewById(R.id
@@ -271,7 +268,6 @@ class MusicHomeFragment : Fragment() {
                 AutoTransition())
             music_home_explayer_layout_minimized.visibility = View.GONE
             music_home_explayer_layout.visibility = View.VISIBLE
-
         }
         music_home_explayer_button_expandless.setOnClickListener {
             TransitionManager.beginDelayedTransition(music_home_layout,
@@ -317,10 +313,9 @@ class MusicHomeFragment : Fragment() {
                                 if (state == Player.STATE_IDLE) {
                                     TransitionManager.beginDelayedTransition(music_home_layout,
                                         AutoTransition())
+                                    music_home_explayer_song_progress.visibility = View.GONE
                                     music_home_explayer_layout_minimized
                                         .visibility = View.GONE
-                                } else if (state == Player.STATE_BUFFERING) {
-
                                 }
                             }
 
@@ -370,6 +365,7 @@ class MusicHomeFragment : Fragment() {
                             View.GONE) {
                             TransitionManager.beginDelayedTransition(music_home_layout,
                                 AutoTransition())
+                            music_home_explayer_song_progress.visibility = View.VISIBLE
                             music_home_explayer_layout_minimized.visibility = View.VISIBLE
                         }
 
@@ -392,6 +388,7 @@ class MusicHomeFragment : Fragment() {
                     } else {
                         TransitionManager.beginDelayedTransition(music_home_layout,
                             AutoTransition())
+                        music_home_explayer_song_progress.visibility = View.GONE
                         music_home_explayer_layout_minimized
                             .visibility = View.GONE
                     }
@@ -522,11 +519,14 @@ class MusicHomeFragment : Fragment() {
                 if (music_home_explayer_layout.visibility == View.GONE) {
                     TransitionManager.beginDelayedTransition(music_home_layout,
                         AutoTransition())
+                    music_home_explayer_song_progress.visibility = View.VISIBLE
                     music_home_explayer_layout_minimized.visibility = View.VISIBLE
                 }
                 if (!exoService.isPlaying()) {
                     exoService.prepare()
                     exoService.play()
+                    music_home_explayer_song_progress.setMax(100)
+                    music_home_explayer_song_progress.setProgress(50)
                 }
             }
         }

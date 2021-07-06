@@ -296,6 +296,14 @@
         </LinearLayout>
     </ScrollView>
 
+    <ProgressBar
+        style="@android:style/Widget.ProgressBar.Horizontal"
+        android:id="@+id/music_home_explayer_song_progress"
+        android:layout_width="match_parent"
+        android:layout_height="3dp"
+        android:indeterminate="false"
+        android:progressDrawable="@color/colorProgressColor" />
+
     <LinearLayout
         android:id="@+id/music_home_explayer_layout_minimized"
         android:layout_width="match_parent"
@@ -412,17 +420,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
                         android:gravity="bottom"
-                        android:orientation="horizontal">
-
-                        <ProgressBar
-                            android:id="@+id/music_home_explayer_song_progress"
-                            style="?android:attr/progressBarStyleHorizontal"
-                            android:layout_width="match_parent"
-                            android:layout_height="3dp"
-                            android:progress="100"
-                            android:progressDrawable="@color/colorProgressColor" />
-
-                    </LinearLayout>
+                        android:orientation="horizontal" />
                 </FrameLayout>
             </androidx.cardview.widget.CardView>
 
