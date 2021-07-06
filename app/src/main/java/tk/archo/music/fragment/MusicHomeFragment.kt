@@ -413,12 +413,12 @@ class MusicHomeFragment : Fragment() {
     }
 
     inner class AlbumAdapter(val musicList: ArrayList<SongItem>):
-        RecyclerView.Adapter<AlbumAdapter.AlbumAdapterViewHolder>() {
-        override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): AlbumAdapterViewHolder {
-            return AlbumAdapterViewHolder(LayoutInflater.from(context).inflate(R.layout.row_layout_grid, parent, false))
+        RecyclerView.Adapter<HomeGridViewHolder>() {
+        override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): HomeGridViewHolder {
+            return HomeGridViewHolder(LayoutInflater.from(context).inflate(R.layout.row_layout_grid, parent, false))
         }
 
-        override fun onBindViewHolder(holder: AlbumAdapterViewHolder, position: Int) {
+        override fun onBindViewHolder(holder: HomeGridViewHolder, position: Int) {
             holder.grid_item_title.setTypeface(
                 Typeface.createFromAsset(
                     activity?.assets,
@@ -430,6 +430,11 @@ class MusicHomeFragment : Fragment() {
 
             holder.grid_item_title.text = musicList[position].getSongAlbum()
             holder.grid_item_subtitle.text = musicList[position].getSongArtist()
+
+            if (holder.grid_item_title.text == "Unknown Album") {
+                holder.grid_item_title.text = "Unknown"
+            }
+
             holder.grid_item_layout.setOnClickListener {
                 holder.grid_item_art.performClick()
             }
@@ -438,29 +443,16 @@ class MusicHomeFragment : Fragment() {
         override fun getItemCount(): Int {
             return musicList.size
         }
-
-        inner class AlbumAdapterViewHolder(itemView: View): RecyclerView.ViewHolder(itemView) {
-            var grid_item_layout: LinearLayout
-            var grid_item_art: ImageView
-            var grid_item_title: TextView
-            var grid_item_subtitle: TextView
-
-            init {
-                grid_item_layout = itemView.findViewById(R.id.grid_item_layout)
-                grid_item_art = itemView.findViewById(R.id.grid_item_art)
-                grid_item_title = itemView.findViewById(R.id.grid_item_title)
-                grid_item_subtitle = itemView.findViewById(R.id.grid_item_subtitle)
-            }
-        }
     }
 
     inner class ArtistAdapter(val musicList: ArrayList<SongItem>):
-        RecyclerView.Adapter<ArtistAdapter.ArtistAdapterViewHolder>() {
-        override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ArtistAdapterViewHolder {
-            return ArtistAdapterViewHolder(LayoutInflater.from(context).inflate(R.layout.row_layout_grid, parent, false))
+        RecyclerView.Adapter<HomeGridViewHolder>() {
+        override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): HomeGridViewHolder {
+            return HomeGridViewHolder(LayoutInflater.from(context).inflate(R.layout.row_layout_grid, parent, false))
         }
 
-        override fun onBindViewHolder(holder: ArtistAdapterViewHolder, position: Int) {
+        @SuppressLint("SetTextI18n")
+        override fun onBindViewHolder(holder: HomeGridViewHolder, position: Int) {
             holder.grid_item_title.setTypeface(
                 Typeface.createFromAsset(
                     activity?.assets,
@@ -472,6 +464,11 @@ class MusicHomeFragment : Fragment() {
 
             holder.grid_item_title.text = musicList[position].getSongArtist()
             holder.grid_item_subtitle.visibility = View.GONE
+
+            if (holder.grid_item_title.text == "Unknown Artist") {
+                holder.grid_item_title.text = "Unknown"
+            }
+
             holder.grid_item_layout.setOnClickListener {
                 holder.grid_item_art.performClick()
             }
@@ -480,29 +477,15 @@ class MusicHomeFragment : Fragment() {
         override fun getItemCount(): Int {
             return musicList.size
         }
-
-        inner class ArtistAdapterViewHolder(itemView: View): RecyclerView.ViewHolder(itemView) {
-            var grid_item_layout: LinearLayout
-            var grid_item_art: ImageView
-            var grid_item_title: TextView
-            var grid_item_subtitle: TextView
-
-            init {
-                grid_item_layout = itemView.findViewById(R.id.grid_item_layout)
-                grid_item_art = itemView.findViewById(R.id.grid_item_art)
-                grid_item_title = itemView.findViewById(R.id.grid_item_title)
-                grid_item_subtitle = itemView.findViewById(R.id.grid_item_subtitle)
-            }
-        }
     }
 
     inner class SongAdapter(val musicList: ArrayList<SongItem>):
-        RecyclerView.Adapter<SongAdapter.SongAdapterViewHolder>() {
-        override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): SongAdapterViewHolder {
-            return SongAdapterViewHolder(LayoutInflater.from(context).inflate(R.layout.row_layout_grid, parent, false))
+        RecyclerView.Adapter<HomeGridViewHolder>() {
+        override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): HomeGridViewHolder {
+            return HomeGridViewHolder(LayoutInflater.from(context).inflate(R.layout.row_layout_grid, parent, false))
         }
 
-        override fun onBindViewHolder(holder: SongAdapterViewHolder, position: Int) {
+        override fun onBindViewHolder(holder: HomeGridViewHolder, position: Int) {
             holder.grid_item_title.setTypeface(
                 Typeface.createFromAsset(
                     activity?.assets,
@@ -512,6 +495,8 @@ class MusicHomeFragment : Fragment() {
                     activity?.assets,
                     "fonts/OpenSans-Regular.ttf"))
 
+            holder.grid_item_title.isSelected = true
+            holder.grid_item_subtitle.isSelected = true
             holder.grid_item_title.text = musicList[position].getSongTitle()
             holder.grid_item_subtitle.text = musicList[position].getSongArtist()
             holder.grid_item_layout.setOnClickListener {
@@ -549,19 +534,19 @@ class MusicHomeFragment : Fragment() {
         override fun getItemCount(): Int {
             return musicList.size
         }
+    }
 
-        inner class SongAdapterViewHolder(itemView: View): RecyclerView.ViewHolder(itemView) {
-            var grid_item_layout: LinearLayout
-            var grid_item_art: ImageView
-            var grid_item_title: TextView
-            var grid_item_subtitle: TextView
+    inner class HomeGridViewHolder(itemView: View): RecyclerView.ViewHolder(itemView) {
+        var grid_item_layout: LinearLayout
+        var grid_item_art: ImageView
+        var grid_item_title: TextView
+        var grid_item_subtitle: TextView
 
-            init {
-                grid_item_layout = itemView.findViewById(R.id.grid_item_layout)
-                grid_item_art = itemView.findViewById(R.id.grid_item_art)
-                grid_item_title = itemView.findViewById(R.id.grid_item_title)
-                grid_item_subtitle = itemView.findViewById(R.id.grid_item_subtitle)
-            }
+        init {
+            grid_item_layout = itemView.findViewById(R.id.grid_item_layout)
+            grid_item_art = itemView.findViewById(R.id.grid_item_art)
+            grid_item_title = itemView.findViewById(R.id.grid_item_title)
+            grid_item_subtitle = itemView.findViewById(R.id.grid_item_subtitle)
         }
     }
 }

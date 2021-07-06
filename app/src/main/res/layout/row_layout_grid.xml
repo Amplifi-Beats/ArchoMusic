@@ -22,25 +22,43 @@
             android:src="@drawable/music_default_song_art" />
     </androidx.cardview.widget.CardView>
 
-    <TextView
-        android:id="@+id/grid_item_title"
-        android:layout_width="80dp"
+    <LinearLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:paddingStart="4dp"
-        android:paddingTop="8dp"
-        android:paddingEnd="8dp"
-        android:singleLine="true"
-        android:textColor="@color/colorBackgroundText"
-        android:textSize="12sp" />
+        android:orientation="vertical">
 
-    <TextView
-        android:id="@+id/grid_item_subtitle"
-        android:layout_width="80dp"
+        <TextView
+            android:id="@+id/grid_item_title"
+            android:layout_width="80dp"
+            android:layout_height="wrap_content"
+            android:ellipsize="marquee"
+            android:focusable="true"
+            android:marqueeRepeatLimit="marquee_forever"
+            android:paddingStart="4dp"
+            android:paddingTop="8dp"
+            android:paddingEnd="8dp"
+            android:singleLine="true"
+            android:textColor="@color/colorBackgroundText"
+            android:textSize="12sp" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:alpha="0.5"
-        android:paddingStart="4dp"
-        android:singleLine="true"
-        android:textColor="@color/colorBackgroundText"
-        android:textSize="10sp" />
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/grid_item_subtitle"
+            android:layout_width="80dp"
+            android:layout_height="wrap_content"
+            android:ellipsize="marquee"
+            android:focusable="true"
+            android:marqueeRepeatLimit="marquee_forever"
+            android:alpha="0.5"
+            android:paddingStart="4dp"
+            android:singleLine="true"
+            android:textColor="@color/colorBackgroundText"
+            android:textSize="10sp" />
+    </LinearLayout>
 
 </LinearLayout>
