@@ -161,6 +161,10 @@ class MusicActivity : AppCompatActivity() {
         getWindow().statusBarColor = Color.parseColor(colorStr)
     }
 
+    fun setNavigationBarColor(colorStr: String) {
+        getWindow().navigationBarColor = Color.parseColor(colorStr)
+    }
+
     @SuppressLint("Deprecation", "StaticFieldLeak")
     @Suppress("DEPRECATION")
     inner class AudioScanner: AsyncTask<Void, Void, Void>() {
