@@ -6,7 +6,7 @@ import android.os.Parcelable
 data class SongItem(val title: String?, val data: String?,
                     val artist: String?, val album: String?): Parcelable {
     val itemtitle: String = title!!
-    val itemdata: String = title!!
+    val itemdata: String = data!!
     val itemartist: String = artist!!
     val itemalbum: String = album!!
 
