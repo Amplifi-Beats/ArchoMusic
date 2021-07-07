@@ -5,7 +5,9 @@ import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
 import android.content.ServiceConnection
+import android.graphics.BitmapFactory
 import android.graphics.Typeface
+import android.media.MediaMetadataRetriever
 import android.os.Bundle
 import android.os.Handler
 import android.os.IBinder
@@ -26,6 +28,7 @@ import tk.archo.music.R
 import tk.archo.music.activity.MusicActivity
 import tk.archo.music.data.SongItem
 import tk.archo.music.service.ExoPlayerService
+import tk.archo.music.util.AppUtil
 import java.util.*
 import kotlin.collections.ArrayList
 
@@ -329,6 +332,19 @@ class MusicHomeFragment : Fragment() {
                             override fun onPositionDiscontinuity(oldPosition: Player.PositionInfo,
                                                                  newPosition: Player.PositionInfo,
                                                                  reason: Int) {
+                                try {
+                                    var imageRetriever = MediaMetadataRetriever()
+                                    imageRetriever.setDataSource(arrayItems[exoService.getIndex()]
+                                        .getSongData())
+                                    var imageBytes = imageRetriever.embeddedPicture!!
+                                    Glide.with(context!!).load(BitmapFactory
+                                        .decodeByteArray(imageBytes, 0, imageBytes.size))
+                                        .into(music_home_explayer_song_art)
+                                } catch (error: Exception) {
+                                    Glide.with(context!!).load(R.drawable.music_default_song_art)
+                                        .into(music_home_explayer_song_art)
+                                }
+
                                 music_home_explayer_subtitle_minimized.text =
                                     arrayItems[exoService.getIndex()].getSongTitle().plus(" ")
                                         .plus(getString(R.string.unicode_black_filled))
@@ -355,6 +371,19 @@ class MusicHomeFragment : Fragment() {
                             TransitionManager.beginDelayedTransition(music_home_layout,
                                 AutoTransition())
                             music_home_explayer_layout_minimized.visibility = View.VISIBLE
+                        }
+
+                        try {
+                            var imageRetriever = MediaMetadataRetriever()
+                            imageRetriever.setDataSource(arrayItems[exoService.getIndex()]
+                                .getSongData())
+                            var imageBytes = imageRetriever.embeddedPicture!!
+                            Glide.with(context!!).load(BitmapFactory
+                                .decodeByteArray(imageBytes, 0, imageBytes.size))
+                                .into(music_home_explayer_song_art)
+                        } catch (error: Exception) {
+                            Glide.with(context!!).load(R.drawable.music_default_song_art)
+                                .into(music_home_explayer_song_art)
                         }
 
                         music_home_explayer_subtitle_minimized.text =
@@ -412,6 +441,17 @@ class MusicHomeFragment : Fragment() {
                     activity?.assets,
                     "fonts/OpenSans-Regular.ttf"))
 
+            try {
+                var imageRetriever = MediaMetadataRetriever()
+                imageRetriever.setDataSource(musicList[position].getSongData())
+                var imageBytes = imageRetriever.embeddedPicture!!
+                Glide.with(context!!).load(BitmapFactory
+                    .decodeByteArray(imageBytes, 0, imageBytes.size)).into(holder.grid_item_art)
+            } catch (error: Exception) {
+                Glide.with(context!!).load(R.drawable.music_default_song_art)
+                    .into(holder.grid_item_art)
+            }
+
             holder.grid_item_title.text = musicList[position].getSongAlbum()
             holder.grid_item_subtitle.text = musicList[position].getSongArtist()
 
@@ -446,6 +486,17 @@ class MusicHomeFragment : Fragment() {
                     activity?.assets,
                     "fonts/OpenSans-Regular.ttf"))
 
+            try {
+                var imageRetriever = MediaMetadataRetriever()
+                imageRetriever.setDataSource(musicList[position].getSongData())
+                var imageBytes = imageRetriever.embeddedPicture!!
+                Glide.with(context!!).load(BitmapFactory
+                    .decodeByteArray(imageBytes, 0, imageBytes.size)).into(holder.grid_item_art)
+            } catch (error: Exception) {
+                Glide.with(context!!).load(R.drawable.music_default_song_art)
+                    .into(holder.grid_item_art)
+            }
+
             holder.grid_item_title.text = musicList[position].getSongArtist()
             holder.grid_item_subtitle.visibility = View.GONE
 
@@ -478,6 +529,17 @@ class MusicHomeFragment : Fragment() {
                 Typeface.createFromAsset(
                     activity?.assets,
                     "fonts/OpenSans-Regular.ttf"))
+
+            try {
+                var imageRetriever = MediaMetadataRetriever()
+                imageRetriever.setDataSource(musicList[position].getSongData())
+                var imageBytes = imageRetriever.embeddedPicture!!
+                Glide.with(context!!).load(BitmapFactory
+                    .decodeByteArray(imageBytes, 0, imageBytes.size)).into(holder.grid_item_art)
+            } catch (error: Exception) {
+                Glide.with(context!!).load(R.drawable.music_default_song_art)
+                    .into(holder.grid_item_art)
+            }
 
             holder.grid_item_title.isSelected = true
             holder.grid_item_subtitle.isSelected = true
