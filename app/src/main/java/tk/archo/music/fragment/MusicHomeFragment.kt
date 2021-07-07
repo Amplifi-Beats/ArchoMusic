@@ -9,7 +9,6 @@ import android.graphics.BitmapFactory
 import android.graphics.Typeface
 import android.media.MediaMetadataRetriever
 import android.os.Bundle
-import android.os.Handler
 import android.os.IBinder
 import android.transition.AutoTransition
 import android.transition.TransitionManager
@@ -28,7 +27,6 @@ import tk.archo.music.R
 import tk.archo.music.activity.MusicActivity
 import tk.archo.music.data.SongItem
 import tk.archo.music.service.ExoPlayerService
-import tk.archo.music.util.AppUtil
 import java.util.*
 import kotlin.collections.ArrayList
 
