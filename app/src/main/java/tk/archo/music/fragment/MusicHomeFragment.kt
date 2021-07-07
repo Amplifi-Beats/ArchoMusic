@@ -547,23 +547,6 @@ class MusicHomeFragment : Fragment() {
             holder.grid_item_subtitle.text = musicList[position].getSongArtist()
             holder.grid_item_layout.setOnClickListener {
                 holder.grid_item_art.performClick()
-                music_home_explayer_subtitle_minimized.text =
-                    musicList[position].getSongTitle().plus(" ")
-                        .plus(getString(R.string.unicode_black_filled))
-                        .plus(" ")
-                        .plus(musicList[position].getSongArtist())
-                        .plus(" ")
-                        .plus(getString(R.string.unicode_black_filled))
-                        .plus(" ")
-                        .plus(musicList[position].getSongAlbum())
-                music_home_explayer_song_title.text =
-                    musicList[position].getSongTitle()
-                music_home_explayer_song_subtitle.text =
-                    musicList[position].getSongArtist().plus(" ")
-                        .plus(getString(R.string.unicode_black_filled))
-                        .plus(" ")
-                        .plus(musicList[position].getSongAlbum())
-
                 exoService.seekTo(position, 0)
                 if (music_home_explayer_layout.visibility == View.GONE) {
                     TransitionManager.beginDelayedTransition(music_home_layout,
