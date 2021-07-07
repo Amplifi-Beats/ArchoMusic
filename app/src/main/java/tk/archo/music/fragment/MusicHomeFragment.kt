@@ -307,7 +307,7 @@ class MusicHomeFragment : Fragment() {
                     isExoServiceBound = true
 
                     if (exoService.isInitialized()) {
-                        exoService.addListener(context!!, object: Player.Listener {
+                        exoService.addListener(object: Player.Listener {
                             override fun onPlaybackStateChanged(state: Int) {
                                 if (state == Player.STATE_IDLE) {
                                     TransitionManager.beginDelayedTransition(music_home_layout,

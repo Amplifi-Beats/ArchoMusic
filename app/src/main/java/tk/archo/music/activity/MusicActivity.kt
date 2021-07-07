@@ -132,8 +132,8 @@ class MusicActivity : AppCompatActivity() {
                     val binder = service as ExoPlayerService.ExoServiceBinder
                     exoService = binder.getService()
                     if (!exoService.isInitialized()) {
-                        exoService.initializePlayer(applicationContext)
-                        exoService.addSongItems(applicationContext, exoItems)
+                        exoService.initializePlayer()
+                        exoService.addSongItems(exoItems)
                     }
 
                     isExoServiceBound = true
