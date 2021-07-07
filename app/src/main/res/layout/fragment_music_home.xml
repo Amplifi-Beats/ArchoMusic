@@ -296,14 +296,6 @@
         </LinearLayout>
     </ScrollView>
 
-    <ProgressBar
-        style="@android:style/Widget.ProgressBar.Horizontal"
-        android:id="@+id/music_home_explayer_song_progress"
-        android:layout_width="match_parent"
-        android:layout_height="3dp"
-        android:indeterminate="false"
-        android:progressDrawable="@color/colorProgressColor" />
-
     <LinearLayout
         android:id="@+id/music_home_explayer_layout_minimized"
         android:layout_width="match_parent"

@@ -60,7 +60,6 @@ class MusicHomeFragment : Fragment() {
     lateinit var music_home_menu_about: TextView
     lateinit var music_home_menu_help: TextView
 
-    lateinit var music_home_explayer_song_progress: ProgressBar
     lateinit var music_home_explayer_layout: LinearLayout
     lateinit var music_home_explayer_layout_minimized: LinearLayout
     lateinit var music_home_explayer_title_minimized: TextView
@@ -127,8 +126,6 @@ class MusicHomeFragment : Fragment() {
         music_home_menu_about = fragmentView.findViewById(R.id.music_home_menu_about)
         music_home_menu_help = fragmentView.findViewById(R.id.music_home_menu_help)
 
-        music_home_explayer_song_progress = fragmentView.findViewById(R.id
-            .music_home_explayer_song_progress)
         music_home_explayer_layout = fragmentView.findViewById(R.id.music_home_explayer_layout)
         music_home_explayer_layout_minimized = fragmentView.findViewById(R.id
             .music_home_explayer_layout_minimized)
@@ -314,7 +311,6 @@ class MusicHomeFragment : Fragment() {
                                 if (state == Player.STATE_IDLE) {
                                     TransitionManager.beginDelayedTransition(music_home_layout,
                                         AutoTransition())
-                                    music_home_explayer_song_progress.visibility = View.GONE
                                     music_home_explayer_layout_minimized
                                         .visibility = View.GONE
                                 }
@@ -358,7 +354,6 @@ class MusicHomeFragment : Fragment() {
                             View.GONE) {
                             TransitionManager.beginDelayedTransition(music_home_layout,
                                 AutoTransition())
-                            music_home_explayer_song_progress.visibility = View.VISIBLE
                             music_home_explayer_layout_minimized.visibility = View.VISIBLE
                         }
 
@@ -381,7 +376,6 @@ class MusicHomeFragment : Fragment() {
                     } else {
                         TransitionManager.beginDelayedTransition(music_home_layout,
                             AutoTransition())
-                        music_home_explayer_song_progress.visibility = View.GONE
                         music_home_explayer_layout_minimized
                             .visibility = View.GONE
                     }
@@ -512,14 +506,11 @@ class MusicHomeFragment : Fragment() {
                 if (music_home_explayer_layout.visibility == View.GONE) {
                     TransitionManager.beginDelayedTransition(music_home_layout,
                         AutoTransition())
-                    music_home_explayer_song_progress.visibility = View.VISIBLE
                     music_home_explayer_layout_minimized.visibility = View.VISIBLE
                 }
                 if (!exoService.isPlaying()) {
                     exoService.prepare()
                     exoService.play()
-                    music_home_explayer_song_progress.setMax(100)
-                    music_home_explayer_song_progress.setProgress(50)
                 }
             }
         }
