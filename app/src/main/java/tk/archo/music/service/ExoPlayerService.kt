@@ -148,9 +148,7 @@ class ExoPlayerService(): Service() {
         check_exoplayer_init(context, STR_ERR_ITEM_NON_INIT)
 
         try {
-            if (data != null) {
-                player.addMediaItem(MediaItem.fromUri(data))
-            }
+            player.addMediaItem(MediaItem.fromUri(data))
         } catch (error: Exception) {
             throw ExoServiceException(STR_ERR_ITEM_ADD_FAILED)
         }
@@ -160,9 +158,7 @@ class ExoPlayerService(): Service() {
         check_exoplayer_init(context, STR_ERR_ITEM_NON_INIT)
 
         try {
-            if (data != null) {
-                player.addMediaItem(index, MediaItem.fromUri(data))
-            }
+            player.addMediaItem(index, MediaItem.fromUri(data))
         } catch (error: Exception) {
             AppUtil.toast(context, STR_ERR_ITEM_ADD_FAILED, Toast.LENGTH_LONG)
         }
@@ -172,9 +168,7 @@ class ExoPlayerService(): Service() {
         check_exoplayer_init(context, STR_ERR_ITEM_NON_INIT)
 
         try {
-            if (string != null) {
-                player.setMediaItem(MediaItem.fromUri(string))
-            }
+            player.setMediaItem(MediaItem.fromUri(string))
         } catch (error: Exception) {
             AppUtil.toast(context, STR_ERR_ITEM_ADD_FAILED, Toast.LENGTH_LONG)
         }
