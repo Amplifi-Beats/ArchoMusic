@@ -19,6 +19,7 @@ import androidx.fragment.app.*
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.bumptech.glide.Glide
 import com.google.android.exoplayer2.Player
 import de.hdodenhof.circleimageview.CircleImageView
 import tk.archo.music.R
@@ -321,19 +322,11 @@ class MusicHomeFragment : Fragment() {
 
                             override fun onIsPlayingChanged(isPlaying: Boolean) {
                                 if (isPlaying) {
-                                    music_home_explayer_button_playback.setImageResource(
-                                        resources.getIdentifier(
-                                            "@drawable/ic_pause_circle",
-                                            "drawable", activity!!.packageName
-                                        )
-                                    )
+                                    Glide.with(context!!).load(R.drawable.ic_pause_circle)
+                                        .into(music_home_explayer_button_playback)
                                 } else {
-                                    music_home_explayer_button_playback.setImageResource(
-                                        resources.getIdentifier(
-                                            "@drawable/ic_play_circle",
-                                            "drawable", activity!!.packageName
-                                        )
-                                    )
+                                    Glide.with(context!!).load(R.drawable.ic_play_circle)
+                                        .into(music_home_explayer_button_playback)
                                 }
                             }
 
