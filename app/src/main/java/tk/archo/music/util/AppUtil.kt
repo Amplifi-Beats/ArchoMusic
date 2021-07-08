@@ -9,12 +9,10 @@ import java.lang.Runtime.getRuntime
 
 class AppUtil {
     companion object {
-        /** Toast **/
         fun toast(context: Context, str: String, length: Int) {
             Toast.makeText(context, str, length).show()
         }
 
-        /** Memory **/
         fun cleanMem() {
             System.runFinalization()
             getRuntime().gc()
@@ -32,7 +30,6 @@ class AppUtil {
             return maxMemSize - usedMemSize
         }
 
-        /** Error stacking **/
         fun getStackTrace(throwable: Throwable?): String {
             val result: Writer = StringWriter()
             val printWriter = PrintWriter(result)
