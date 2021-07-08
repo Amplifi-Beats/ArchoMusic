@@ -8,9 +8,11 @@
     <color name="colorBackgroundText">#000000</color>
     <color name="colorPrimaryText">#FFFFFF</color>
     <color name="colorHint">#A8A8A8</color>
+    <!-- Background brands -->
     <color name="colorBackground">#FFFFFF</color>
     <color name="colorAccentText">#FFFFFF</color>
     <!-- Misc brands -->
+    <color name="colorSearchShade">#BDBDBD</color>
     <color name="colorPrimaryTint">#FFFFFF</color>
     <color name="colorBackgroundCard">#03A9F4</color>
     <color name="colorPrimaryCard">#03A9F4</color>

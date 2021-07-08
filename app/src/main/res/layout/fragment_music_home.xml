@@ -32,7 +32,7 @@
                     android:layout_weight="1"
                     android:padding="24dp"
                     android:singleLine="true"
-                    android:text="Home"
+                    android:text="@string/music_home_title"
                     android:textColor="@color/colorBackgroundText"
                     android:textSize="24sp" />
 
@@ -52,10 +52,35 @@
                 android:orientation="vertical"
                 android:padding="16dp">
 
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="40dp"
+                    android:layout_marginStart="8dp"
+                    android:layout_marginEnd="8dp"
+                    android:layout_marginBottom="16dp"
+                    android:gravity="center_vertical"
+                    android:padding="8dp"
+                    android:orientation="horizontal"
+                    android:background="@drawable/layer_search_rounded_bg">
+
+                    <ImageView
+                        android:layout_width="30dp"
+                        android:layout_height="20dp"
+                        android:src="@drawable/ic_search" />
+
+                    <EditText
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:background="@android:color/transparent"
+                        android:singleLine="true"
+                        android:textColorHint="@color/colorHint"
+                        android:textColor="@color/colorBackgroundText" />
+                </LinearLayout>
+
                 <androidx.cardview.widget.CardView
                     android:layout_width="match_parent"
                     android:layout_height="120dp"
-                    app:cardCornerRadius="10dp">
+                    app:cardCornerRadius="6dp">
 
                     <FrameLayout
                         android:layout_width="match_parent"
