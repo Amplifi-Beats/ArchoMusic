@@ -27,6 +27,7 @@ import tk.archo.music.R
 import tk.archo.music.activity.MusicActivity
 import tk.archo.music.data.SongItem
 import tk.archo.music.service.ExoPlayerService
+import tk.archo.music.util.AppUtil
 import java.util.*
 import kotlin.collections.ArrayList
 
@@ -523,6 +524,16 @@ class MusicHomeFragment : Fragment() {
             holder.grid_item_subtitle.text = musicList[position].getSongArtist()
             holder.grid_item_layout.setOnClickListener {
                 holder.grid_item_art.performClick()
+
+                if (exoService.isInitialized() &&
+                    exoService.getIndex() == position) {
+                        if (music_home_explayer_layout.visibility == View.GONE) {
+                            music_home_explayer_button_expandmore
+                                .performClick()
+                        }
+                        return@setOnClickListener
+                }
+
                 updateOnPlaybackUI(position)
                 exoService.seekTo(position, 0)
                 if (music_home_explayer_layout.visibility == View.GONE) {
