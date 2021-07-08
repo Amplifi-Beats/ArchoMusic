@@ -242,7 +242,8 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="4dp"
-                    android:padding="8dp"
+                    android:paddingTop="8dp"
+                    android:paddingBottom="8dp"
                     android:orientation="vertical"
                     android:background="@drawable/layer_rounded_gray_bg">
 
@@ -257,6 +258,7 @@
                         <ImageView
                             android:layout_width="30dp"
                             android:layout_height="20dp"
+                            android:layout_marginStart="4dp"
                             android:src="@drawable/ic_settings" />
 
                         <TextView
@@ -279,6 +281,7 @@
                         <ImageView
                             android:layout_width="30dp"
                             android:layout_height="20dp"
+                            android:layout_marginStart="4dp"
                             android:src="@drawable/ic_help_outline" />
 
                         <TextView
@@ -301,6 +304,7 @@
                         <ImageView
                             android:layout_width="30dp"
                             android:layout_height="20dp"
+                            android:layout_marginStart="4dp"
                             android:src="@drawable/ic_info_outline" />
 
                         <TextView
