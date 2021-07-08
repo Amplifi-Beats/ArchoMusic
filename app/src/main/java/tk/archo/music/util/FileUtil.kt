@@ -101,11 +101,6 @@ class FileUtil {
             return type
         }
 
-        @Deprecated("API 29", ReplaceWith(""))
-        fun getExternalStorageDir(): String? {
-            return Environment.getExternalStorageDirectory().absolutePath
-        }
-
         fun getPackageDir(context: Context): String {
             return context.getExternalFilesDir(null)!!.absolutePath
         }

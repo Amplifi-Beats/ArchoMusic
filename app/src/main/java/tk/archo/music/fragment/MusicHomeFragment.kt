@@ -13,9 +13,11 @@ import android.os.Bundle
 import android.os.IBinder
 import android.transition.AutoTransition
 import android.transition.TransitionManager
+import android.view.KeyEvent
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.inputmethod.EditorInfo
 import android.widget.*
 import androidx.fragment.app.*
 import androidx.recyclerview.widget.GridLayoutManager
@@ -29,6 +31,7 @@ import tk.archo.music.activity.MusicActivity
 import tk.archo.music.data.SongItem
 import tk.archo.music.service.ExoPlayerService
 import tk.archo.music.util.AppUtil
+import tk.archo.music.util.InputUtil
 import java.util.*
 import kotlin.collections.ArrayList
 
@@ -100,6 +103,7 @@ class MusicHomeFragment : Fragment() {
         return fragmentView
     }
 
+    @SuppressLint("UseRequireInsteadOfGet")
     @Suppress("DEPRECATION")
     fun initializeViews(fragmentView: View) {
         /* Find their views by IDs from layout */
@@ -235,6 +239,16 @@ class MusicHomeFragment : Fragment() {
             .getParcelableArrayList("songItems")!!)
         music_home_songs_grid.adapter = SongAdapter(requireArguments()
             .getParcelableArrayList("songItems")!!)
+
+        /* Set Searchbar action listener */
+        music_home_search_text.setOnEditorActionListener {view, actionId, _ ->
+            if (actionId == EditorInfo.IME_ACTION_SEARCH) {
+                InputUtil.hideInputKeyboard(context!!)
+                (view as EditText).clearFocus()
+                return@setOnEditorActionListener true
+            }
+            return@setOnEditorActionListener false
+        }
 
         /* Set onClick Listeners */
         music_home_search_layout.setOnClickListener {

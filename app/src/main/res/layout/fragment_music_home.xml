@@ -50,7 +50,10 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:orientation="vertical"
-                android:padding="16dp">
+                android:paddingTop="8dp"
+                android:paddingStart="16dp"
+                android:paddingEnd="16dp"
+                android:paddingBottom="8dp">
 
                 <LinearLayout
                     android:id="@+id/music_home_search_layout"
@@ -72,12 +75,15 @@
                     <EditText
                         android:id="@+id/music_home_search_text"
                         android:layout_width="match_parent"
-                        android:layout_height="25dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="4dp"
                         android:background="@android:color/transparent"
                         android:singleLine="true"
                         android:imeOptions="actionSearch"
                         android:textColorHint="@color/colorHint"
-                        android:textColor="@color/colorBackgroundText" />
+                        android:textCursorDrawable="@null"
+                        android:textColor="@color/colorBackgroundText"
+                        android:textSize="12sp" />
                 </LinearLayout>
 
                 <LinearLayout
