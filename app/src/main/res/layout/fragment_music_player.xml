@@ -12,6 +12,6 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:textColor="@color/colorBackgroundText"
-        android:text="test" />
+        android:text="This is a test fragment, tap this view to return back." />
 
 </LinearLayout>
