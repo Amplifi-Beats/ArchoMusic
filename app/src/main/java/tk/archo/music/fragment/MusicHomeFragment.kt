@@ -293,13 +293,13 @@ class MusicHomeFragment : Fragment() {
     }
 
     @SuppressLint("UseRequireInsteadOfGet")
-    fun updateOnPlaybackUI() {
+    fun updateOnPlaybackUI(index: Int) {
         val arrayItems = requireArguments()
             .getParcelableArrayList<SongItem>("songItems")!!
 
         try {
             val imageRetriever = MediaMetadataRetriever()
-            imageRetriever.setDataSource(arrayItems[exoService.getIndex()]
+            imageRetriever.setDataSource(arrayItems[index]
                 .getSongData())
             val imageBytes = imageRetriever.embeddedPicture!!
             Glide.with(context!!).load(BitmapFactory
@@ -311,23 +311,24 @@ class MusicHomeFragment : Fragment() {
         }
 
         music_home_explayer_subtitle_minimized.text =
-            arrayItems[exoService.getIndex()].getSongTitle().plus(" ")
+            arrayItems[index].getSongTitle().plus(" ")
                 .plus(getString(R.string.unicode_black_filled))
                 .plus(" ")
-                .plus(arrayItems[exoService.getIndex()].getSongArtist())
+                .plus(arrayItems[index].getSongArtist())
                 .plus(" ")
                 .plus(getString(R.string.unicode_black_filled))
                 .plus(" ")
-                .plus(arrayItems[exoService.getIndex()].getSongAlbum())
+                .plus(arrayItems[index].getSongAlbum())
         music_home_explayer_song_title.text =
-            arrayItems[exoService.getIndex()].getSongTitle()
+            arrayItems[index].getSongTitle()
         music_home_explayer_song_subtitle.text =
-            arrayItems[exoService.getIndex()].getSongArtist().plus(" ")
+            arrayItems[index].getSongArtist().plus(" ")
                 .plus(getString(R.string.unicode_black_filled))
                 .plus(" ")
-                .plus(arrayItems[exoService.getIndex()].getSongAlbum())
+                .plus(arrayItems[index].getSongAlbum())
     }
 
+    @SuppressLint("UseRequireInsteadOfGet")
     fun bindFragmentToExoService() {
         if (!this::intentExoService.isInitialized) {
             intentExoService = Intent(context!!, ExoPlayerService::class.java)
@@ -363,7 +364,7 @@ class MusicHomeFragment : Fragment() {
                             override fun onPositionDiscontinuity(oldPosition: Player.PositionInfo,
                                                                  newPosition: Player.PositionInfo,
                                                                  reason: Int) {
-                                updateOnPlaybackUI()
+                                updateOnPlaybackUI(exoService.getIndex())
                             }
                         })
                     }
@@ -376,7 +377,7 @@ class MusicHomeFragment : Fragment() {
                             music_home_explayer_layout_minimized.visibility = View.VISIBLE
                         }
 
-                        updateOnPlaybackUI()
+                        updateOnPlaybackUI(exoService.getIndex())
                     } else {
                         TransitionManager.beginDelayedTransition(music_home_layout,
                             AutoTransition())
@@ -522,7 +523,7 @@ class MusicHomeFragment : Fragment() {
             holder.grid_item_subtitle.text = musicList[position].getSongArtist()
             holder.grid_item_layout.setOnClickListener {
                 holder.grid_item_art.performClick()
-                updateOnPlaybackUI()
+                updateOnPlaybackUI(position)
                 exoService.seekTo(position, 0)
                 if (music_home_explayer_layout.visibility == View.GONE) {
                     TransitionManager.beginDelayedTransition(music_home_layout,
