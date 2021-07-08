@@ -293,6 +293,41 @@ class MusicHomeFragment : Fragment() {
     }
 
     @SuppressLint("UseRequireInsteadOfGet")
+    fun updateOnPlaybackUI() {
+        val arrayItems = requireArguments()
+            .getParcelableArrayList<SongItem>("songItems")!!
+
+        try {
+            val imageRetriever = MediaMetadataRetriever()
+            imageRetriever.setDataSource(arrayItems[exoService.getIndex()]
+                .getSongData())
+            val imageBytes = imageRetriever.embeddedPicture!!
+            Glide.with(context!!).load(BitmapFactory
+                .decodeByteArray(imageBytes, 0, imageBytes.size))
+                .into(music_home_explayer_song_art)
+        } catch (error: Exception) {
+            Glide.with(context!!).load(R.drawable.music_default_song_art)
+                .into(music_home_explayer_song_art)
+        }
+
+        music_home_explayer_subtitle_minimized.text =
+            arrayItems[exoService.getIndex()].getSongTitle().plus(" ")
+                .plus(getString(R.string.unicode_black_filled))
+                .plus(" ")
+                .plus(arrayItems[exoService.getIndex()].getSongArtist())
+                .plus(" ")
+                .plus(getString(R.string.unicode_black_filled))
+                .plus(" ")
+                .plus(arrayItems[exoService.getIndex()].getSongAlbum())
+        music_home_explayer_song_title.text =
+            arrayItems[exoService.getIndex()].getSongTitle()
+        music_home_explayer_song_subtitle.text =
+            arrayItems[exoService.getIndex()].getSongArtist().plus(" ")
+                .plus(getString(R.string.unicode_black_filled))
+                .plus(" ")
+                .plus(arrayItems[exoService.getIndex()].getSongAlbum())
+    }
+
     fun bindFragmentToExoService() {
         if (!this::intentExoService.isInitialized) {
             intentExoService = Intent(context!!, ExoPlayerService::class.java)
@@ -301,8 +336,6 @@ class MusicHomeFragment : Fragment() {
             exoServiceConn = object : ServiceConnection {
                 override fun onServiceConnected(name: ComponentName, service: IBinder) {
                     val binder = service as ExoPlayerService.ExoServiceBinder
-                    val arrayItems = requireArguments()
-                        .getParcelableArrayList<SongItem>("songItems")!!
                     exoService = binder.getService()
                     isExoServiceBound = true
 
@@ -330,35 +363,7 @@ class MusicHomeFragment : Fragment() {
                             override fun onPositionDiscontinuity(oldPosition: Player.PositionInfo,
                                                                  newPosition: Player.PositionInfo,
                                                                  reason: Int) {
-                                try {
-                                    var imageRetriever = MediaMetadataRetriever()
-                                    imageRetriever.setDataSource(arrayItems[exoService.getIndex()]
-                                        .getSongData())
-                                    var imageBytes = imageRetriever.embeddedPicture!!
-                                    Glide.with(context!!).load(BitmapFactory
-                                        .decodeByteArray(imageBytes, 0, imageBytes.size))
-                                        .into(music_home_explayer_song_art)
-                                } catch (error: Exception) {
-                                    Glide.with(context!!).load(R.drawable.music_default_song_art)
-                                        .into(music_home_explayer_song_art)
-                                }
-
-                                music_home_explayer_subtitle_minimized.text =
-                                    arrayItems[exoService.getIndex()].getSongTitle().plus(" ")
-                                        .plus(getString(R.string.unicode_black_filled))
-                                        .plus(" ")
-                                        .plus(arrayItems[exoService.getIndex()].getSongArtist())
-                                        .plus(" ")
-                                        .plus(getString(R.string.unicode_black_filled))
-                                        .plus(" ")
-                                        .plus(arrayItems[exoService.getIndex()].getSongAlbum())
-                                music_home_explayer_song_title.text =
-                                    arrayItems[exoService.getIndex()].getSongTitle()
-                                music_home_explayer_song_subtitle.text =
-                                    arrayItems[exoService.getIndex()].getSongArtist().plus(" ")
-                                        .plus(getString(R.string.unicode_black_filled))
-                                        .plus(" ")
-                                        .plus(arrayItems[exoService.getIndex()].getSongAlbum())
+                                updateOnPlaybackUI()
                             }
                         })
                     }
@@ -371,35 +376,7 @@ class MusicHomeFragment : Fragment() {
                             music_home_explayer_layout_minimized.visibility = View.VISIBLE
                         }
 
-                        try {
-                            var imageRetriever = MediaMetadataRetriever()
-                            imageRetriever.setDataSource(arrayItems[exoService.getIndex()]
-                                .getSongData())
-                            var imageBytes = imageRetriever.embeddedPicture!!
-                            Glide.with(context!!).load(BitmapFactory
-                                .decodeByteArray(imageBytes, 0, imageBytes.size))
-                                .into(music_home_explayer_song_art)
-                        } catch (error: Exception) {
-                            Glide.with(context!!).load(R.drawable.music_default_song_art)
-                                .into(music_home_explayer_song_art)
-                        }
-
-                        music_home_explayer_subtitle_minimized.text =
-                            arrayItems[exoService.getIndex()].getSongTitle().plus(" ")
-                                .plus(getString(R.string.unicode_black_filled))
-                                .plus(" ")
-                                .plus(arrayItems[exoService.getIndex()].getSongArtist())
-                                .plus(" ")
-                                .plus(getString(R.string.unicode_black_filled))
-                                .plus(" ")
-                                .plus(arrayItems[exoService.getIndex()].getSongAlbum())
-                        music_home_explayer_song_title.text =
-                            arrayItems[exoService.getIndex()].getSongTitle()
-                        music_home_explayer_song_subtitle.text =
-                            arrayItems[exoService.getIndex()].getSongArtist().plus(" ")
-                                .plus(getString(R.string.unicode_black_filled))
-                                .plus(" ")
-                                .plus(arrayItems[exoService.getIndex()].getSongAlbum())
+                        updateOnPlaybackUI()
                     } else {
                         TransitionManager.beginDelayedTransition(music_home_layout,
                             AutoTransition())
@@ -545,6 +522,7 @@ class MusicHomeFragment : Fragment() {
             holder.grid_item_subtitle.text = musicList[position].getSongArtist()
             holder.grid_item_layout.setOnClickListener {
                 holder.grid_item_art.performClick()
+                updateOnPlaybackUI()
                 exoService.seekTo(position, 0)
                 if (music_home_explayer_layout.visibility == View.GONE) {
                     TransitionManager.beginDelayedTransition(music_home_layout,
