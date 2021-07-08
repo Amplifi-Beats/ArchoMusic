@@ -72,7 +72,7 @@
                     <EditText
                         android:id="@+id/music_home_search_text"
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
+                        android:layout_height="25dp"
                         android:background="@android:color/transparent"
                         android:singleLine="true"
                         android:imeOptions="actionSearch"

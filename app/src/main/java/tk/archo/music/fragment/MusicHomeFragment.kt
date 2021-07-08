@@ -8,6 +8,7 @@ import android.content.ServiceConnection
 import android.graphics.BitmapFactory
 import android.graphics.Typeface
 import android.media.MediaMetadataRetriever
+import android.os.Build
 import android.os.Bundle
 import android.os.IBinder
 import android.transition.AutoTransition
