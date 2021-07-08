@@ -15,6 +15,6 @@
     <string name="explayer_title">Now Playing</string>
     <string name="explayer_song_title_placeholder">Explayer Song</string>
     <string name="explayer_song_subtitle_placeholder">Explayer subtitle</string>
-    <string name="explayer_song_label_combined_placeholder">Explayer song - Explayer artist - Explayer album</string>
+    <string name="explayer_song_label_combined_placeholder">Explayer song ● Explayer artist ● Explayer album</string>
     <string name="unicode_black_filled">●</string>
 </resources>
