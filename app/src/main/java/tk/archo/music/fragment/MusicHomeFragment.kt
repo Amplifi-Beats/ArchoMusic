@@ -12,6 +12,7 @@ import android.os.Bundle
 import android.os.IBinder
 import android.transition.AutoTransition
 import android.transition.TransitionManager
+import android.view.KeyEvent
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -29,6 +30,7 @@ import tk.archo.music.activity.MusicActivity
 import tk.archo.music.data.SongItem
 import tk.archo.music.service.ExoPlayerService
 import tk.archo.music.util.InputUtil
+import tk.archo.music.widgets.SearchBar
 import java.util.*
 import kotlin.collections.ArrayList
 
@@ -43,7 +45,7 @@ class MusicHomeFragment : Fragment() {
     lateinit var music_home_title: TextView
 
     lateinit var music_home_search_layout: LinearLayout
-    lateinit var music_home_search_text: TextView
+    lateinit var music_home_search_text: SearchBar
 
     lateinit var music_home_albums_title: TextView
     lateinit var music_home_albums_more: TextView
@@ -245,7 +247,7 @@ class MusicHomeFragment : Fragment() {
         music_home_songs_grid.adapter = SongAdapter(requireArguments()
             .getParcelableArrayList("songItems")!!)
 
-        /* Set Searchbar action listener */
+        /* Set Searchbar listeners */
         music_home_search_text.setOnEditorActionListener {view, actionId, _ ->
             if (actionId == EditorInfo.IME_ACTION_SEARCH) {
                 InputUtil.hideInputKeyboard(context!!)
