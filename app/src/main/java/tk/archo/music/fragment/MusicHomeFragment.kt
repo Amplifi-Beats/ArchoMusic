@@ -41,9 +41,8 @@ class MusicHomeFragment : Fragment() {
     lateinit var music_home_profile_image: CircleImageView
     lateinit var music_home_title: TextView
 
-    lateinit var music_home_art_image: ImageView
-    lateinit var music_home_art_layout: LinearLayout
-    lateinit var music_home_art_text: TextView
+    lateinit var music_home_search_layout: LinearLayout
+    lateinit var music_home_search_text: TextView
 
     lateinit var music_home_albums_title: TextView
     lateinit var music_home_albums_more: TextView
@@ -107,9 +106,8 @@ class MusicHomeFragment : Fragment() {
         music_home_profile_image = fragmentView.findViewById(R.id.music_home_profile_image)
         music_home_title = fragmentView.findViewById(R.id.music_home_title)
 
-        music_home_art_image = fragmentView.findViewById(R.id.music_home_art_image)
-        music_home_art_layout = fragmentView.findViewById(R.id.music_home_art_layout)
-        music_home_art_text = fragmentView.findViewById(R.id.music_home_art_text)
+        music_home_search_layout = fragmentView.findViewById(R.id.music_home_search_layout)
+        music_home_search_text = fragmentView.findViewById(R.id.music_home_search_text)
 
         music_home_albums_title = fragmentView.findViewById(R.id.music_home_albums_title)
         music_home_albums_more = fragmentView.findViewById(R.id.music_home_albums_more)
@@ -170,10 +168,10 @@ class MusicHomeFragment : Fragment() {
             Typeface.createFromAsset(
                 activity?.assets,
             "fonts/OpenSans-Bold.ttf"))
-        music_home_art_text.setTypeface(
+        music_home_search_text.setTypeface(
             Typeface.createFromAsset(
                 activity?.assets,
-            "fonts/OpenSans-Bold.ttf"))
+            "fonts/OpenSans-Regular.ttf"))
         music_home_albums_title.setTypeface(
             Typeface.createFromAsset(
                 activity?.assets,
@@ -238,7 +236,7 @@ class MusicHomeFragment : Fragment() {
             .getParcelableArrayList("songItems")!!)
 
         /* Set onClick Listeners */
-        music_home_art_layout.setOnClickListener {
+        music_home_search_layout.setOnClickListener {
             // functionality Soon
         }
         music_home_albums_more.setOnClickListener {
