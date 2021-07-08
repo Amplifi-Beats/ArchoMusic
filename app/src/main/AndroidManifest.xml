@@ -17,9 +17,11 @@
         android:theme="@style/Theme.ArchoMusic">
         <activity
             android:name=".activity.MusicActivity"
-            android:configChanges="uiMode">
+            android:configChanges="orientation|keyboardHidden|screenSize|uiMode">
         </activity>
-        <activity android:name=".activity.MainActivity">
+        <activity
+            android:name=".activity.MainActivity"
+            android:configChanges="orientation|screenSize|uiMode">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
