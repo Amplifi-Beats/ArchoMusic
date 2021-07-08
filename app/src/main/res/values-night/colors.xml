@@ -12,7 +12,7 @@
     <color name="colorBackground">#323232</color>
     <color name="colorAccentText">#FFFFFF</color>
     <!-- Misc brands -->
-    <color name="colorSearchShade">#292929</color>
+    <color name="colorShade">#292929</color>
     <color name="colorPrimaryTint">#FFFFFF</color>
     <color name="colorBackgroundCard">#191919</color>
     <color name="colorPrimaryCard">#323232</color>

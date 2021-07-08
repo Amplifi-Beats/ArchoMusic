@@ -8,12 +8,10 @@ import android.content.ServiceConnection
 import android.graphics.BitmapFactory
 import android.graphics.Typeface
 import android.media.MediaMetadataRetriever
-import android.os.Build
 import android.os.Bundle
 import android.os.IBinder
 import android.transition.AutoTransition
 import android.transition.TransitionManager
-import android.view.KeyEvent
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -30,7 +28,6 @@ import tk.archo.music.R
 import tk.archo.music.activity.MusicActivity
 import tk.archo.music.data.SongItem
 import tk.archo.music.service.ExoPlayerService
-import tk.archo.music.util.AppUtil
 import tk.archo.music.util.InputUtil
 import java.util.*
 import kotlin.collections.ArrayList
@@ -61,9 +58,13 @@ class MusicHomeFragment : Fragment() {
     lateinit var music_home_songs_progress: ProgressBar
     lateinit var music_home_songs_grid: RecyclerView
 
-    lateinit var music_home_menu_settings: TextView
-    lateinit var music_home_menu_about: TextView
-    lateinit var music_home_menu_help: TextView
+    lateinit var music_home_menu_title: TextView
+    lateinit var music_home_menu_settings: LinearLayout
+    lateinit var music_home_menu_settings_text: TextView
+    lateinit var music_home_menu_help: LinearLayout
+    lateinit var music_home_menu_help_text: TextView
+    lateinit var music_home_menu_about: LinearLayout
+    lateinit var music_home_menu_about_text: TextView
 
     lateinit var music_home_explayer_layout: LinearLayout
     lateinit var music_home_explayer_layout_minimized: LinearLayout
@@ -127,9 +128,14 @@ class MusicHomeFragment : Fragment() {
         music_home_songs_progress = fragmentView.findViewById(R.id.music_home_songs_progress)
         music_home_songs_grid = fragmentView.findViewById(R.id.music_home_songs_grid)
 
+        music_home_menu_title = fragmentView.findViewById(R.id.music_home_menu_title)
         music_home_menu_settings = fragmentView.findViewById(R.id.music_home_menu_settings)
-        music_home_menu_about = fragmentView.findViewById(R.id.music_home_menu_about)
+        music_home_menu_settings_text = fragmentView.findViewById(R.id
+            .music_home_menu_settings_text)
         music_home_menu_help = fragmentView.findViewById(R.id.music_home_menu_help)
+        music_home_menu_help_text = fragmentView.findViewById(R.id.music_home_menu_help_text)
+        music_home_menu_about = fragmentView.findViewById(R.id.music_home_menu_about)
+        music_home_menu_about_text = fragmentView.findViewById(R.id.music_home_menu_about_text)
 
         music_home_explayer_layout = fragmentView.findViewById(R.id.music_home_explayer_layout)
         music_home_explayer_layout_minimized = fragmentView.findViewById(R.id
@@ -169,58 +175,57 @@ class MusicHomeFragment : Fragment() {
         music_home_songs_progress.visibility = View.GONE
 
         /* Set fonts for TextViews */
-        music_home_title.setTypeface(
-            Typeface.createFromAsset(
-                activity?.assets,
-            "fonts/OpenSans-Bold.ttf"))
-        music_home_search_text.setTypeface(
-            Typeface.createFromAsset(
-                activity?.assets,
-            "fonts/OpenSans-Regular.ttf"))
-        music_home_albums_title.setTypeface(
-            Typeface.createFromAsset(
-                activity?.assets,
-            "fonts/OpenSans-Bold.ttf"))
-        music_home_albums_more.setTypeface(
-            Typeface.createFromAsset(
-                activity?.assets,
-            "fonts/OpenSans-Regular.ttf"))
-        music_home_artists_title.setTypeface(
-            Typeface.createFromAsset(
-                activity?.assets,
-            "fonts/OpenSans-Bold.ttf"))
-        music_home_artists_more.setTypeface(
-            Typeface.createFromAsset(
-                activity?.assets,
-            "fonts/OpenSans-Regular.ttf"))
-        music_home_songs_title.setTypeface(
-            Typeface.createFromAsset(
-                activity?.assets,
-            "fonts/OpenSans-Bold.ttf"))
-        music_home_songs_more.setTypeface(
-            Typeface.createFromAsset(
-                activity?.assets,
-            "fonts/OpenSans-Regular.ttf"))
-        music_home_explayer_title_minimized.setTypeface(
-            Typeface.createFromAsset(
-                activity?.assets,
-                "fonts/OpenSans-Bold.ttf"))
-        music_home_explayer_subtitle_minimized.setTypeface(
-            Typeface.createFromAsset(
-                activity?.assets,
-                "fonts/OpenSans-Regular.ttf"))
-        music_home_explayer_title.setTypeface(
-            Typeface.createFromAsset(
-                activity?.assets,
-                "fonts/OpenSans-Bold.ttf"))
-        music_home_explayer_song_title.setTypeface(
-            Typeface.createFromAsset(
-                activity?.assets,
-                "fonts/OpenSans-Bold.ttf"))
-        music_home_explayer_song_subtitle.setTypeface(
-            Typeface.createFromAsset(
-                activity?.assets,
-                "fonts/OpenSans-Regular.ttf"))
+        music_home_title.typeface = Typeface.createFromAsset(
+            activity?.assets,
+            "fonts/OpenSans-Bold.ttf")
+        music_home_search_text.typeface = Typeface.createFromAsset(
+            activity?.assets,
+            "fonts/OpenSans-Regular.ttf")
+        music_home_albums_title.typeface = Typeface.createFromAsset(
+            activity?.assets,
+            "fonts/OpenSans-Bold.ttf")
+        music_home_albums_more.typeface = Typeface.createFromAsset(
+            activity?.assets,
+            "fonts/OpenSans-Regular.ttf")
+        music_home_artists_title.typeface = Typeface.createFromAsset(
+            activity?.assets,
+            "fonts/OpenSans-Bold.ttf")
+        music_home_artists_more.typeface = Typeface.createFromAsset(
+            activity?.assets,
+            "fonts/OpenSans-Regular.ttf")
+        music_home_songs_title.typeface = Typeface.createFromAsset(
+            activity?.assets,
+            "fonts/OpenSans-Bold.ttf")
+        music_home_songs_more.typeface = Typeface.createFromAsset(
+            activity?.assets,
+            "fonts/OpenSans-Regular.ttf")
+        music_home_menu_title.typeface = Typeface.createFromAsset(
+            activity?.assets,
+            "fonts/OpenSans-Bold.ttf")
+        music_home_menu_settings_text.typeface = Typeface.createFromAsset(
+            activity?.assets,
+            "fonts/OpenSans-Regular.ttf")
+        music_home_menu_help_text.typeface = Typeface.createFromAsset(
+            activity?.assets,
+            "fonts/OpenSans-Regular.ttf")
+        music_home_menu_about_text.typeface = Typeface.createFromAsset(
+            activity?.assets,
+            "fonts/OpenSans-Regular.ttf")
+        music_home_explayer_title_minimized.typeface = Typeface.createFromAsset(
+            activity?.assets,
+            "fonts/OpenSans-Bold.ttf")
+        music_home_explayer_subtitle_minimized.typeface = Typeface.createFromAsset(
+            activity?.assets,
+            "fonts/OpenSans-Regular.ttf")
+        music_home_explayer_title.typeface = Typeface.createFromAsset(
+            activity?.assets,
+            "fonts/OpenSans-Bold.ttf")
+        music_home_explayer_song_title.typeface = Typeface.createFromAsset(
+            activity?.assets,
+            "fonts/OpenSans-Bold.ttf")
+        music_home_explayer_song_subtitle.typeface = Typeface.createFromAsset(
+            activity?.assets,
+            "fonts/OpenSans-Regular.ttf")
 
         /* Make music_home_explayer_layout gone */
         music_home_explayer_layout.visibility = View.GONE
