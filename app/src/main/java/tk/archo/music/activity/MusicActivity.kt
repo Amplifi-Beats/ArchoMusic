@@ -9,17 +9,17 @@ import android.content.res.Configuration
 import android.database.Cursor
 import android.graphics.Color
 import android.media.MediaMetadataRetriever
-import android.os.AsyncTask
-import android.os.Bundle
-import android.os.Handler
-import android.os.IBinder
+import android.os.*
 import android.provider.MediaStore
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentTransaction
 import androidx.fragment.app.commit
 import com.google.android.exoplayer2.MediaItem
+import com.google.android.exoplayer2.Player
 import tk.archo.music.R
+import tk.archo.music.data.AlbumItem
+import tk.archo.music.data.ArtistItem
 import tk.archo.music.data.SongItem
 import tk.archo.music.fragment.MusicHomeFragment
 import tk.archo.music.fragment.MusicPlayerFragment
@@ -37,6 +37,8 @@ class MusicActivity : AppCompatActivity() {
     lateinit var playerFragment: MusicPlayerFragment
     lateinit var threadHandler: Handler
 
+    val albumItems: ArrayList<AlbumItem> = arrayListOf()
+    val artistItems: ArrayList<ArtistItem> = arrayListOf()
     val songItems: ArrayList<SongItem> = arrayListOf()
     val exoItems: MutableList<MediaItem> = mutableListOf()
 
@@ -53,6 +55,8 @@ class MusicActivity : AppCompatActivity() {
 
         if (savedInstanceState == null) {
             val fragHomeBundle = Bundle()
+            fragHomeBundle.putParcelableArrayList("albumItems", albumItems)
+            fragHomeBundle.putParcelableArrayList("artistItems", artistItems)
             fragHomeBundle.putParcelableArrayList("songItems", songItems)
 
             playerFragment = MusicPlayerFragment()
@@ -68,7 +72,8 @@ class MusicActivity : AppCompatActivity() {
     }
 
     override fun onBackPressed() {
-        if (isExoServiceBound) {
+        if (isExoServiceBound && exoService.isInitialized() &&
+            !exoService.isPlaying()) {
             unbindActivityFromExoService()
             stopService(intentExoService)
         }
@@ -78,7 +83,7 @@ class MusicActivity : AppCompatActivity() {
 
     override fun onConfigurationChanged(newConfig: Configuration) {
         super.onConfigurationChanged(newConfig)
-        val restartIntent = Intent(applicationContext, MainActivity::class.java)
+        val restartIntent = Intent(applicationContext, MusicActivity::class.java)
         startActivity(restartIntent)
         exitProcess(0)
     }
@@ -132,6 +137,7 @@ class MusicActivity : AppCompatActivity() {
                     val binder = service as ExoPlayerService.ExoServiceBinder
                     exoService = binder.getService()
                     if (!exoService.isInitialized()) {
+                        exoService.setArraySongItems(songItems)
                         exoService.initializePlayer()
                         exoService.addSongItems(exoItems)
                     }
@@ -146,7 +152,8 @@ class MusicActivity : AppCompatActivity() {
             }
         }
 
-       bindService(intentExoService, exoServiceConn, Context.BIND_AUTO_CREATE)
+        startService(intentExoService)
+        bindService(intentExoService, exoServiceConn, Context.BIND_AUTO_CREATE)
     }
 
     fun unbindActivityFromExoService() {
@@ -189,7 +196,9 @@ class MusicActivity : AppCompatActivity() {
                     var name: String
                     var artist: String
                     var album: String
+
                     do {
+
                         data =
                             cursor.getString(cursor.getColumnIndexOrThrow(
                                 MediaStore.Audio.Media.DATA))
@@ -236,9 +245,12 @@ class MusicActivity : AppCompatActivity() {
                             } else if (album == "<unknown>") {
                                 album = "Unknown Album"
                             }
+
                         }
                         run {
                             if (File(data!!).exists()) {
+                                albumItems.add(AlbumItem(album, artist, data))
+                                artistItems.add(ArtistItem(artist, data))
                                 songItems.add(SongItem(name, data, artist, album))
                                 exoItems.add(MediaItem.fromUri(data))
                             }

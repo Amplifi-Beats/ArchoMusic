@@ -8,6 +8,7 @@ import android.content.ServiceConnection
 import android.graphics.BitmapFactory
 import android.graphics.Typeface
 import android.media.MediaMetadataRetriever
+import android.os.Build
 import android.os.Bundle
 import android.os.IBinder
 import android.transition.AutoTransition
@@ -23,21 +24,27 @@ import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
+import com.google.android.exoplayer2.ExoPlaybackException
 import com.google.android.exoplayer2.Player
 import de.hdodenhof.circleimageview.CircleImageView
 import tk.archo.music.R
 import tk.archo.music.activity.MusicActivity
+import tk.archo.music.data.AlbumItem
+import tk.archo.music.data.ArtistItem
 import tk.archo.music.data.SongItem
 import tk.archo.music.service.ExoPlayerService
+import tk.archo.music.util.AppUtil
 import tk.archo.music.util.InputUtil
 import tk.archo.music.widgets.SearchBar
 import java.util.*
 import kotlin.collections.ArrayList
+import kotlin.collections.HashSet
 
 class MusicHomeFragment : Fragment() {
     lateinit var intentExoService: Intent
     lateinit var exoService: ExoPlayerService
     lateinit var exoServiceConn: ServiceConnection
+    lateinit var playerListener: Player.Listener
     var isExoServiceBound: Boolean = false
 
     lateinit var music_home_layout: LinearLayout
@@ -106,10 +113,8 @@ class MusicHomeFragment : Fragment() {
         return fragmentView
     }
 
-    @SuppressLint("UseRequireInsteadOfGet")
     @Suppress("DEPRECATION")
     fun initializeViews(fragmentView: View) {
-        /* Find their views by IDs from layout */
         music_home_layout = fragmentView.findViewById(R.id.music_home_layout)
         music_home_profile_image = fragmentView.findViewById(R.id.music_home_profile_image)
         music_home_title = fragmentView.findViewById(R.id.music_home_title)
@@ -163,20 +168,6 @@ class MusicHomeFragment : Fragment() {
         music_home_explayer_button_skip_next = fragmentView.findViewById(R.id
             .music_home_explayer_button_skip_next)
 
-        /* Enable marquee animations */
-        music_home_explayer_subtitle_minimized.isSelected = true
-        music_home_explayer_song_title.isSelected = true
-        music_home_explayer_song_subtitle.isSelected = true
-
-        /* Set elevation to views */
-        music_home_explayer_layout_minimized.elevation = 10f
-        music_home_explayer_layout.elevation = 10f
-
-        music_home_albums_progress.visibility = View.GONE
-        music_home_artists_progress.visibility = View.GONE
-        music_home_songs_progress.visibility = View.GONE
-
-        /* Set fonts for TextViews */
         music_home_title.typeface = Typeface.createFromAsset(
             activity?.assets,
             "fonts/OpenSans-Bold.ttf")
@@ -229,10 +220,12 @@ class MusicHomeFragment : Fragment() {
             activity?.assets,
             "fonts/OpenSans-Regular.ttf")
 
-        /* Make music_home_explayer_layout gone */
-        music_home_explayer_layout.visibility = View.GONE
+        updateUIAsync()
+        setRecyclerViewParams()
+        assignListeners()
+    }
 
-        /* Set Layout Managers for RecyclerViews */
+    fun setRecyclerViewParams() {
         music_home_albums_grid.layoutManager = GridLayoutManager(context, 1,
             LinearLayoutManager.HORIZONTAL, false)
         music_home_artists_grid.layoutManager = GridLayoutManager(context, 1,
@@ -241,13 +234,65 @@ class MusicHomeFragment : Fragment() {
             LinearLayoutManager.HORIZONTAL, false)
 
         music_home_albums_grid.adapter = AlbumAdapter(requireArguments()
-            .getParcelableArrayList("songItems")!!)
+            .getParcelableArrayList("albumItems")!!)
         music_home_artists_grid.adapter = ArtistAdapter(requireArguments()
-            .getParcelableArrayList("songItems")!!)
+            .getParcelableArrayList("artistItems")!!)
         music_home_songs_grid.adapter = SongAdapter(requireArguments()
             .getParcelableArrayList("songItems")!!)
+    }
 
-        /* Set Searchbar listeners */
+    fun updateUIAsync() {
+        music_home_explayer_subtitle_minimized.isSelected = true
+        music_home_explayer_song_title.isSelected = true
+        music_home_explayer_song_subtitle.isSelected = true
+
+        music_home_explayer_layout_minimized.elevation = 10f
+        music_home_explayer_layout.elevation = 10f
+
+        music_home_albums_progress.visibility = View.GONE
+        music_home_artists_progress.visibility = View.GONE
+        music_home_songs_progress.visibility = View.GONE
+        music_home_explayer_layout.visibility = View.GONE
+    }
+
+    @SuppressLint("UseRequireInsteadOfGet")
+    fun assignListeners() {
+        playerListener = object: Player.Listener {
+            override fun onPlaybackStateChanged(state: Int) {
+                if (state == Player.STATE_IDLE) {
+                    TransitionManager.beginDelayedTransition(music_home_layout,
+                        AutoTransition())
+                    music_home_explayer_layout_minimized
+                        .visibility = View.GONE
+                }
+            }
+
+            override fun onIsPlayingChanged(isPlaying: Boolean) {
+                if (isPlaying) {
+                    Glide.with(context!!).load(R.drawable.ic_pause_circle)
+                        .into(music_home_explayer_button_playback)
+                } else {
+                    Glide.with(context!!).load(R.drawable.ic_play_circle)
+                        .into(music_home_explayer_button_playback)
+                }
+            }
+
+            override fun onPositionDiscontinuity(oldPosition: Player.PositionInfo,
+                                                 newPosition: Player.PositionInfo,
+                                                 reason: Int) {
+                updateOnPlaybackUI(exoService.getIndex())
+            }
+
+            override fun onPlayerError(error: ExoPlaybackException) {
+                AppUtil.toast(context!!, resources
+                    .getString(R.string.exoplayer_player_failed), Toast.LENGTH_LONG)
+                exoService.next()
+            }
+        }
+        music_home_search_layout.setOnClickListener {
+            music_home_search_text.requestFocus()
+            InputUtil.showInputKeyboard(context!!)
+        }
         music_home_search_text.setOnEditorActionListener {view, actionId, _ ->
             if (actionId == EditorInfo.IME_ACTION_SEARCH) {
                 InputUtil.hideInputKeyboard(context!!)
@@ -255,11 +300,6 @@ class MusicHomeFragment : Fragment() {
                 return@setOnEditorActionListener true
             }
             return@setOnEditorActionListener false
-        }
-
-        /* Set onClick Listeners */
-        music_home_search_layout.setOnClickListener {
-            // functionality Soon
         }
         music_home_albums_more.setOnClickListener {
             // functionality Soon
@@ -330,6 +370,9 @@ class MusicHomeFragment : Fragment() {
             Glide.with(context!!).load(R.drawable.music_default_song_art)
                 .into(music_home_explayer_song_art)
         }
+        if (Build.VERSION.SDK_INT > 26) {
+            exoService.updateNotification()
+        }
 
         music_home_explayer_subtitle_minimized.text =
             arrayItems[index].getSongTitle().plus(" ")
@@ -362,32 +405,7 @@ class MusicHomeFragment : Fragment() {
                     isExoServiceBound = true
 
                     if (exoService.isInitialized()) {
-                        exoService.addListener(object: Player.Listener {
-                            override fun onPlaybackStateChanged(state: Int) {
-                                if (state == Player.STATE_IDLE) {
-                                    TransitionManager.beginDelayedTransition(music_home_layout,
-                                        AutoTransition())
-                                    music_home_explayer_layout_minimized
-                                        .visibility = View.GONE
-                                }
-                            }
-
-                            override fun onIsPlayingChanged(isPlaying: Boolean) {
-                                if (isPlaying) {
-                                    Glide.with(context!!).load(R.drawable.ic_pause_circle)
-                                        .into(music_home_explayer_button_playback)
-                                } else {
-                                    Glide.with(context!!).load(R.drawable.ic_play_circle)
-                                        .into(music_home_explayer_button_playback)
-                                }
-                            }
-
-                            override fun onPositionDiscontinuity(oldPosition: Player.PositionInfo,
-                                                                 newPosition: Player.PositionInfo,
-                                                                 reason: Int) {
-                                updateOnPlaybackUI(exoService.getIndex())
-                            }
-                        })
+                        exoService.addListener(playerListener)
                     }
                     if (exoService.isInitialized()
                         && exoService.isPlaying()) {
@@ -413,16 +431,30 @@ class MusicHomeFragment : Fragment() {
             }
         }
 
+        activity?.startService(intentExoService)
         activity?.bindService(intentExoService, exoServiceConn, Context.BIND_AUTO_CREATE)
     }
 
     fun unbindFragmentFromExoService() {
         if (isExoServiceBound) {
+            if (exoService.isInitialized()) {
+                exoService.removeListener(playerListener)
+                exoService.addListener(object: Player.Listener {
+                    override fun onPositionDiscontinuity(oldPosition: Player.PositionInfo,
+                                                         newPosition: Player.PositionInfo,
+                                                         reason: Int) {
+                        if (Build.VERSION.SDK_INT > 26) {
+                            exoService.updateNotification()
+                        }
+                    }
+                })
+            }
+
             activity?.unbindService(exoServiceConn)
         }
     }
 
-    inner class AlbumAdapter(val musicList: ArrayList<SongItem>):
+    inner class AlbumAdapter(val items: ArrayList<AlbumItem>):
         RecyclerView.Adapter<HomeGridViewHolder>() {
         override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): HomeGridViewHolder {
             return HomeGridViewHolder(LayoutInflater.from(context).inflate(R.layout.row_layout_grid, parent, false))
@@ -439,9 +471,9 @@ class MusicHomeFragment : Fragment() {
                     "fonts/OpenSans-Regular.ttf"))
 
             try {
-                var imageRetriever = MediaMetadataRetriever()
-                imageRetriever.setDataSource(musicList[position].getSongData())
-                var imageBytes = imageRetriever.embeddedPicture!!
+                val imageRetriever = MediaMetadataRetriever()
+                imageRetriever.setDataSource(items[position].getAlbumData())
+                val imageBytes = imageRetriever.embeddedPicture!!
                 Glide.with(context!!).load(BitmapFactory
                     .decodeByteArray(imageBytes, 0, imageBytes.size)).into(holder.grid_item_art)
             } catch (error: Exception) {
@@ -449,8 +481,9 @@ class MusicHomeFragment : Fragment() {
                     .into(holder.grid_item_art)
             }
 
-            holder.grid_item_title.text = musicList[position].getSongAlbum()
-            holder.grid_item_subtitle.text = musicList[position].getSongArtist()
+            holder.grid_item_title.isSelected = true
+            holder.grid_item_title.text = items[position].getAlbumTitle()
+            holder.grid_item_subtitle.text = items[position].getAlbumArtist()
 
             if (holder.grid_item_title.text == "Unknown Album") {
                 holder.grid_item_title.text = "Unknown"
@@ -462,11 +495,11 @@ class MusicHomeFragment : Fragment() {
         }
 
         override fun getItemCount(): Int {
-            return musicList.size
+            return items.size
         }
     }
 
-    inner class ArtistAdapter(val musicList: ArrayList<SongItem>):
+    inner class ArtistAdapter(val items: ArrayList<ArtistItem>):
         RecyclerView.Adapter<HomeGridViewHolder>() {
         override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): HomeGridViewHolder {
             return HomeGridViewHolder(LayoutInflater.from(context).inflate(R.layout.row_layout_grid, parent, false))
@@ -484,9 +517,9 @@ class MusicHomeFragment : Fragment() {
                     "fonts/OpenSans-Regular.ttf"))
 
             try {
-                var imageRetriever = MediaMetadataRetriever()
-                imageRetriever.setDataSource(musicList[position].getSongData())
-                var imageBytes = imageRetriever.embeddedPicture!!
+                val imageRetriever = MediaMetadataRetriever()
+                imageRetriever.setDataSource(items[position].getArtistData())
+                val imageBytes = imageRetriever.embeddedPicture!!
                 Glide.with(context!!).load(BitmapFactory
                     .decodeByteArray(imageBytes, 0, imageBytes.size)).into(holder.grid_item_art)
             } catch (error: Exception) {
@@ -494,7 +527,7 @@ class MusicHomeFragment : Fragment() {
                     .into(holder.grid_item_art)
             }
 
-            holder.grid_item_title.text = musicList[position].getSongArtist()
+            holder.grid_item_title.text = items[position].getArtistTitle()
             holder.grid_item_subtitle.visibility = View.GONE
 
             if (holder.grid_item_title.text == "Unknown Artist") {
@@ -507,11 +540,11 @@ class MusicHomeFragment : Fragment() {
         }
 
         override fun getItemCount(): Int {
-            return musicList.size
+            return items.size
         }
     }
 
-    inner class SongAdapter(val musicList: ArrayList<SongItem>):
+    inner class SongAdapter(val items: ArrayList<SongItem>):
         RecyclerView.Adapter<HomeGridViewHolder>() {
         override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): HomeGridViewHolder {
             return HomeGridViewHolder(LayoutInflater.from(context).inflate(R.layout.row_layout_grid, parent, false))
@@ -528,9 +561,9 @@ class MusicHomeFragment : Fragment() {
                     "fonts/OpenSans-Regular.ttf"))
 
             try {
-                var imageRetriever = MediaMetadataRetriever()
-                imageRetriever.setDataSource(musicList[position].getSongData())
-                var imageBytes = imageRetriever.embeddedPicture!!
+                val imageRetriever = MediaMetadataRetriever()
+                imageRetriever.setDataSource(items[position].getSongData())
+                val imageBytes = imageRetriever.embeddedPicture!!
                 Glide.with(context!!).load(BitmapFactory
                     .decodeByteArray(imageBytes, 0, imageBytes.size)).into(holder.grid_item_art)
             } catch (error: Exception) {
@@ -539,23 +572,29 @@ class MusicHomeFragment : Fragment() {
             }
 
             holder.grid_item_title.isSelected = true
-            holder.grid_item_subtitle.isSelected = true
-            holder.grid_item_title.text = musicList[position].getSongTitle()
-            holder.grid_item_subtitle.text = musicList[position].getSongArtist()
+            holder.grid_item_title.text = items[position].getSongTitle()
+            holder.grid_item_subtitle.text = items[position].getSongArtist()
+                .plus(" ")
+                .plus(getString(R.string.unicode_black_filled))
+                .plus(" ")
+                .plus(items[position].getSongAlbum())
             holder.grid_item_layout.setOnClickListener {
                 holder.grid_item_art.performClick()
 
                 if (exoService.isInitialized() &&
                     exoService.getIndex() == position) {
+                        if (position == 0) {
+                            /* Do nothing */
+                        }
                         if (music_home_explayer_layout.visibility == View.GONE) {
                             music_home_explayer_button_expandmore
                                 .performClick()
+                            return@setOnClickListener
                         }
-                        return@setOnClickListener
                 }
 
-                updateOnPlaybackUI(position)
                 exoService.seekTo(position, 0)
+                updateOnPlaybackUI(position)
                 if (music_home_explayer_layout.visibility == View.GONE) {
                     TransitionManager.beginDelayedTransition(music_home_layout,
                         AutoTransition())
@@ -569,7 +608,7 @@ class MusicHomeFragment : Fragment() {
         }
 
         override fun getItemCount(): Int {
-            return musicList.size
+            return items.size
         }
     }
 
