@@ -33,9 +33,8 @@ class FileUtil {
             if (!doesFileExists(path)) {
                 createFile(path)
             }
-            var fileWriter: FileWriter? = null
             try {
-                fileWriter = FileWriter(file, false)
+                val fileWriter = FileWriter(file, false)
                 fileWriter.write(content)
                 fileWriter.flush()
                 fileWriter.close()
@@ -47,8 +46,8 @@ class FileUtil {
         fun createFile(path: String) {
             val newFile = File(path)
             try {
-                if (!newFile.parentFile.exists()) {
-                    createDirectory(newFile.parentFile.toString())
+                if (!newFile.parentFile!!.exists()) {
+                    createDirectory(newFile.parentFile!!.toString())
                 }
                 if (!newFile.exists()) {
                     newFile.createNewFile()
