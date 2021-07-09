@@ -4,10 +4,12 @@
 
 
 ## Archo Music
-Archo Music is an open-sourced Android music player application, Made by GianXD.
+Archo Music is an open-source Android music player application, Made by GianXD.
 
 
-[mockup1](/img/1.jpeg)
+<img src="img/1.jpeg" alt="drawing" height="auto" width="200"/><img src="img/2.jpeg" alt="drawing" height="auto" width="200"/><img src="img/3.jpeg" alt="drawing" height="auto" width="200"/><img src="img/4.jpeg" alt="drawing" height="auto" width="200"/>
+
+
 
 ## Libraries used
 
@@ -56,3 +58,5 @@ CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
 OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 ```
+
+phone mockups by [amplifi](https://www.amplifi-beats.tk)
