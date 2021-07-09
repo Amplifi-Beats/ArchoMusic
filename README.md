@@ -7,6 +7,8 @@
 Archo Music is an open-sourced Android music player application, Made by GianXD.
 
 
+[mockup1](/img/1.jpeg)
+
 ## Libraries used
 
 [CircleImageView](https://github.com/hdodenhof/CircleImageView) by hdodenhof
